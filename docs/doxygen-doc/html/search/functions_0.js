@@ -12,7 +12,7 @@ var searchData=
   ['admittancechanged',['admittanceChanged',['../class_sgt_1_1_branch_abc.html#ab0f641870a6f1479a592b45e617ef05a',1,'Sgt::BranchAbc::admittanceChanged() const'],['../class_sgt_1_1_branch_abc.html#a067b91e3693e2ed59df10d7348284dce',1,'Sgt::BranchAbc::admittanceChanged()']]],
   ['angsandmagtovec',['angsAndMagToVec',['../namespace_sgt.html#a171b3eebc140ffe6bb22d19f46e0f9a0',1,'Sgt']]],
   ['angsandprojtovec',['angsAndProjToVec',['../namespace_sgt.html#a3c5d9068ff6d33f2eccbd5cb15275d27',1,'Sgt']]],
-  ['approxphaseimpedancematrix',['approxPhaseImpedanceMatrix',['../namespace_sgt.html#aea5347263e23e19c3e8eb24de8498c49',1,'Sgt']]],
+  ['approxphaseimpedancematrix',['approxPhaseImpedanceMatrix',['../group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49',1,'Sgt']]],
   ['array',['array',['../classnlohmann_1_1basic__json.html#aa80485befaffcadaa39965494e0b4d2e',1,'nlohmann::basic_json']]],
   ['as',['as',['../class_sgt_1_1_component_ptr.html#a87a82cc1b209756fbf0959845b97859b',1,'Sgt::ComponentPtr']]],
   ['assertfieldpresent',['assertFieldPresent',['../group___parsing.html#ga4787bd31665e19a0284e8413a404c699',1,'Sgt']]],

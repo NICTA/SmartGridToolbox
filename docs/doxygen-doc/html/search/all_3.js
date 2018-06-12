@@ -8,6 +8,7 @@ var searchData=
   ['ddtransformerparserplugin',['DdTransformerParserPlugin',['../class_sgt_1_1_dd_transformer_parser_plugin.html',1,'Sgt']]],
   ['debuglogfilter',['debugLogFilter',['../group___logging_and_errors.html#ga9591040b430f7dac48e1c0639c2f9b8f',1,'Sgt']]],
   ['debugloglevel',['debugLogLevel',['../group___logging_and_errors.html#ga571562b5fa5ff4d80decb22f6be9ddd7',1,'Sgt']]],
+  ['deltacomponentsfrommat',['deltaComponentsFromMat',['../group___power_flow_core.html#gabeed96a5846caac6f2307fa3146bab53',1,'Sgt']]],
   ['dependson',['dependsOn',['../class_sgt_1_1_sim_component.html#ac9cc2cd707b990a8915b594b63deaf23',1,'Sgt::SimComponent']]],
   ['deprecated_20list',['Deprecated List',['../deprecated.html',1,'']]],
   ['dfs',['dfs',['../class_sgt_1_1_wo_node.html#a6b3e611e6567a9c713277f83a880ff72',1,'Sgt::WoNode']]],

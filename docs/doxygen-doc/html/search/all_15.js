@@ -11,5 +11,6 @@ var searchData=
   ['wograph',['WoGraph',['../class_sgt_1_1_wo_graph.html',1,'Sgt']]],
   ['wonode',['WoNode',['../class_sgt_1_1_wo_node.html',1,'Sgt']]],
   ['write_5fcbor',['write_cbor',['../classnlohmann_1_1detail_1_1binary__writer.html#aa0ab8d27fd88a33a2f801413ac4c7fbc',1,'nlohmann::detail::binary_writer']]],
-  ['write_5fmsgpack',['write_msgpack',['../classnlohmann_1_1detail_1_1binary__writer.html#ae4e0852b64102ce4b07d99f08f828b7c',1,'nlohmann::detail::binary_writer']]]
+  ['write_5fmsgpack',['write_msgpack',['../classnlohmann_1_1detail_1_1binary__writer.html#ae4e0852b64102ce4b07d99f08f828b7c',1,'nlohmann::detail::binary_writer']]],
+  ['wyecomponentsfrommat',['wyeComponentsFromMat',['../group___power_flow_core.html#ga2ab889339527dd26076bd3ee309ca2e4',1,'Sgt']]]
 ];

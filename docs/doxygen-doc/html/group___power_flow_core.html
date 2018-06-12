@@ -150,7 +150,7 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:gaeee8bcbe103bf0781875c819f5166c46"><td class="memItemLeft" align="right" valign="top"><a id="gaeee8bcbe103bf0781875c819f5166c46"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>BusType</b> { <br />
+<tr class="memitem:gaeee8bcbe103bf0781875c819f5166c46"><td class="memItemLeft" align="right" valign="top"><a id="gaeee8bcbe103bf0781875c819f5166c46"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">Sgt::BusType</a> { <br />
 &#160;&#160;<b>SL</b>, 
 <b>PQ</b>, 
 <b>PV</b>, 
@@ -159,8 +159,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<b>BAD</b>
 <br />
  }</td></tr>
+<tr class="memdesc:gaeee8bcbe103bf0781875c819f5166c46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bus control type for PowerFlow problems. <br /></td></tr>
 <tr class="separator:gaeee8bcbe103bf0781875c819f5166c46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9995c7b16c14b177680f5c21cdde3702"><td class="memItemLeft" align="right" valign="top"><a id="ga9995c7b16c14b177680f5c21cdde3702"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Phase</b> : std::uint8_t { <br />
+<tr class="memitem:ga9995c7b16c14b177680f5c21cdde3702"><td class="memItemLeft" align="right" valign="top"><a id="ga9995c7b16c14b177680f5c21cdde3702"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Sgt::Phase</a> : std::uint8_t { <br />
 &#160;&#160;<b>BAL</b>, 
 <b>A</b>, 
 <b>B</b>, 
@@ -182,10 +183,45 @@ Enumerations</h2></td></tr>
 <b>BAD</b>
 <br />
  }</td></tr>
+<tr class="memdesc:ga9995c7b16c14b177680f5c21cdde3702"><td class="mdescLeft">&#160;</td><td class="mdescRight">Electrical phase. <br /></td></tr>
 <tr class="separator:ga9995c7b16c14b177680f5c21cdde3702"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:ga69530f02d63b9e8186c2fec33b01f466"><td class="memTemplParams" colspan="2"><a id="ga69530f02d63b9e8186c2fec33b01f466"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga69530f02d63b9e8186c2fec33b01f466"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga69530f02d63b9e8186c2fec33b01f466">Sgt::makeUpper</a> (arma::Mat&lt; T &gt; &amp;m)</td></tr>
+<tr class="memdesc:ga69530f02d63b9e8186c2fec33b01f466"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move lower diagonal elements to upper.This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. <br /></td></tr>
+<tr class="separator:ga69530f02d63b9e8186c2fec33b01f466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplParams" colspan="2"><a id="gae068b77c1c5b5672460e3da8896dfa0f"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gae068b77c1c5b5672460e3da8896dfa0f">Sgt::mapPhasesToUpper</a> (const arma::Mat&lt; T &gt; &amp;srcVals, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;srcPhases, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;dstPhases)</td></tr>
+<tr class="memdesc:gae068b77c1c5b5672460e3da8896dfa0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map phases and move lower diagonal elements to upper.This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. <br /></td></tr>
+<tr class="separator:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memItemLeft" align="right" valign="top"><a id="ga6036a4b3287f5e99e0c5fa411a75ebb6"></a>
+<a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga6036a4b3287f5e99e0c5fa411a75ebb6">Sgt::toDelta</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt; V)</td></tr>
+<tr class="memdesc:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages. <br /></td></tr>
+<tr class="separator:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeed96a5846caac6f2307fa3146bab53"><td class="memTemplParams" colspan="2"><a id="gabeed96a5846caac6f2307fa3146bab53"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gabeed96a5846caac6f2307fa3146bab53"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gabeed96a5846caac6f2307fa3146bab53">Sgt::deltaComponentsFromMat</a> (const arma::Mat&lt; T &gt; m)</td></tr>
+<tr class="memdesc:gabeed96a5846caac6f2307fa3146bab53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the delta components e.g. (01, 12, 20) from a load matrix. <br /></td></tr>
+<tr class="separator:gabeed96a5846caac6f2307fa3146bab53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memTemplParams" colspan="2"><a id="gace68b1b6ff26b0d7cf43c9a5b26db2f8"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gace68b1b6ff26b0d7cf43c9a5b26db2f8">Sgt::matFromDeltaComponents</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; v)</td></tr>
+<tr class="memdesc:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a load matrix from delta components. <br /></td></tr>
+<tr class="separator:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memTemplParams" colspan="2"><a id="ga2ab889339527dd26076bd3ee309ca2e4"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga2ab889339527dd26076bd3ee309ca2e4">Sgt::wyeComponentsFromMat</a> (const arma::Mat&lt; T &gt; m)</td></tr>
+<tr class="memdesc:ga2ab889339527dd26076bd3ee309ca2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the wye components i.e. the main diagonal from a load matrix. <br /></td></tr>
+<tr class="separator:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga472379d2551e69cc8159d6005e2f00a2"><td class="memTemplParams" colspan="2"><a id="ga472379d2551e69cc8159d6005e2f00a2"></a>
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga472379d2551e69cc8159d6005e2f00a2"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga472379d2551e69cc8159d6005e2f00a2">Sgt::matFromWyeComponents</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; v)</td></tr>
+<tr class="memdesc:ga472379d2551e69cc8159d6005e2f00a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a load matrix from wye components i.e. a diagonal matrix. <br /></td></tr>
+<tr class="separator:ga472379d2551e69cc8159d6005e2f00a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga97b7a2aca7dadd89405e34a308634f36"><td class="memItemLeft" align="right" valign="top">arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga97b7a2aca7dadd89405e34a308634f36">Sgt::carson</a> (arma::uword nWire, const arma::Mat&lt; double &gt; &amp;Dij, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; double &gt; resPerL, double L, double freq, double rhoEarth)</td></tr>
 <tr class="memdesc:ga97b7a2aca7dadd89405e34a308634f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply Carson's equations.  <a href="group___power_flow_core.html#ga97b7a2aca7dadd89405e34a308634f36">More...</a><br /></td></tr>
 <tr class="separator:ga97b7a2aca7dadd89405e34a308634f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,6 +258,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ga52837c362c25e2b2f74954b325b27a08"><td class="memItemLeft" align="right" valign="top">arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga52837c362c25e2b2f74954b325b27a08">Sgt::fromScaledSequence</a> (const arma::Mat&lt; Complex &gt; &amp;M)</td></tr>
 <tr class="memdesc:ga52837c362c25e2b2f74954b325b27a08"><td class="mdescLeft">&#160;</td><td class="mdescRight">From sequence components transform for matrix.  <a href="group___power_flow_core.html#ga52837c362c25e2b2f74954b325b27a08">More...</a><br /></td></tr>
 <tr class="separator:ga52837c362c25e2b2f74954b325b27a08"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea5347263e23e19c3e8eb24de8498c49"><td class="memItemLeft" align="right" valign="top">Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49">Sgt::approxPhaseImpedanceMatrix</a> (Complex ZPlus, Complex Z0)</td></tr>
+<tr class="memdesc:gaea5347263e23e19c3e8eb24de8498c49"><td class="mdescLeft">&#160;</td><td class="mdescRight">approximate the phase impedance matrix from Z+ and Z0  <a href="group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49">More...</a><br /></td></tr>
+<tr class="separator:gaea5347263e23e19c3e8eb24de8498c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
 <a id="ga97b7a2aca7dadd89405e34a308634f36"></a>
@@ -621,6 +660,45 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The transformed matrix: 0 = A, 1 = B, 2 = C.</dd></dl>
 <p>IMPORTANT: as per the theory notes, we use a scaled sequence transformation that is unitary and therefore preserves scalars like total power. Let B = sqrt(3) A, where A is the usual sequence transformation matrix. Then v_123 = B^-1 v_abc. A positive sequence vector V+ = [V_A, V_A exp(-2 pi / 3), V_A exp(2 pi / 3)] then transforms to sqrt(3) [0, V_A, 0]; note the sqrt(3) factor. </p>
+
+</div>
+</div>
+<a id="gaea5347263e23e19c3e8eb24de8498c49"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaea5347263e23e19c3e8eb24de8498c49">&#9670;&nbsp;</a></span>approxPhaseImpedanceMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">arma::Mat&lt; Complex &gt; Sgt::approxPhaseImpedanceMatrix </td>
+          <td>(</td>
+          <td class="paramtype">Complex&#160;</td>
+          <td class="paramname"><em>ZPlus</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Complex&#160;</td>
+          <td class="paramname"><em>Z0</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>approximate the phase impedance matrix from Z+ and Z0 </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ZPlus</td><td>Positive sequence impedance </td></tr>
+    <tr><td class="paramname">Z0</td><td>Zero sequence impedance </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The approximate phase impedance matrix.</dd></dl>
+<p>Uses the usual sequence components. Often, we only know the + and 0 sequence impedances, which can typically be derived by noting the phase to ground and three phase short circuit currents or powers at a node (e.g. at the HV side of a distribution substation. Assuming a symmetry between the phases (e.g. through transposition or symmetric arrangement of wires) leads to this approximate result for the phase impedance matrix. See Kersting, Distribution System Modelling and Analysis, Section 6.3. </p>
 
 </div>
 </div>

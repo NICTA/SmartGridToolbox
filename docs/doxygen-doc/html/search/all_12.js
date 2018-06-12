@@ -23,7 +23,7 @@ var searchData=
   ['to_5fjson_5ffn',['to_json_fn',['../structnlohmann_1_1detail_1_1to__json__fn.html',1,'nlohmann::detail']]],
   ['to_5fmsgpack',['to_msgpack',['../classnlohmann_1_1basic__json.html#a09ca1dc273d226afe0ca83a9d7438d9c',1,'nlohmann::basic_json']]],
   ['to_5fstring',['to_string',['../classnlohmann_1_1json__pointer.html#a0920ebb015398813880e3c0f8464526e',1,'nlohmann::json_pointer']]],
-  ['todelta',['toDelta',['../namespace_sgt.html#a6036a4b3287f5e99e0c5fa411a75ebb6',1,'Sgt']]],
+  ['todelta',['toDelta',['../group___power_flow_core.html#ga6036a4b3287f5e99e0c5fa411a75ebb6',1,'Sgt']]],
   ['tojson',['toJson',['../class_sgt_1_1_branch_abc.html#afbc5738d813bddfd91e362e0aa3ebe17',1,'Sgt::BranchAbc::toJson()'],['../class_sgt_1_1_bus.html#ad4cd1b1658135b16b5aaf42d2ab32d10',1,'Sgt::Bus::toJson()'],['../class_sgt_1_1_common_branch.html#a5896630a951a803889b1a2348002fc92',1,'Sgt::CommonBranch::toJson()'],['../class_sgt_1_1_component.html#a5208c39b69f38203f57255663717a0bf',1,'Sgt::Component::toJson()'],['../class_sgt_1_1_gen.html#a42ed9df27133144bfc3229816230aa22',1,'Sgt::Gen::toJson()'],['../class_sgt_1_1_zip.html#aeb8f78fe1716400c1783bbfb5b8886f4',1,'Sgt::Zip::toJson()'],['../class_sgt_1_1_generic_dc_power_source.html#a6ff907cac876d571b7bb9a9916b120e7',1,'Sgt::GenericDcPowerSource::toJson()']]],
   ['token_5ftype',['token_type',['../classnlohmann_1_1detail_1_1lexer.html#a3f313cdbe187cababfc5e06f0b69b098',1,'nlohmann::detail::lexer']]],
   ['token_5ftype_5fname',['token_type_name',['../classnlohmann_1_1detail_1_1lexer.html#ae514e2005f0ce185f1ad366139e541e8',1,'nlohmann::detail::lexer']]],

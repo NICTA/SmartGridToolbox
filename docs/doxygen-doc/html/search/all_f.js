@@ -18,6 +18,7 @@ var searchData=
   ['pfbus',['PfBus',['../struct_sgt_1_1_pf_bus.html',1,'Sgt']]],
   ['pfnode',['PfNode',['../struct_sgt_1_1_pf_node.html',1,'Sgt']]],
   ['ph',['Ph',['../class_sgt_1_1_simple_building.html#a4523290c7c2a7f9e064261eef9cc0938',1,'Sgt::SimpleBuilding']]],
+  ['phase',['Phase',['../group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702',1,'Sgt']]],
   ['phasedist_5f',['phaseDist_',['../class_sgt_1_1_underground_line.html#a6ce8972efbf42621229f4fadb42b1d77',1,'Sgt::UndergroundLine']]],
   ['phases',['Phases',['../class_sgt_1_1_phases.html',1,'Sgt']]],
   ['phases_5f',['phases_',['../struct_sgt_1_1_pf_bus.html#a75e4c939db462f168fb6a61fa47c409b',1,'Sgt::PfBus::phases_()'],['../struct_sgt_1_1_pf_branch.html#a8c2aac6ca03028303c86ff4d23358fdb',1,'Sgt::PfBranch::phases_()']]],

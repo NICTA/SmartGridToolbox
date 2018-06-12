@@ -20,7 +20,7 @@ var searchData=
   ['allocator_5ftype',['allocator_type',['../classnlohmann_1_1basic__json.html#a86ce930490cf7773b26f5ef49c04a350',1,'nlohmann::basic_json']]],
   ['angsandmagtovec',['angsAndMagToVec',['../namespace_sgt.html#a171b3eebc140ffe6bb22d19f46e0f9a0',1,'Sgt']]],
   ['angsandprojtovec',['angsAndProjToVec',['../namespace_sgt.html#a3c5d9068ff6d33f2eccbd5cb15275d27',1,'Sgt']]],
-  ['approxphaseimpedancematrix',['approxPhaseImpedanceMatrix',['../namespace_sgt.html#aea5347263e23e19c3e8eb24de8498c49',1,'Sgt']]],
+  ['approxphaseimpedancematrix',['approxPhaseImpedanceMatrix',['../group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49',1,'Sgt']]],
   ['array',['array',['../classnlohmann_1_1basic__json.html#aa80485befaffcadaa39965494e0b4d2e',1,'nlohmann::basic_json::array()'],['../namespacenlohmann_1_1detail.html#a90aa5ef615aa8305e9ea20d8a947980faf1f713c9e000f5d3f280adbd124df4f5',1,'nlohmann::detail::array()']]],
   ['array_5fend',['array_end',['../classnlohmann_1_1detail_1_1parser.html#a37ac88c864dda495f72cb62776b0bebea49642fb732aa2e112188fba1f9d3ef7f',1,'nlohmann::detail::parser']]],
   ['array_5fiterator',['array_iterator',['../structnlohmann_1_1detail_1_1internal__iterator.html#a8294a6e6f01b58e1cce8fbae66a50b5d',1,'nlohmann::detail::internal_iterator']]],

@@ -520,7 +520,7 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:ga15fe38ceb2ccd81e932f662f2478b916"><td class="mdescLeft">&#160;</td><td class="mdescRight">Logging levels. <br /></td></tr>
 <tr class="separator:ga15fe38ceb2ccd81e932f662f2478b916"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaeee8bcbe103bf0781875c819f5166c46"><td class="memItemLeft" align="right" valign="top"><a id="gaeee8bcbe103bf0781875c819f5166c46"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>BusType</b> { <br />
+<tr class="memitem:gaeee8bcbe103bf0781875c819f5166c46"><td class="memItemLeft" align="right" valign="top"><a id="gaeee8bcbe103bf0781875c819f5166c46"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a> { <br />
 &#160;&#160;<b>SL</b>, 
 <b>PQ</b>, 
 <b>PV</b>, 
@@ -529,8 +529,9 @@ Enumerations</h2></td></tr>
 &#160;&#160;<b>BAD</b>
 <br />
  }</td></tr>
+<tr class="memdesc:gaeee8bcbe103bf0781875c819f5166c46"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bus control type for PowerFlow problems. <br /></td></tr>
 <tr class="separator:gaeee8bcbe103bf0781875c819f5166c46"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9995c7b16c14b177680f5c21cdde3702"><td class="memItemLeft" align="right" valign="top"><a id="ga9995c7b16c14b177680f5c21cdde3702"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>Phase</b> : std::uint8_t { <br />
+<tr class="memitem:ga9995c7b16c14b177680f5c21cdde3702"><td class="memItemLeft" align="right" valign="top"><a id="ga9995c7b16c14b177680f5c21cdde3702"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a> : std::uint8_t { <br />
 &#160;&#160;<b>BAL</b>, 
 <b>A</b>, 
 <b>B</b>, 
@@ -552,6 +553,7 @@ Enumerations</h2></td></tr>
 <b>BAD</b>
 <br />
  }</td></tr>
+<tr class="memdesc:ga9995c7b16c14b177680f5c21cdde3702"><td class="mdescLeft">&#160;</td><td class="mdescRight">Electrical phase. <br /></td></tr>
 <tr class="separator:ga9995c7b16c14b177680f5c21cdde3702"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a548b04b11988c18a98c3b7bb2ce95879"><td class="memItemLeft" align="right" valign="top"><a id="a548b04b11988c18a98c3b7bb2ce95879"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>TransformerType</b> { <br />
 &#160;&#160;<b>DD</b>, 
@@ -765,18 +767,18 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:ae380a04a12b804b1c87e44ceb8c345c3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><b>registerParserPlugins</b> (<a class="el" href="class_sgt_1_1_parser.html">Parser</a>&lt; T &gt; &amp;parser)</td></tr>
 <tr class="separator:ae380a04a12b804b1c87e44ceb8c345c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5e9213e7bc423487323dfe90ad1cb65"><td class="memItemLeft" align="right" valign="top"><a id="aa5e9213e7bc423487323dfe90ad1cb65"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (BusType type)</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (<a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a> type)</td></tr>
 <tr class="separator:aa5e9213e7bc423487323dfe90ad1cb65"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac5ee2eac12062acf341b3ce03017ffc1"><td class="memTemplParams" colspan="2"><a id="ac5ee2eac12062acf341b3ce03017ffc1"></a>
 template&lt;&gt; </td></tr>
-<tr class="memitem:ac5ee2eac12062acf341b3ce03017ffc1"><td class="memTemplItemLeft" align="right" valign="top">BusType&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; BusType &gt;</b> (const std::string &amp;str)</td></tr>
+<tr class="memitem:ac5ee2eac12062acf341b3ce03017ffc1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; BusType &gt;</b> (const std::string &amp;str)</td></tr>
 <tr class="separator:ac5ee2eac12062acf341b3ce03017ffc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0c761edf9f23251c8f62cd89c978dc4"><td class="memItemLeft" align="right" valign="top"><a id="ac0c761edf9f23251c8f62cd89c978dc4"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (Phase phase)</td></tr>
+std::string&#160;</td><td class="memItemRight" valign="bottom"><b>to_string</b> (<a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a> phase)</td></tr>
 <tr class="separator:ac0c761edf9f23251c8f62cd89c978dc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af832517485050a7e98e67c5f2ddb76d1"><td class="memTemplParams" colspan="2"><a id="af832517485050a7e98e67c5f2ddb76d1"></a>
 template&lt;&gt; </td></tr>
-<tr class="memitem:af832517485050a7e98e67c5f2ddb76d1"><td class="memTemplItemLeft" align="right" valign="top">Phase&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; Phase &gt;</b> (const std::string &amp;str)</td></tr>
+<tr class="memitem:af832517485050a7e98e67c5f2ddb76d1"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><b>from_string&lt; Phase &gt;</b> (const std::string &amp;str)</td></tr>
 <tr class="separator:af832517485050a7e98e67c5f2ddb76d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3af2de077bcbc34099e3ec98b264c2f2"><td class="memItemLeft" align="right" valign="top"><a id="a3af2de077bcbc34099e3ec98b264c2f2"></a>
 template <a class="el" href="classarma_1_1_col.html">Col</a>&lt; double &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mapPhases&lt; Col&lt; double &gt; &gt;</b> (const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; double &gt; &amp;srcVals, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;srcPhases, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;dstPhases)</td></tr>
@@ -796,10 +798,10 @@ template arma::Mat&lt; double &gt; &amp;&#160;</td><td class="memItemRight" vali
 <tr class="memitem:ace5f5853d6b4df751b8a989c133dcffe"><td class="memItemLeft" align="right" valign="top"><a id="ace5f5853d6b4df751b8a989c133dcffe"></a>
 template arma::Mat&lt; Complex &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>makeUpper&lt; Complex &gt;</b> (arma::Mat&lt; Complex &gt; &amp;m)</td></tr>
 <tr class="separator:ace5f5853d6b4df751b8a989c133dcffe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memItemLeft" align="right" valign="top"><a id="a6036a4b3287f5e99e0c5fa411a75ebb6"></a>
-<a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a6036a4b3287f5e99e0c5fa411a75ebb6">toDelta</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt; V)</td></tr>
-<tr class="memdesc:a6036a4b3287f5e99e0c5fa411a75ebb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages. <br /></td></tr>
-<tr class="separator:a6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="classarma_1_1_col.html">Col</a>&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga6036a4b3287f5e99e0c5fa411a75ebb6">toDelta</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; Complex &gt; V)</td></tr>
+<tr class="memdesc:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a set of phase-ground (wye) voltages to phase-phase (delta) voltages. <br /></td></tr>
+<tr class="separator:ga6036a4b3287f5e99e0c5fa411a75ebb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad575397b58aeb44b6cd8d0c58b72a8fd"><td class="memItemLeft" align="right" valign="top"><a id="ad575397b58aeb44b6cd8d0c58b72a8fd"></a>
 Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>carson</b> (uword nWire, const Mat&lt; double &gt; &amp;Dij, const <a class="el" href="classarma_1_1_col.html">Col</a>&lt; double &gt; resPerL, double L, double freq, double rhoEarth)</td></tr>
 <tr class="separator:ad575397b58aeb44b6cd8d0c58b72a8fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -836,26 +838,26 @@ Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>toSca
 <tr class="memitem:a9909c83bad7e1a42a637d0cfd70a3ee5"><td class="memItemLeft" align="right" valign="top"><a id="a9909c83bad7e1a42a637d0cfd70a3ee5"></a>
 Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>fromScaledSequence</b> (const Mat&lt; Complex &gt; &amp;M)</td></tr>
 <tr class="separator:a9909c83bad7e1a42a637d0cfd70a3ee5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea5347263e23e19c3e8eb24de8498c49"><td class="memItemLeft" align="right" valign="top">Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#aea5347263e23e19c3e8eb24de8498c49">approxPhaseImpedanceMatrix</a> (Complex ZPlus, Complex Z0)</td></tr>
-<tr class="memdesc:aea5347263e23e19c3e8eb24de8498c49"><td class="mdescLeft">&#160;</td><td class="mdescRight">approximate the phase impedance matrix from Z+ and Z0  <a href="#aea5347263e23e19c3e8eb24de8498c49">More...</a><br /></td></tr>
-<tr class="separator:aea5347263e23e19c3e8eb24de8498c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaea5347263e23e19c3e8eb24de8498c49"><td class="memItemLeft" align="right" valign="top">Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49">approxPhaseImpedanceMatrix</a> (Complex ZPlus, Complex Z0)</td></tr>
+<tr class="memdesc:gaea5347263e23e19c3e8eb24de8498c49"><td class="mdescLeft">&#160;</td><td class="mdescRight">approximate the phase impedance matrix from Z+ and Z0  <a href="group___power_flow_core.html#gaea5347263e23e19c3e8eb24de8498c49">More...</a><br /></td></tr>
+<tr class="separator:gaea5347263e23e19c3e8eb24de8498c49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a51635cd3d3c19bd3ed35a5c2cf77dfcf"><td class="memItemLeft" align="right" valign="top"><a id="a51635cd3d3c19bd3ed35a5c2cf77dfcf"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, BusType t)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, <a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a> t)</td></tr>
 <tr class="separator:a51635cd3d3c19bd3ed35a5c2cf77dfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adefa107a9761710fba8b852e157cb15c"><td class="memItemLeft" align="right" valign="top"><a id="adefa107a9761710fba8b852e157cb15c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (<a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, const BusType &amp;type)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (<a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, const <a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a> &amp;type)</td></tr>
 <tr class="separator:adefa107a9761710fba8b852e157cb15c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a78fcac9677c79123d525d5a88f1e78c5"><td class="memItemLeft" align="right" valign="top"><a id="a78fcac9677c79123d525d5a88f1e78c5"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const <a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, BusType &amp;type)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const <a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, <a class="el" href="group___power_flow_core.html#gaeee8bcbe103bf0781875c819f5166c46">BusType</a> &amp;type)</td></tr>
 <tr class="separator:a78fcac9677c79123d525d5a88f1e78c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf4fd7abce6e9f41b7bd9e157be895e9"><td class="memItemLeft" align="right" valign="top"><a id="adf4fd7abce6e9f41b7bd9e157be895e9"></a>
-std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, Phase p)</td></tr>
+std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, <a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a> p)</td></tr>
 <tr class="separator:adf4fd7abce6e9f41b7bd9e157be895e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5cbdbd4f45f84b33c9a3a1c294f9c00d"><td class="memItemLeft" align="right" valign="top"><a id="a5cbdbd4f45f84b33c9a3a1c294f9c00d"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (<a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, const Phase &amp;p)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>to_json</b> (<a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, const <a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a> &amp;p)</td></tr>
 <tr class="separator:a5cbdbd4f45f84b33c9a3a1c294f9c00d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2768949d4c441d3874f13bf6ef8f8a45"><td class="memItemLeft" align="right" valign="top"><a id="a2768949d4c441d3874f13bf6ef8f8a45"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const <a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, Phase &amp;p)</td></tr>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>from_json</b> (const <a class="el" href="classnlohmann_1_1basic__json.html">json</a> &amp;js, <a class="el" href="group___power_flow_core.html#ga9995c7b16c14b177680f5c21cdde3702">Phase</a> &amp;p)</td></tr>
 <tr class="separator:a2768949d4c441d3874f13bf6ef8f8a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a16d1e2f79288f7f323175483c097054d"><td class="memItemLeft" align="right" valign="top"><a id="a16d1e2f79288f7f323175483c097054d"></a>
 std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>operator&lt;&lt;</b> (std::ostream &amp;os, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;ps)</td></tr>
@@ -880,14 +882,36 @@ template arma::Mat&lt; double &gt;&#160;</td><td class="memItemRight" valign="bo
 <tr class="memitem:a4aa86d500c73ebd7fc67f8e3e2326306"><td class="memItemLeft" align="right" valign="top"><a id="a4aa86d500c73ebd7fc67f8e3e2326306"></a>
 template arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>mapPhases&lt; arma::Mat&lt; Complex &gt; &gt;</b> (const arma::Mat&lt; Complex &gt; &amp;srcVals, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;srcPhases, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;dstPhases)</td></tr>
 <tr class="separator:a4aa86d500c73ebd7fc67f8e3e2326306"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69530f02d63b9e8186c2fec33b01f466"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a69530f02d63b9e8186c2fec33b01f466"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#a69530f02d63b9e8186c2fec33b01f466">makeUpper</a> (arma::Mat&lt; T &gt; &amp;m)</td></tr>
-<tr class="memdesc:a69530f02d63b9e8186c2fec33b01f466"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move lower diagonal elements to upper.  <a href="#a69530f02d63b9e8186c2fec33b01f466">More...</a><br /></td></tr>
-<tr class="separator:a69530f02d63b9e8186c2fec33b01f466"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespace_sgt.html#ae068b77c1c5b5672460e3da8896dfa0f">mapPhasesToUpper</a> (const arma::Mat&lt; T &gt; &amp;srcVals, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;srcPhases, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;dstPhases)</td></tr>
-<tr class="memdesc:ae068b77c1c5b5672460e3da8896dfa0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map phases and move lower diagonal elements to upper.  <a href="#ae068b77c1c5b5672460e3da8896dfa0f">More...</a><br /></td></tr>
-<tr class="separator:ae068b77c1c5b5672460e3da8896dfa0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga69530f02d63b9e8186c2fec33b01f466"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga69530f02d63b9e8186c2fec33b01f466"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt; &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga69530f02d63b9e8186c2fec33b01f466">makeUpper</a> (arma::Mat&lt; T &gt; &amp;m)</td></tr>
+<tr class="memdesc:ga69530f02d63b9e8186c2fec33b01f466"><td class="mdescLeft">&#160;</td><td class="mdescRight">Move lower diagonal elements to upper.This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. <br /></td></tr>
+<tr class="separator:ga69530f02d63b9e8186c2fec33b01f466"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gae068b77c1c5b5672460e3da8896dfa0f">mapPhasesToUpper</a> (const arma::Mat&lt; T &gt; &amp;srcVals, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;srcPhases, const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;dstPhases)</td></tr>
+<tr class="memdesc:gae068b77c1c5b5672460e3da8896dfa0f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map phases and move lower diagonal elements to upper.This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. <br /></td></tr>
+<tr class="separator:gae068b77c1c5b5672460e3da8896dfa0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabeed96a5846caac6f2307fa3146bab53"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gabeed96a5846caac6f2307fa3146bab53"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gabeed96a5846caac6f2307fa3146bab53">deltaComponentsFromMat</a> (const arma::Mat&lt; T &gt; m)</td></tr>
+<tr class="memdesc:gabeed96a5846caac6f2307fa3146bab53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the delta components e.g. (01, 12, 20) from a load matrix. <br /></td></tr>
+<tr class="separator:gabeed96a5846caac6f2307fa3146bab53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#gace68b1b6ff26b0d7cf43c9a5b26db2f8">matFromDeltaComponents</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; v)</td></tr>
+<tr class="memdesc:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a load matrix from delta components. <br /></td></tr>
+<tr class="separator:gace68b1b6ff26b0d7cf43c9a5b26db2f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga2ab889339527dd26076bd3ee309ca2e4">wyeComponentsFromMat</a> (const arma::Mat&lt; T &gt; m)</td></tr>
+<tr class="memdesc:ga2ab889339527dd26076bd3ee309ca2e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Extract the wye components i.e. the main diagonal from a load matrix. <br /></td></tr>
+<tr class="separator:ga2ab889339527dd26076bd3ee309ca2e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga472379d2551e69cc8159d6005e2f00a2"><td class="memTemplParams" colspan="2">
+template&lt;typename T &gt; </td></tr>
+<tr class="memitem:ga472379d2551e69cc8159d6005e2f00a2"><td class="memTemplItemLeft" align="right" valign="top">arma::Mat&lt; T &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga472379d2551e69cc8159d6005e2f00a2">matFromWyeComponents</a> (const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; T &gt; v)</td></tr>
+<tr class="memdesc:ga472379d2551e69cc8159d6005e2f00a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a load matrix from wye components i.e. a diagonal matrix. <br /></td></tr>
+<tr class="separator:ga472379d2551e69cc8159d6005e2f00a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga97b7a2aca7dadd89405e34a308634f36"><td class="memItemLeft" align="right" valign="top">arma::Mat&lt; Complex &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___power_flow_core.html#ga97b7a2aca7dadd89405e34a308634f36">carson</a> (arma::uword nWire, const arma::Mat&lt; double &gt; &amp;Dij, const <a class="el" href="classarma_1_1_col.html">arma::Col</a>&lt; double &gt; resPerL, double L, double freq, double rhoEarth)</td></tr>
 <tr class="memdesc:ga97b7a2aca7dadd89405e34a308634f36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply Carson's equations.  <a href="group___power_flow_core.html#ga97b7a2aca7dadd89405e34a308634f36">More...</a><br /></td></tr>
 <tr class="separator:ga97b7a2aca7dadd89405e34a308634f36"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1091,107 +1115,6 @@ constexpr size_t&#160;</td><td class="memItemRight" valign="bottom"><b>gNPhase</
 <tr class="separator:abb794e573a80e7c13e8442462492fa9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="aea5347263e23e19c3e8eb24de8498c49"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aea5347263e23e19c3e8eb24de8498c49">&#9670;&nbsp;</a></span>approxPhaseImpedanceMatrix()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">arma::Mat&lt; Complex &gt; Sgt::approxPhaseImpedanceMatrix </td>
-          <td>(</td>
-          <td class="paramtype">Complex&#160;</td>
-          <td class="paramname"><em>ZPlus</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">Complex&#160;</td>
-          <td class="paramname"><em>Z0</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>approximate the phase impedance matrix from Z+ and Z0 </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ZPlus</td><td>Positive sequence impedance </td></tr>
-    <tr><td class="paramname">Z0</td><td>Zero sequence impedance </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The approximate phase impedance matrix.</dd></dl>
-<p>Uses the usual sequence components. Often, we only know the + and 0 sequence impedances, which can typically be derived by noting the phase to ground and three phase short circuit currents or powers at a node (e.g. at the HV side of a distribution substation. Assuming a symmetry between the phases (e.g. through transposition or symmetric arrangement of wires) leads to this approximate result for the phase impedance matrix. See Kersting, Distribution System Modelling and Analysis, Section 6.3. </p>
-
-</div>
-</div>
-<a id="a69530f02d63b9e8186c2fec33b01f466"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a69530f02d63b9e8186c2fec33b01f466">&#9670;&nbsp;</a></span>makeUpper()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">arma::Mat&lt;T&gt;&amp; Sgt::makeUpper </td>
-          <td>(</td>
-          <td class="paramtype">arma::Mat&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>m</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Move lower diagonal elements to upper. </p>
-<p>This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. </p>
-
-</div>
-</div>
-<a id="ae068b77c1c5b5672460e3da8896dfa0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae068b77c1c5b5672460e3da8896dfa0f">&#9670;&nbsp;</a></span>mapPhasesToUpper()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">arma::Mat&lt;T&gt; Sgt::mapPhasesToUpper </td>
-          <td>(</td>
-          <td class="paramtype">const arma::Mat&lt; T &gt; &amp;&#160;</td>
-          <td class="paramname"><em>srcVals</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;&#160;</td>
-          <td class="paramname"><em>srcPhases</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="class_sgt_1_1_phases.html">Phases</a> &amp;&#160;</td>
-          <td class="paramname"><em>dstPhases</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Map phases and move lower diagonal elements to upper. </p>
-<p>This is useful in making sure delta-type loads are correctly represented by an upper triangular matrix, as required by the load model. </p>
-
-</div>
-</div>
 <a id="a0472d823c024a896bc9682341f642953"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0472d823c024a896bc9682341f642953">&#9670;&nbsp;</a></span>solarPower()</h2>
 
