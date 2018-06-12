@@ -621,8 +621,8 @@ BOOST_AUTO_TEST_CASE (test_line_flows)
     p.parse("test_line_flows.yaml", netw);
     netw.solvePowerFlow();
 
-    Complex y{0.1, -0.1};
-    Complex s{0.1, 0.05};
+    const Complex y{0.1, -0.1};
+    const Complex s{0.1, 0.05};
 
     const auto& bus1 = *netw.buses()["bus_1"];
     const auto& bus2 = *netw.buses()["bus_2"];
@@ -630,20 +630,23 @@ BOOST_AUTO_TEST_CASE (test_line_flows)
 
     // Documentation says SBus is power out of bus, mapped to branch terms.
     // This means SGen = SBus[0] and SLoad = -SBus[1]
-    auto SGen = bus1.SGen();
-    Col<Complex> SLoad = bus2.SZip().diag();
-    auto SBus = branch.SBus();
 
-    BOOST_CHECK_SMALL(sum(abs(SGen - SBus[0])), 1e-9);
-    BOOST_CHECK_SMALL(sum(abs(SLoad + SBus[1])), 1e-9);
+    const Col<Complex> SGen = bus1.SGen();
+    const Col<Complex> SLoad = bus2.SZip().diag();
+    const Col<Complex> SBus0 = branch.SBus()[0];
+    const Col<Complex> SBus1 = branch.SBus()[1];
+    const Col<Complex> VBus0 = bus1.V();
+    const Col<Complex> VBus1 = bus2.V();
+    const Col<Complex> IBus0 = branch.IBus()[0];
+    const Col<Complex> IBus1 = branch.IBus()[1];
+    const Col<Complex> IV0 = conj(IBus0) % VBus0;
+    const Col<Complex> IV1 = conj(IBus1) % VBus1;
 
-    // Check currents are correct:
-    auto IBus = branch.IBus();
-    auto IV0 = conj(IBus[0]) % bus1.V();
-    auto IV1 = conj(IBus[1]) % bus2.V();
+    BOOST_CHECK_SMALL(sum(abs(SGen - SBus0)), 1e-9);
+    BOOST_CHECK_SMALL(sum(abs(SLoad + SBus1)), 1e-9);
 
-    BOOST_CHECK_SMALL(sum(abs(IV0 - SBus[0])), 1e-9);
-    BOOST_CHECK_SMALL(sum(abs(IV1 - SBus[1])), 1e-9);
+    BOOST_CHECK_SMALL(sum(abs(IV0 - SBus0)), 1e-9);
+    BOOST_CHECK_SMALL(sum(abs(IV1 - SBus1)), 1e-9);
 }
 
 BOOST_AUTO_TEST_CASE (test_vv_transformer)
