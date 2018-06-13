@@ -190,31 +190,43 @@ namespace Sgt
 #define SGT_LOG_INDENT0() Sgt::LogIndent SGT_UNIQUE_NAME(indent);
 
     /// @brief Log a message.
-    /// @ingroup LoggingAndErrors
     ///
-    /// E.g. sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
+    /// For example:
+    /// ~~~
+    /// sgtLogMessage(LogLevel::VERBOSE) << "this is a message: number = " << 5 << std::endl;
+    /// ~~~
     /// Parameter is optional and defaults to LogLevel::NORMAL
+    /// @ingroup LoggingAndErrors
 #define sgtLogMessage(...) SGT_VA_SELECT(SGT_LOG_MESSAGE, __VA_ARGS__)
 
     /// @brief Log a warning.
-    /// @ingroup LoggingAndErrors
     ///
-    /// E.g. sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
+    /// For example:
+    /// ~~~
+    /// sgtLogWarning(LogLevel::VERBOSE) << "this is a warning: number = " << 5 << std::endl;
+    /// ~~~
     /// Parameter is optional and defaults to LogLevel::NORMAL
+    /// @ingroup LoggingAndErrors
 #define sgtLogWarning(...) SGT_VA_SELECT(SGT_LOG_WARNING, __VA_ARGS__)
 
     /// @brief Log an error.
-    /// @ingroup LoggingAndErrors
     ///
-    /// E.g. sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
+    /// For example:
+    /// ~~~
+    /// sgtLogError(LogLevel::VERBOSE) << "this is an error: number = " << 5 << std::endl;
+    /// ~~~
     /// Parameter is optional and defaults to LogLevel::NORMAL
+    /// @ingroup LoggingAndErrors
 #define sgtLogError(...) SGT_VA_SELECT(SGT_LOG_ERROR, __VA_ARGS__)
 
     /// @brief Log a debug message.
-    /// @ingroup LoggingAndErrors
     ///
-    /// E.g. sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
+    /// For example:
+    /// ~~~
+    /// sgtLogDebug(LogLevel::VERBOSE) << "this is a debug message: number = " << 5 << std::endl;
+    /// ~~~
     /// Parameter is optional and defaults to LogLevel::NORMAL
+    /// @ingroup LoggingAndErrors
 #define sgtLogDebug(...) SGT_VA_SELECT(SGT_LOG_DEBUG, __VA_ARGS__)
 
     /// @brief Indent the logs.

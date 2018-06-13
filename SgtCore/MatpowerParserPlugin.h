@@ -21,6 +21,13 @@ namespace Sgt
 {
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// YAML schema for `matpower` keyword.
+    ///
+    /// The `matpower` keyword adds a network from a matpower file to a network.
+    /// @}
+
     /// @brief Parses the `matpower` keyword, reading a matpower file into the network.
     /// @ingroup NetworkParserPlugins
     class MatpowerParserPlugin : public NetworkParserPlugin
