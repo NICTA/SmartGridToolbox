@@ -895,7 +895,7 @@ We use the open delta model shown in \ref{FIG_OPEN_DELTA}. Note that the two mid
 	&= V_A\left(\frac{y_{LA}}{|n_A|^2}\right) + V_B\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_a\left(-\frac{y_{LA}}{n_A^*}\right) + V_b\left(\frac{y_{LA}}{n_A^*}\right) \notag \\
 	%
 	I_B &= y_\text{tie}(V_B - V_b) - I_A - I_C \notag \\
-	&= V_A\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_B \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) + V_C\left(-\frac{y_{C}}{|n_C|^2}\right) \notag \\
+	&= V_A\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_B \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) + V_C\left(-\frac{y_{LC}}{|n_C|^2}\right) \notag \\
 	&+ V_a\left(\frac{y_{LA}}{n_A^*}\right) + V_b\left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) + V_c\left(\frac{y_{LC}}{n_C^*}\right) \notag \\
 	%
 	I_C &= \frac{y_{LC}}{|n_C|^2}(V_C - V_B) - \frac{y_{LC}}{n_C^*}(V_c - V_b) \notag \\
@@ -917,7 +917,7 @@ Y &=
 \begin{bmatrix}
 	\frac{y_{LA}}{|n_A|^2} & -\frac{y_{LA}}{|n_A|^2} & 0 & -\frac{y_{LA}}{n_A^*} & \frac{y_{LA}}{n_A^*} & 0 \\
 	%
-	-\frac{y_{LA}}{|n_A|^2} & \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) & -\frac{y_{C}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & \left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & \frac{y_{LC}}{n_C^*} \\
+	-\frac{y_{LA}}{|n_A|^2} & \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & \left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & \frac{y_{LC}}{n_C^*} \\
 	%
 	0 & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LC}}{|n_C|^2} & 0 & \frac{y_{LC}}{n_C^*} &  -\frac{y_{LC}}{n_C^*} \\
 	%
