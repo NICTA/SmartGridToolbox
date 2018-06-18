@@ -21,6 +21,29 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `solar_pv` keyword.</b>
+    ///
+    /// The `solar_pv` keyword adds a new SolarPv Component to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// - solar_pv:
+    ///     id:                         <string>    # Component ID.
+    ///     inverter_id:                <string>    # ID of Inverter to which PV is attached.
+    ///     weather:                    <string>    # ID of Weather component.
+    ///     zenith_degrees:             <real>      # Zenith angle, degrees.
+    ///     azimuth_degrees:            <real>      # Azimuth angle, degrees.
+    ///     n_panels:                   <int>       # Number of panels.
+    ///     panel_area_m2:              <int>       # Area of each panel, m^2.
+    ///     irradiance_ref_W_per_m2:    <real>      # Reference (not actual) irradiance, W/m^2.
+    ///     T_cell_ref_C:               <real>      # Reference cell temperature, °C.
+    ///     P_max_ref_W:                <real>      # Reference MPPT power, W.
+    ///     temp_coeff_P_max_per_C:     <real>      # Temperature coefficient at max power, °C^-1.
+    ///     NOCT_C:                     <real>      # Normal Operating Cell Temperature, °C.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `solar_pv` keyword, adding a SolarPv to the simulation.
     /// @ingroup SimParserPlugins
     class SolarPvParserPlugin : public SimParserPlugin

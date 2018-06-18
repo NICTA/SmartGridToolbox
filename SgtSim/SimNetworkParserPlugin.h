@@ -22,6 +22,24 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `sim_network` keyword.</b>
+    ///
+    /// The `sim_network` keyword adds a new SimNetwork Component to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// - sim_network:
+    ///     id: <string> # Component ID.
+    ///     P_base: <real> # Base power, MW.
+    ///     freq_Hz: <real> # Nominal frequency in Hz.
+    ///     solver: <string> # Assigned network solver: currently "nr" (Newton-Raphson) or "opf_pt" (PowerTools OPF).
+    ///     network: <string> # Complete network specification, see below. 
+    /// ~~~
+    ///
+    /// Please see @ref NetworkYamlSpec for documentation about how to fill in the "network" keyword above.
+    /// @}
+
     /// @brief Parses the `sim_network` keyword, adding a SimNetwork to the simulation.
     /// @ingroup SimParserPlugins
     class SimNetworkParserPlugin : public SimParserPlugin

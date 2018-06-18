@@ -22,6 +22,32 @@ namespace Sgt
     class SimpleBuilding;
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `simple_building` keyword.</b>
+    ///
+    /// The `simple_building` keyword adds a new SimpleBuilding Component to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// - simple_building:
+    ///     id:                     <string>    # Component ID.
+    ///     bus_id:                 <string>    # ID of bus to which building is attached.
+    ///     zip_id:                 <string>    # ID of network ZIP corresponding to the building. Defaults to id.
+    ///     sim_network_id:         <string>    # ID of the SimNetwork.
+    ///     dt:                     <hh:mm:ss>  # Update frequency.
+    ///     kb:                     <real>      # Lumped thermal conductivity, W/K.
+    ///     cb:                     <real>      # Heat capacity of building, J/K
+    ///     Tb_init:                <real>      # Initial temperature of building.
+    ///     kh:                     <real>      # HVAC PID parameter, W/K.
+    ///     COP_cool:               <real>      # Coefficient of performance, cooling.
+    ///     COP_heat:               <real>      # Coefficient of performance, heating.
+    ///     P_max:                  <real>      # HVAC maximum power, W. 
+    ///     Ts:                     <real>      # Temperature setpoint, °C.
+    ///     internal_heat_power:    <string>    # ID of TimeSeries -> heat (W) gen. by occupants, appliances etc.
+    ///     weather:                <string>    # ID of weather component.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `simple_building` keyword, adding a SimpleBuilding to the simulation.
     /// @ingroup SimParserPlugins
     class SimpleBuildingParserPlugin : public SimParserPlugin
