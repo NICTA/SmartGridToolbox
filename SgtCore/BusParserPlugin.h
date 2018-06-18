@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `bus` keyword.
+    /// <b>YAML schema for `bus` keyword.</b>
     ///
     /// The `bus` keyword adds a new Bus to the Network.
     ///

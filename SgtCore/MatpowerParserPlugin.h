@@ -23,7 +23,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `matpower` keyword.
+    /// <b>YAML schema for `matpower` keyword.</b>
     ///
     /// The `matpower` keyword adds a network from a matpower file to a network.
     /// @}

@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `generic_branch` keyword.
+    /// <b>YAML schema for `generic_branch` keyword.</b>
     ///
     /// The `generic_branch` keyword adds a matpower-style GenericBranch to the Network.
     ///

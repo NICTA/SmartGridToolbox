@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `common_branch` keyword.
+    /// <b>YAML schema for `common_branch` keyword.</b>
     ///
     /// The `common_branch` keyword adds a new CommonBranch to the Network.
     ///

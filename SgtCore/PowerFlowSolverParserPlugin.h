@@ -23,7 +23,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `power_flow_solver` keyword.
+    /// <b>YAML schema for `power_flow_solver` keyword.</b>
     ///
     /// The `power_flow_solver` keyword sets the solver for a Network.
     ///

@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `overhead_line` keyword.
+    /// <b>YAML schema for `overhead_line` keyword.</b>
     ///
     /// The `overhead_line` keyword adds an OverheadLine to the Network.
     ///

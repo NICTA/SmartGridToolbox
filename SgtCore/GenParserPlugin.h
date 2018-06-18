@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `gen` keyword.
+    /// <b>YAML schema for `gen` keyword.</b>
     ///
     /// The `gen` keyword adds a new Gen to the Network.
     ///

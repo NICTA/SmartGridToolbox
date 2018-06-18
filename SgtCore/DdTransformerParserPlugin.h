@@ -24,7 +24,7 @@ namespace Sgt
 
     /// @addtogroup NetworkYamlSpec
     /// @{
-    /// YAML schema for `dd_transformer` keyword.
+    /// <b>YAML schema for `dd_transformer` keyword.</b>
     ///
     /// The `dd_transformer` keyword adds a new DdTransformer to the Network.
     ///
