@@ -21,6 +21,26 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `inverter` keyword.</b>
+    ///
+    /// The `inverter` keyword adds an Inverter Component to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - inverter:
+    ///     id:                     <string>    # Component ID.
+    ///     sim_network_id:         <string>    # SimNetwork to which inverter belongs.
+    ///     bus_id:                 <string>    # Bus to which inverter is attached.
+    ///     phases:                 <phases>    # Bus Phases, e.g. [A, B, C] to which power is produced.
+    ///     is_delta:               <bool>      # If true, use a Delta connection.
+    ///     efficiency_dc_to_ac:    <real>      # Efficiency when injecting grid power.
+    ///     efficiency_ac_to_dc:    <real>      # Efficiency when consuming grid power.
+    ///     max_S_mag:              <real>      # Max apparent power |S|, MVA.
+    ///     requested_Q:            <real>      # Requested reactive power, MVAr. May curtail for max_S_mag. 
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `inverter` keyword, adding an Inverter to the simulation.
     /// @ingroup SimParserPlugins
     class InverterParserPlugin : public SimParserPlugin

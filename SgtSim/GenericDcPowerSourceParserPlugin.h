@@ -21,6 +21,20 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `generic_dc_power_source` keyword.</b>
+    ///
+    /// The `generic_dc_power_source` keyword adds a GenericDcPowerSource Component to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - generic_dc_power_source:
+    ///     id:                     <string>    # Component ID.
+    ///     inverter_id:            <string>    # Inverter to which battery is connected.
+    ///     dc_power:               <real>      # DC power of component.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `generic_dc_power_source` keyword, adding a GenericDcPowerSource to the simulation.
     /// @ingroup SimParserPlugins
     class GenericDcPowerSourceParserPlugin : public SimParserPlugin

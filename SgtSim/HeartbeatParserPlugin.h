@@ -21,6 +21,20 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `heartbeat` keyword.</b>
+    ///
+    /// The `heartbeat` keyword adds a Heartbeat Component to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - heartbeat:
+    ///     id:                     <string>                    # Component ID.
+    ///     dt:                     <hh:mm:ss>                  # Component will update every dt.
+    ///     slaves:                 [<string>, <string>, ...]   # Optional Components to update when I update.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `heartbeat` keyword, adding a Heartbeat to the simulation.
     /// @ingroup SimParserPlugins
     class HeartbeatParserPlugin : public SimParserPlugin

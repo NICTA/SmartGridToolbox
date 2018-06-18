@@ -22,6 +22,21 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `simulation` keyword.</b>
+    ///
+    /// The `simulation` keyword parser global simulation related parameters.
+    ///
+    /// ~~~{.yaml}
+    /// - simulation:
+    ///     start_time: <yyyy-mm-dd hh:mm:ss>   # Local start time of simulation.
+    ///     end_time:   <yyyy-mm-dd hh:mm:ss>   # Local end time of simulation.
+    ///     timezone:   <string>                # Timezone spec, e.g. AEST10AEDT,M10.1.0,M4.1.0/03:00:00
+    ///     lat_long:   [<real>, <real>]        # Latitude and longitude, degrees.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `simulation` keyword, setting global information for the simulation.
     /// @ingroup SimParserPlugins
     class SimGlobalParserPlugin : public SimParserPlugin
