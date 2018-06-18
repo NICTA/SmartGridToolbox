@@ -26,7 +26,7 @@ namespace Sgt
     /// @{
     /// <b>YAML schema for `simulation` keyword.</b>
     ///
-    /// The `simulation` keyword parser global simulation related parameters.
+    /// The `simulation` keyword parses global simulation related parameters.
     ///
     /// ~~~{.yaml}
     /// - simulation:

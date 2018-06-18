@@ -26,6 +26,18 @@ namespace Sgt
     /// <b>YAML schema for `matpower` keyword.</b>
     ///
     /// The `matpower` keyword adds a network from a matpower file to a network.
+    ///
+    /// ~~~{.yaml}
+    /// - matpower:
+    ///     default_kV_base:    <real>                      # Base voltage, kV, when none is given in matpower network.
+    ///     # EITHER
+    ///     input_file:         <string>                    # Name of matpower filename,
+    ///     # OR
+    ///     embedded_input:     <string>                    # Actual matpower input, use a YAML block/folded style.
+    ///     scale_V_by:         <real>                      # Scaling factor for voltages.
+    ///     scale_P_by:         <real>                      # Scaling factor for powers.
+    ///     bus_names:          [<string>, <string>, ...]   # IDs for created buses, in matpower order.
+    /// ~~~
     /// @}
 
     /// @brief Parses the `matpower` keyword, reading a matpower file into the network.

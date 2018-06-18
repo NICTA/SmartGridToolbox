@@ -21,6 +21,21 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `matpower` keyword.</b>
+    ///
+    /// The `matpower` keyword reads a matpower (.m) file and creates a SimNetwork.
+    ///
+    /// ~~~{.yaml}
+    /// - matpower:
+    ///     sim_network_id: <string>    # ID of the SimNetwork Component into which to parser matpower data.
+    ///     # Other parameters as per the matpower keyword for network parsers (see below).
+    /// ~~~
+    ///
+    /// Please see @ref NetworkYamlSpec (`matpower` keyword) for additional keywords.
+    /// @}
+
     /// @brief Parses the `matpower` keyword, adding a SimNetwork based on a matpower file to the simulation.
     /// @ingroup SimParserPlugins
     class SimMatpowerParserPlugin : public SimParserPlugin
