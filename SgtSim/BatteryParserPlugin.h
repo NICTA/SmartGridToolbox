@@ -21,6 +21,27 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `battery` keyword.</b>
+    ///
+    /// The `battery` keyword adds a Battery Component to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - battery:
+    ///     id:                     <string>    # Component ID.
+    ///     inverter_id:            <string>    # Inverter to which battery is connected.
+    ///     dt:                     <hh:mm:ss>  # Component will update every dt. 
+    ///     init_soc:               <real>      # Initial state of charge, MWh.
+    ///     max_soc:                <real>      # Maximum state of charge, MWh.
+    ///     max_charge_power:       <real>      # Maximum charging power, MW.
+    ///     max_discharge_power:    <real>      # Maximum discharge power, MW.
+    ///     charge_efficiency:      <real>      # Charging efficiency; d/dt SOC = P_chg * eff.
+    ///     discharge_efficiency:   <real>      # Discharge efficiency; d/dt SOC = -P_dis / eff.
+    ///     requested_power:        <real>      # Requested output DC power for battery, MW.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `battery` keyword, adding a Battery to the simulation.
     /// @ingroup SimParserPlugins
     class BatteryParserPlugin : public SimParserPlugin

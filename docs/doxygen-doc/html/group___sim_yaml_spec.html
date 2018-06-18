@@ -66,7 +66,9 @@ $(function() {
 <div class="title">YAML specification for Simulations<div class="ingroups"><a class="el" href="group___foundation.html">Foundation</a> &raquo; <a class="el" href="group___parsing.html">Parsing</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
-</div><!-- contents -->
+<p><b>YAML schema for <code>battery</code> keyword.</b></p>
+<p>The <code>battery</code> keyword adds a <a class="el" href="class_sgt_1_1_battery.html" title="Basic battery class, deriving from DCPowerSourceBase. ">Battery</a> <a class="el" href="class_sgt_1_1_component.html" title="Base class for all Components. ">Component</a> to the <a class="el" href="class_sgt_1_1_network.html" title="Network component, describing an electricity network. ">Network</a>.</p>
+<div class="fragment"><div class="line">- battery:</div><div class="line">    id:                     &lt;string&gt;    # Component ID.</div><div class="line">    inverter_id:            &lt;string&gt;    # Inverter to which battery is connected.</div><div class="line">    dt:                     &lt;hh:mm:ss&gt;  # Component will update every dt. </div><div class="line">    init_soc:               &lt;real&gt;      # Initial state of charge, MWh.</div><div class="line">    max_soc:                &lt;real&gt;      # Maximum state of charge, MWh.</div><div class="line">    max_charge_power:       &lt;real&gt;      # Maximum charging power, MW.</div><div class="line">    max_discharge_power:    &lt;real&gt;      # Maximum discharge power, MW.</div><div class="line">    charge_efficiency:      &lt;real&gt;      # Charging efficiency; d/dt SOC = P_chg * eff.</div><div class="line">    discharge_efficiency:   &lt;real&gt;      # Discharge efficiency; d/dt SOC = -P_dis / eff.</div><div class="line">    requested_power:        &lt;real&gt;      # Requested output DC power for battery, MW.</div></div><!-- fragment --> </div><!-- contents -->
 <!-- HTML footer for doxygen 1.8.14-->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
