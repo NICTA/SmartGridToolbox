@@ -1,6 +1,6 @@
 <map id="Sgt::TransformerAbc" name="Sgt::TransformerAbc">
 <area shape="rect" id="node6" href="$class_sgt_1_1_dd_transformer.html" title="Delta&#45;Delta transformer. " alt="" coords="789,5,927,31"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="786,55,930,80"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_dgy_transformer.html" title="Single phase transformer with delta connection on one side and grounded wye on the other side..." alt="" coords="786,55,930,80"/>
 <area shape="rect" id="node8" href="$class_sgt_1_1_single_phase_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="748,104,968,129"/>
 <area shape="rect" id="node9" href="$class_sgt_1_1_single_phase_transformer.html" title="Single phase transformer. " alt="" coords="760,153,956,179"/>
 <area shape="rect" id="node10" href="$class_sgt_1_1_vv_transformer.html" title="V&#45;V / open Delta &#45; open Delta transformer. " alt="" coords="790,203,926,228"/>

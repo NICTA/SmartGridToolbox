@@ -19,7 +19,7 @@
 
 namespace Sgt
 {
-    /// @brief Delta-grounded wye transformer.
+    /// @brief Single phase transformer with delta connection on one side and grounded wye on the other side.
     /// @ingroup PowerFlowCore
     class DgyTransformer : public TransformerAbc
     {
