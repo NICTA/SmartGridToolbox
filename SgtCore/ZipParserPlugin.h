@@ -22,6 +22,23 @@ namespace Sgt
     class Network;
     class Zip;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `zip` keyword.</b>
+    ///
+    /// The `zip` keyword adds a new Zip to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - zip:
+    ///     id:         <string>        # Unique id of component.
+    ///     bus_id:     <string>        # Bus ID.
+    ///     phases:     <phases>        # Connection phases at bus e.g. [A, B, C]
+    ///     Y_const:    <complex_mat>   # Upper triangular matrix of constant Y ZIP components.
+    ///     I_const:    <complex_mat>   # Upper triangular matrix of constant I ZIP components.
+    ///     S_const:    <complex_mat>   # Upper triangular matrix of constant S ZIP components.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `zip` keyword, adding a Zip to the network.
     /// @ingroup NetworkParserPlugins
     class ZipParserPlugin : public NetworkParserPlugin

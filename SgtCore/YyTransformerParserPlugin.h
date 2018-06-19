@@ -22,6 +22,26 @@ namespace Sgt
     class YyTransformer;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `yy_transformer` keyword.</b>
+    ///
+    /// The `yy_transformer` keyword adds a new YyTransformer to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - yy_transformer:
+    ///     id:                     <string>    # Unique id of component.
+    ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>    # ID of bus 0 of the branch.
+    ///     phases_0:               <string>    # Phases of connection to bus_0.
+    ///     phases_1:               <string>    # Phases of connection to bus_1.
+    ///     complex_turns_ratio_01: <complex>   # Turns ratio, side 0 / side 1.
+    ///     off_nom_ratio_DY:       <complex>   # Off-nominal voltage ratio, Delta (prim.) / Y (sec.).
+    ///     leakage_impedance:      <complex>   # Leakage impedance parameter.
+    ///     magnetising_admittance: <complex>   # Magnetising admittance parameter.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `yy_transformer` keyword, adding a YyTransformer to the network.
     /// @ingroup NetworkParserPlugins
     class YyTransformerParserPlugin : public NetworkParserPlugin

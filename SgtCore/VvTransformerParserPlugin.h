@@ -22,6 +22,32 @@ namespace Sgt
     class VvTransformer;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `vv_transformer` keyword.</b>
+    ///
+    /// The `vv_transformer` keyword adds a new (open-delta) VvTransformer to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - vv_transformer:
+    ///     id:                     <string>    # Unique id of component.
+    ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>    # ID of bus 0 of the branch.
+    ///     phases_0:               <string>    # Phases of connection to bus_0.
+    ///     phases_1:               <string>    # Phases of connection to bus_1.
+    ///     nom_ratio_w1:           <complex>   # Nominal voltage ratio, first winding pair.
+    ///     nom_ratio_w2:           <complex>   # Nominal voltage ratio, second winding pair.
+    ///     off_nom_ratio_w1:       <complex>   # Off-nominal voltage ratio, first winding pair.
+    ///     off_nom_ratio_w2:       <complex>   # Off-nominal voltage ratio, second winding pair.
+    ///     leakage_impedance_w1:   <complex>   # Leakage impedance parameter, first winding pair.
+    ///     leakage_impedance_w2:   <complex>   # Leakage impedance parameter, second winding pair.
+    ///     # Either option 1:
+    ///     tie_admittance:         <complex>   # Admittance tying middle phases together.
+    ///     # Or option 2:
+    ///     ground_admittance:      <complex>   # Admittance tying middle phase of secondary to ground.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `vv_transformer` keyword, adding a VvTransformer to the network.
     /// @ingroup NetworkParserPlugins
     class VvTransformerParserPlugin : public NetworkParserPlugin
