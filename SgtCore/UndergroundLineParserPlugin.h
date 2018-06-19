@@ -26,7 +26,7 @@ namespace Sgt
     /// @{
     /// <b>YAML schema for `underground_line` keyword.</b>
     ///
-    /// The `underground_line` keyword adds a new Bus to the Network.
+    /// The `underground_line` keyword adds a new UndergroundLine to the Network.
     ///
     /// ~~~{.yaml}
     /// - underground_line:

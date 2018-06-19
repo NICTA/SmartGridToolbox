@@ -26,7 +26,7 @@ namespace Sgt
     /// @{
     /// <b>YAML schema for `dgy_transformer` keyword.</b>
     ///
-    /// The `dgy_transformer` keyword adds a new DdTransformer to the Network.
+    /// The `dgy_transformer` keyword adds a new DgyTransformer to the Network.
     ///
     /// ~~~{.yaml}
     /// - dgy_transformer:

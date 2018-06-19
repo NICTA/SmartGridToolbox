@@ -26,7 +26,7 @@ namespace Sgt
     /// @{
     /// <b>YAML schema for `single_phase_transformer` keyword.</b>
     ///
-    /// The `single_phase_transformer` keyword adds a new SinglePhaseDgyTransformer to the Network.
+    /// The `single_phase_transformer` keyword adds a new SinglePhaseTransformer to the Network.
     ///
     /// ~~~{.yaml}
     /// - single_phase_transformer:
