@@ -22,6 +22,38 @@ namespace Sgt
     class Network;
     class UndergroundLine;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `underground_line` keyword.</b>
+    ///
+    /// The `underground_line` keyword adds a new Bus to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - underground_line:
+    ///     id:                     <string>        # Unique id of component.
+    ///     bus_0_id:               <string>        # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>        # ID of bus 0 of the branch.
+    ///     phases_0:               <string>        # Phases of connection to bus_0.
+    ///     phases_1:               <string>        # Phases of connection to bus_1.
+    ///     length:                 <real>          # Line length, m.
+    ///     has_neutral:            <bool>          # Is there a neutral wire?
+    ///     shielding_type:         <string>        # "concentric_stranded" or "tape".
+    ///     distance_matrix:        <real_matrix>   # Distance between wires.
+    ///     gmr_phase:              <real>          # GMR of the phase wires.
+    ///     gmr_neutral:            <real>          # GMR of the neutral wire (if present).
+    ///     R_per_L_phase:          <real>          # Resistance per unit length, Ohms / m.
+    ///     freq:                   <real>          # Nominal network frequency.
+    ///     earth_resistivity:      <real>          # Earth resistivity. 
+    ///     gmr_conc_strand:        <real>          # GMR of strands if concentric_stranded.
+    ///     R_per_L_conc_strand:    <real>          # GMR of strands if concentric_stranded.
+    ///     n_conc_strands:         <int>           # Number of strands if concentric_stranded.
+    ///     radius_conc:            <int>           # Concentric radius if concentric_stranded.
+    ///     outside_radius_shield:  <real>          # Outside radius if tape shielded.
+    ///     thickness_shield:       <real>          # Shielding thickness if tape shielded.
+    ///     resistivity_shield:     <real>          # Shielding resistivity if tape shielded.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `underground_line` keyword, adding an UndergroundLine to the network.
     /// @ingroup NetworkParserPlugins
     class UndergroundLineParserPlugin : public NetworkParserPlugin

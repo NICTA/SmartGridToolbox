@@ -22,6 +22,25 @@ namespace Sgt
     class SinglePhaseDgyTransformer;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `single_phase_dgy_transformer` keyword.</b>
+    ///
+    /// The `single_phase_dgy_transformer` keyword adds a new SinglePhaseDgyTransformer to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - single_phase_dgy_transformer:
+    ///     id:                     <string>    # Unique id of component.
+    ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>    # ID of bus 0 of the branch.
+    ///     phases_0:               <phases>    # Phases of connection to bus_0, must be size 2, e.g. [A, B].
+    ///     phase_1:                <phase>     # Phase of connection to bus_1, e.g. A.
+    ///     nom_V_ratio_DY:         <complex>   # Nominal voltage ratio, Delta (prim.) / Y (sec.).
+    ///     off_nom_ratio_DY:       <complex>   # Off-nominal voltage ratio, Delta (prim.) / Y (sec.).
+    ///     leakage_impedance:      <complex>   # Leakage impedance parameter.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `single_phase_dgy_transformer` keyword, adding a SinglePhaseDgyTransformer to the network.
     /// @ingroup NetworkParserPlugins
     class SinglePhaseDgyTransformerParserPlugin : public NetworkParserPlugin

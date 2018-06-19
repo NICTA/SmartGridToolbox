@@ -22,6 +22,25 @@ namespace Sgt
     class DgyTransformer;
     class Network;
 
+    /// @addtogroup NetworkYamlSpec
+    /// @{
+    /// <b>YAML schema for `dgy_transformer` keyword.</b>
+    ///
+    /// The `dgy_transformer` keyword adds a new DdTransformer to the Network.
+    ///
+    /// ~~~{.yaml}
+    /// - dgy_transformer:
+    ///     id:                     <string>    # Unique id of component.
+    ///     bus_0_id:               <string>    # ID of bus 0 of the branch.
+    ///     bus_1_id:               <string>    # ID of bus 0 of the branch.
+    ///     phases_0:               <string>    # Phases of connection to bus_0.
+    ///     phases_1:               <string>    # Phases of connection to bus_1.
+    ///     nom_V_ratio_DY:         <complex>   # Nominal voltage ratio, Delta (prim.) / Y (sec.).
+    ///     off_nom_ratio_DY:       <complex>   # Off-nominal voltage ratio, Delta (prim.) / Y (sec.).
+    ///     leakage_impedance:      <complex>   # Leakage impedance parameter.
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `dgy_transformer` keyword, adding a DgyTransformer to the network.
     /// @ingroup NetworkParserPlugins
     class DgyTransformerParserPlugin : public NetworkParserPlugin
