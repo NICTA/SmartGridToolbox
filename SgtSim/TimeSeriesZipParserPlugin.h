@@ -21,6 +21,17 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `time_series_zip` keyword.</b>
+    ///
+    /// The `time_series_zip` keyword adds a TimeSeriesZip to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// # TODO
+    /// ~~~
+    /// @}
+
     /// @brief Parses the time_series_zip keyword, adding a TimeSeriesZip to a simulation.
     /// @ingroup SimParserPlugins
     class TimeSeriesZipParserPlugin : public SimParserPlugin

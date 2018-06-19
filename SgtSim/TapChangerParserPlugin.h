@@ -21,6 +21,17 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `tap_changer` keyword.</b>
+    ///
+    /// The `tap_changer` keyword adds a TapChanger to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// # TODO
+    /// ~~~
+    /// @}
+
     /// @brief Parses the `tap_changer` keyword, adding a TapChanger to the simulation.
     /// @ingroup SimParserPlugins
     class TapChangerParserPlugin : public SimParserPlugin

@@ -21,6 +21,17 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `weather` keyword.</b>
+    ///
+    /// The `weather` keyword adds a Weather Component to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// # TODO
+    /// ~~~
+    /// @}
+
     /// @brief Parses the weather keyword, adding a Weather component to the simulation.
     /// @ingroup SimParserPlugins
     class WeatherParserPlugin : public SimParserPlugin

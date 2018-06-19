@@ -21,6 +21,17 @@ namespace Sgt
 {
     class Simulation;
 
+    /// @addtogroup SimYamlSpec
+    /// @{
+    /// <b>YAML schema for `time_series_dc_power_source` keyword.</b>
+    ///
+    /// The `time_series_dc_power_source` keyword adds a TimeSeriesDcPowerSource to the Simulation.
+    ///
+    /// ~~~{.yaml}
+    /// # TODO
+    /// ~~~
+    /// @}
+
     /// @brief Parses the time_series_dc_power_source keyword, adding a TimeSeriesDcPowerSource to the simulation.
     /// @ingroup SimParserPlugins
     class TimeSeriesDcPowerSourceParserPlugin : public SimParserPlugin
