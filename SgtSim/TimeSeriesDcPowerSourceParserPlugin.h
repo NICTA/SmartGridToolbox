@@ -28,7 +28,12 @@ namespace Sgt
     /// The `time_series_dc_power_source` keyword adds a TimeSeriesDcPowerSource to the Simulation.
     ///
     /// ~~~{.yaml}
-    /// # TODO
+    /// - time_series_dc_power_source:
+    ///     id:                     <string>        # Component ID.
+    ///     time_series_id:         <string>        # My time series.
+    ///     inverter_id:            <string>        # My inverter.
+    ///     dt:                     <hh:mm:ss>      # Update frequency.
+    ///     scaleFactor:            <real>          # Multiplier for time series to give DC power.
     /// ~~~
     /// @}
 

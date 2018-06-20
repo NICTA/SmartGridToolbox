@@ -28,7 +28,31 @@ namespace Sgt
     /// The `weather` keyword adds a Weather Component to the Simulation.
     ///
     /// ~~~{.yaml}
-    /// # TODO
+    /// - weather:
+    ///     id:                     <string>        # Component ID.
+    ///     dt:                     <hh:mm:ss>      # Update frequency.
+    ///     temperature:
+    ///         # Either:
+    ///         const:              <real>          # Temp in °C.
+    ///         # Or:
+    ///         series:             <string>        # Time series ID, temp in °C.
+    ///     irradiance:
+    ///         # Either:
+    ///         const:              <real_vec[5]>   # Three direct comps, sky diffuse, ground diffuse.
+    ///         # Or:
+    ///         series:             <string>        # Time series ID for irradiance components.
+    ///         # Or:
+    ///         solar_model:        <string>        # Calculate based on solar angles for latlong and date. 
+    ///     cloud_attenuation_factors:
+    ///         # Either:
+    ///         const:              <real_vec[3]>   # Attenuation factors for direct/sky diffuse/ground diffuse.
+    ///         # Or:
+    ///         series:             <string>        # Time series ID for attenuation factors.
+    ///     wind:
+    ///         # Either:
+    ///         const:              <real_vec[3]>   # Wind speed.
+    ///         # Or:
+    ///         series:             <string>        # Time series ID for wind speed.
     /// ~~~
     /// @}
 

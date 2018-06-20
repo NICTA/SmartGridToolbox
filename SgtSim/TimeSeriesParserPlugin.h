@@ -29,7 +29,19 @@ namespace Sgt
     /// The `time_series` keyword adds a TimeSeries to the Simulation.
     ///
     /// ~~~{.yaml}
-    /// # TODO
+    /// - time_series:
+    ///     id:                     <string>                # TimeSeries ID.
+    ///     type:                   <string>                # const_time_series/data_time_series
+    ///     value_type:             <string>                # real_scalar/complex_scalar/real_vector/complex_vector
+    ///     # If this is a const_time_series:
+    ///     const_value:            <value_type>            # Constant value.
+    ///     # If this is a data_time_series:
+    ///     data_file:              <string>                # Filename of file containing t val [val ...] data.
+    ///     interp_type:            <string>                # stepwise/lerp. 
+    ///     time_unit:              <string>                # d/h/m/s.
+    ///     relative_to_time:       <yyyy-mm-dd hh:mm:ss>   # Zero of time column corresponds to this time.
+    ///     # If this is a vector time series:
+    ///     dimension:              <int>                   # Number of dimensions of vector data.
     /// ~~~
     /// @}
 

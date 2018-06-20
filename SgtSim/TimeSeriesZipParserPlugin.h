@@ -28,7 +28,22 @@ namespace Sgt
     /// The `time_series_zip` keyword adds a TimeSeriesZip to the Simulation.
     ///
     /// ~~~{.yaml}
-    /// # TODO
+    /// - time_series_zip:
+    ///     id:                     <string>        # Component ID.
+    ///     bus_id:                 <string>        # Attached to this bus.
+    ///     sim_network_id:         <string>        # Part of this SimNetwork.
+    ///     time_series_id:         <string>        # Use this TimeSeries for values.
+    ///     dt:                     <hh:mm:ss>      # Update frequency.
+    ///     matrix_elements:        <int_mat>       # n x 2 matrix corresponding to matrix elems of target ZIP matrix.
+    ///     # Any combination of the following three elements:
+    ///     data_indices_Y:         <int_vec>       # Data elements that will template onto ZIP matrix for const Y.
+    ///     data_indices_I:         <int_vec>       # Data elements that will template onto ZIP matrix for const I.
+    ///     data_indices_S:         <int_vec>       # Data elements that will template onto ZIP matrix for const S.
+    ///     zip_id:                 <string>        # ID of Network Zip. If absent, will create a new zip.
+    ///     phases:                 <phases >       # Phases of new ZIP, see above.
+    ///     scale_factor_Y:         <real >         # Scale factor applied to constant Y.
+    ///     scale_factor_I:         <real >         # Scale factor applied to constant I.
+    ///     scale_factor_S:         <real >         # Scale factor applied to constant S.
     /// ~~~
     /// @}
 
