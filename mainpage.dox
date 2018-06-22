@@ -26,13 +26,6 @@
 /// a `Parser` class to parse YAML into any object, via the `Parser<T>::parse(...)` command. The ability to parse
 /// specific YAML constructs is handled in a modular and extensible way, using derived classes of the `ParserPlugin`
 /// class.
-/// @{
-/// @defgroup NetworkYamlSpec YAML specification for Networks
-/// @{
-/// @}
-/// @defgroup SimYamlSpec YAML specification for Simulations
-/// @{
-/// @}
 /// @defgroup NetworkParserPlugins ParserPlugin<Network> derived classes
 /// @{
 /// @}
@@ -89,8 +82,23 @@
 
 /// @}
 
-/// @defgroup Parsing Parsing
-/// @brief Parsing classes, functions etc.
+/// @defgroup YamlSpec YAML Configuration File Specs
+/// @brief [YAML](http://yaml.org) specifications for SmartGridToolbox configuration files.
+///
+/// SmartGridToolbox uses the [YAML](http://yaml.org) language to store human readable configuration files.
+/// Here, we document the meaningful elements of such configuration files.
+/// 
+/// There are two commonly used types of configuration files used in SmartGridToolbox: Network configuration files,
+/// that parse in a Network, and Simulation configuration files, that configure a discrete event Simulation.
+/// These are treated separately below.
+/// @{
+/// @defgroup NetworkYamlSpec YAML specification for Networks
+/// @{
+/// @}
+/// @defgroup SimYamlSpec YAML specification for Simulations
+/// @{
+/// @}
+/// @}
 
 /// @namespace Sgt
 /// @brief The primary namespace for SmartGridToolbox.
