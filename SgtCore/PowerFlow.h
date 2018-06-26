@@ -300,7 +300,7 @@ namespace Sgt
         switch (n)
         {
             case 3:
-                return {{0, v(0), v(2)}, {0, 0, v(1)}};
+                return {{0, v(0), v(2)}, {0, 0, v(1)}, {0, 0, 0}};
                 break;
             case 1:
                 return {{0, v(0)},{0, 0}};
