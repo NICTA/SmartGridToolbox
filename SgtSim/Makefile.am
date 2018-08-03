@@ -11,6 +11,7 @@ libinclude_HEADERS = \
 	DcPowerSource.h \
 	Heartbeat.h \
 	Inverter.h \
+	RealTimeClock.h \
 	SimComponent.h \
 	SimNetwork.h \
 	SimpleBuilding.h \
@@ -34,6 +35,7 @@ libSgtSim_la_SOURCES = \
 	HeartbeatParserPlugin.h HeartbeatParserPlugin.cc \
 	Inverter.h Inverter.cc \
 	InverterParserPlugin.h InverterParserPlugin.cc \
+	RealTimeClock.h RealTimeClock.cc \
 	RegisterParserPlugins.cc \
 	SgtSim.h \
 	SimComponent.h SimComponent.cc \

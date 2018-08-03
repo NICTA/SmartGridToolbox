@@ -21,6 +21,7 @@
 #include <SgtSim/DcPowerSource.h>
 #include <SgtSim/Inverter.h>
 #include <SgtSim/Heartbeat.h>
+#include <SgtSim/RealTimeClock.h>
 #include <SgtSim/SimComponent.h>
 #include <SgtSim/SimNetwork.h>
 #include <SgtSim/SimParser.h>
