@@ -846,6 +846,7 @@ BOOST_AUTO_TEST_CASE (test_battery)
     BOOST_CHECK_CLOSE(batt.requestedPower(), -0.002, 1e-4);
     BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
     BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(sum(inv.zip()->STot()).real(), -batt.actualPDc() / inv.efficiencyAcToDc(), 1e-4);
 
     sim.doTimestep();
 
@@ -869,6 +870,7 @@ BOOST_AUTO_TEST_CASE (test_battery)
     BOOST_CHECK_CLOSE(batt.requestedPower(), 0.002, 1e-4);
     BOOST_CHECK_CLOSE(batt.requestedPDc(), 0.002, 1e-4);
     BOOST_CHECK_CLOSE(batt.actualPDc(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(sum(inv.zip()->STot()).real(), -batt.actualPDc() * inv.efficiencyDcToAc(), 1e-4);
 
     sim.doTimestep();
 
