@@ -830,11 +830,11 @@ BOOST_AUTO_TEST_CASE (test_include)
     BOOST_CHECK(netw.gens().size() == 1);
 }
 
-BOOST_AUTO_TEST_CASE (test_battery)
+BOOST_AUTO_TEST_CASE (test_battery_and_inverter)
 {
     Simulation sim;
     Parser<Simulation> p;
-    p.parse("test_battery.yaml", sim);
+    p.parse("test_battery_and_inverter.yaml", sim);
 
     Battery& batt = *sim.simComponent<Battery>("battery");
     Inverter& inv = *sim.simComponent<Inverter>("inverter");
@@ -885,6 +885,29 @@ BOOST_AUTO_TEST_CASE (test_battery)
     BOOST_CHECK_SMALL(batt.requestedPDc(), 1e-8);
     BOOST_CHECK_SMALL(batt.actualPDc(), 1e-8);
     BOOST_CHECK_SMALL(batt.soc(), 1e-8);
+    
+    batt.setInitSoc(0.0);
+    batt.setRequestedPower(-0.005);
+    sim.initialize();
+    BOOST_CHECK_CLOSE(batt.requestedPower(), -0.005, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-4);
+    
+    batt.setInitSoc(0.01);
+    batt.setRequestedPower(0.005);
+    sim.initialize();
+    BOOST_CHECK_CLOSE(batt.requestedPower(), 0.005, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), 0.002, 1e-4);
+    
+    batt.setInitSoc(0.0);
+    batt.setRequestedPower(-0.002);
+    inv.setMaxSMag(0.001);
+    sim.initialize();
+    BOOST_CHECK_CLOSE(batt.requestedPower(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc() / inv.efficiencyAcToDc(), -0.001, 1e-4);
+    BOOST_CHECK_CLOSE(sum(inv.zip()->STot()).real(), 0.001, 1e-4);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
