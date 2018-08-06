@@ -835,23 +835,54 @@ BOOST_AUTO_TEST_CASE (test_battery)
     Simulation sim;
     Parser<Simulation> p;
     p.parse("test_battery.yaml", sim);
+
     Battery& batt = *sim.simComponent<Battery>("battery");
     Inverter& inv = *sim.simComponent<Inverter>("inverter");
+
+    batt.setInitSoc(0.0098);
     batt.setRequestedPower(-0.002);
     sim.initialize();
-    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-2);
-    BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-2);
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-4);
 
     sim.doTimestep();
-    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-2);
-    BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-2);
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), -0.002, 1e-4);
     auto dtHrs = dSeconds(batt.dt()) / 3600.0;
-    BOOST_CHECK_CLOSE(batt.soc(), 0.0098 - batt.actualPDc() * batt.chargeEfficiency() * dtHrs, 1e-2);
+    BOOST_CHECK_CLOSE(batt.soc(), 0.0098 - batt.actualPDc() * dtHrs * batt.chargeEfficiency(), 1e-4);
 
     sim.doTimestep();
-    BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-2);
-    BOOST_CHECK_SMALL(batt.actualPDc(), 1e-6);
-    BOOST_CHECK_CLOSE(batt.soc(), 0.01, 1e-2);
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), -0.002, 1e-4);
+    BOOST_CHECK_SMALL(batt.requestedPDc(), 1e-8);
+    BOOST_CHECK_SMALL(batt.actualPDc(), 1e-8);
+    BOOST_CHECK_CLOSE(batt.soc(), 0.01, 1e-4);
+
+    batt.setInitSoc(0.0002);
+    batt.setRequestedPower(0.002);
+    sim.initialize();
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), 0.002, 1e-4);
+
+    sim.doTimestep();
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.requestedPDc(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.actualPDc(), 0.002, 1e-4);
+    BOOST_CHECK_CLOSE(batt.soc(), 0.0002 - batt.actualPDc() * dtHrs / batt.dischargeEfficiency(), 1e-4);
+
+    sim.doTimestep();
+
+    BOOST_CHECK_CLOSE(batt.requestedPower(), 0.002, 1e-4);
+    BOOST_CHECK_SMALL(batt.requestedPDc(), 1e-8);
+    BOOST_CHECK_SMALL(batt.actualPDc(), 1e-8);
+    BOOST_CHECK_SMALL(batt.soc(), 1e-8);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

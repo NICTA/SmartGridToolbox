@@ -36,6 +36,7 @@ namespace Sgt
         double PDc{reqPDc};
         double P;
         const double c{1.000001};
+        sgtLogDebug(LogLevel::VERBOSE) << "Inverter updateState(:): requested PDc = " << reqPDc << endl;
         while (abs(P = PAc(PDc)) > maxSMag_ * c)
         {
             // Limit exceeded. We need to curtail the sources.
@@ -47,10 +48,14 @@ namespace Sgt
 
             PDc = copysign(maxSMag_ / dcToAcFactor(PDc), PDc);
         }
-        double curtailFactor = PDc / (reqPDc * c);
+        sgtLogDebug(LogLevel::VERBOSE) << "Inverter updateState(:): actual PDc = " << PDc << endl;
+        double curtailFactor = reqPDc != 0.0 ? PDc / (reqPDc * c) : 1.0;
+        sgtLogDebug(LogLevel::VERBOSE) << "Inverter updateState(:): curtail factor = " << curtailFactor << endl;
         for (auto source : sources_)
         {
-            source->setActualPDc(curtailFactor * source->requestedPDc());
+            auto actualPDc = (curtailFactor * source->requestedPDc());
+            sgtLogDebug(LogLevel::VERBOSE) << "Set actual PDc to " << actualPDc << " for " << source->id() << endl;
+            source->setActualPDc(actualPDc);
         }
         zip()->setSConst(SConst(P));
     }
