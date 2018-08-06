@@ -1,0 +1,76 @@
+---
+    - simulation:
+        start_time: 2018-08-06 00:00:00
+        end_time: 2018-08-07 00:00:00
+    - sim_network:
+        id: network
+        dt: 00:05:00
+        P_base: 1
+        freq_Hz: 60
+        solver: nr_rect
+        network:
+            - parameters:
+                VA: 6.3509
+                y: 0.1-0.1j
+                n: -0.1+0.1j
+                s: 0.1+0.05j
+            - bus:
+                id: bus_1
+                phases: [A, B, C]
+                V_base: <VA>
+                V_nom: [<VA>, <VA>D120, <VA>D-120]
+                type: SL
+            - gen:
+                id: gen_1
+                bus_id: bus_1
+                phases: [A, B, C]
+            - bus:
+                id: bus_2
+                phases: [A, B, C]
+                V_base: <VA>
+                V_nom: [<VA>, <VA>D120, <VA>D-120]
+                type: PQ
+            - zip:
+                id: zip_2 
+                bus_id: bus_2
+                phases: [A, B, C]
+                S_const:
+                    [
+                        [0.0, <s>, <s>],
+                        [0.0, 0.0, <s>],
+                        [0.0, 0.0, 0.0]
+                    ]
+            -  generic_branch:
+                id: branch_1_2
+                bus_0_id: bus_1
+                bus_1_id: bus_2
+                phases_0: [A, B, C]
+                phases_1: [A, B, C]
+                Y:  
+                    matrix:
+                        [
+                            [<y>, 0.0, 0.0, <n>, 0.0, 0.0],
+                            [0.0, <y>, 0.0, 0.0, <n>, 0.0],
+                            [0.0, 0.0, <y>, 0.0, 0.0, <n>],
+                            [<n>, 0.0, 0.0, <y>, 0.0, 0.0],
+                            [0.0, <n>, 0.0, 0.0, <y>, 0.0],
+                            [0.0, 0.0, <n>, 0.0, 0.0, <y>]
+                        ]
+    - inverter:
+        id: inverter
+        phases: [A]
+        sim_network_id: network
+        bus_id: bus_2
+        efficiency_dc_to_ac: 0.95
+        efficiency_ac_to_dc: 0.95
+    - battery:
+        id: battery
+        dt: 00:05:00
+        inverter_id: inverter
+        init_soc: 0.0098
+        max_soc: 0.01
+        max_charge_power: 0.002
+        max_discharge_power: 0.002
+        charge_efficiency: 0.95
+        discharge_efficiency: 0.95
+        requested_power: 0.0
