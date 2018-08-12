@@ -1022,12 +1022,14 @@ BOOST_AUTO_TEST_CASE (test_rt_clock)
         sgtLogMessage() << sw.wallSeconds() << std::endl;
         BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 1.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(2));
+        this_thread::sleep_for(chrono::milliseconds(500)); // Just an extra complication!
         sim.doTimestep();
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 1.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.5, 1.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(4));
+        this_thread::sleep_for(chrono::milliseconds(500)); // Just an extra complication!
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.0, 1.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.5, 1.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(6));
     }
 
