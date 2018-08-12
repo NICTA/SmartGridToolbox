@@ -20,20 +20,30 @@ using namespace std;
 
 namespace Sgt
 {
-    void RealTimeClock::fastForward(const Time& until, bool block)
+    void RealTimeClock::fastForward(const Time& until, bool blockUntilDone)
     {
         sgtLogDebug() << "RealTimeClock: fastForward(...): " << localTimeString(until) << endl;
-        sgtLogIndent();
+
         unique_lock<mutex> lk(mut_);
+        cv_.notify_all(); // Notify thread waiting in update().
+
         sw_.stop();
-        fastForwarding_ = true;
-        stopUntil_ = until;
-        if (block)
+        ffwdUntil_ = until;
+
+        if (blockUntilDone)
         {
-            cv_.wait(lk, [this]{return fastForwarding_ == false;});
+            sgtLogDebug() << "RealTimeClock: fastForward(...): Blocking calling thread." << endl;
+            cv_.wait(lk, [this]{return isFastForwarding() == false;});
+            sgtLogDebug() << "RealTimeClock: fastForward(...): Done blocking calling thread." << endl;
         }
         sgtLogDebug() << "RealTimeClock: fastForward(...): Finished. lastUpdated = "
             << localTimeString(lastUpdated()) << endl;
+    }
+        
+    Time RealTimeClock::validUntil() const
+    {
+        Time hbValidUntil = Heartbeat::validUntil();
+        return isFastForwarding() ? min(hbValidUntil, ffwdUntil_) : hbValidUntil;
     }
 
     void RealTimeClock::initializeState()
@@ -43,61 +53,51 @@ namespace Sgt
 
     void RealTimeClock::updateState(const Time& t)
     {
-        sgtLogDebug() << "RealTimeClock: updateState(...): t = " << localTimeString(t) << endl;
-        sgtLogIndent();
+        sgtLogDebug() << "RealTimeClock: updateState(...): "
+            << localTimeString(lastUpdated()) << " -> " << localTimeString(t) << endl;
 
-        long sleepForMs = -1;
-
+        if (!isFastForwarding())
         {
-            unique_lock<mutex> lk(mut_);
-            if (fastForwarding_)
+            // Real time step.
+            if (!isInitialized())
             {
-                Time nextT = t + dt();
-                if (nextT >= stopUntil_)
-                {
-                    // We're might be a bit ahead! So need to wait a bit before update.
-                    sgtLogDebug() << "RealTimeClock: updateState(...): stopUntil = "
-                        << localTimeString(stopUntil_) << endl;
-                    // Want to synchronize with stopUntil.
-                    restartRealTime();
-                    nextWallSeconds_ = (secondsPerDt_ / dSeconds(dt())) * dSeconds(nextT - stopUntil_);
-                    sgtLogDebug() << "RealTimeClock: updateState:(...): nextWallSeconds_ = " << nextWallSeconds_ << endl;
-                    cv_.notify_one();
-                }
+                // First step, to simulation start time.
+                sgtLogDebug() << "RealTimeClock: Initialization step." << endl; 
+                restartRealTime();
             }
-            else 
+            else
             {
-                if (!isInitialized())
-                {
-                    // First step, to simulation start time.
-                    restartRealTime();
-                }
-                else
-                {
-                    sleepForMs = lround(1000 * (nextWallSeconds_ - sw_.wallSeconds()));
-                    sgtLogDebug() << "RealTimeClock: updateState(...): sleepForMs = " << sleepForMs 
-                        << ", wallSeconds = " << sw_.wallSeconds() << endl;
-                    nextWallSeconds_ = nextWallSeconds_ + secondsPerDt_;
-                }
+                sgtLogDebug() << "RealTimeClock: Normal step." << endl; 
+                unique_lock<mutex> lk(mut_);
+                double dtSimSeconds = dSeconds(t - lastUpdated());
+                double dtRealSeconds = dtSimSeconds * realSecondsPerSimSecond_;
+                long sleepForMs = max(lround(1000 * (dtRealSeconds - sw_.wallSeconds())), 0L);
+                sgtLogDebug() << "RealTimeClock: updateState(...): wallSeconds      = " << sw_.wallSeconds() << endl; 
+                sgtLogDebug() << "RealTimeClock: updateState(...): sleepForMs       = " << sleepForMs << endl; 
+                cv_.wait_for(lk, chrono::milliseconds(sleepForMs), [this](){return isFastForwarding() == true;});
+            }
+            sw_.reset();
+        }
+        else
+        {
+            sgtLogDebug() << "RealTimeClock: Fast forward step." << endl; 
+            if (t == ffwdUntil_)
+            {
+                restartRealTime();
             }
         }
-
-        if (sleepForMs > 0)
-        {
-            this_thread::sleep_for(chrono::milliseconds(sleepForMs));
-        }
-
+    
         Heartbeat::updateState(t);
     }
 
     void RealTimeClock::restartRealTime()
     {
         sgtLogDebug() << "RealTimeClock: restartRealTime()" << endl;
-        sgtLogIndent();
+        unique_lock<mutex> lk(mut_);
         sw_.stop();
         sw_.reset();
-        nextWallSeconds_ = 0;
+        ffwdUntil_ = TimeSpecialValues::not_a_date_time;
         sw_.start();
-        fastForwarding_ = false;
+        cv_.notify_all();
     }
 }

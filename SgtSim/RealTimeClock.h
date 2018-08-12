@@ -31,14 +31,16 @@ namespace Sgt
     {
         public:
 
-        RealTimeClock(const std::string& id, const Time& dt, const Time& realTimePerDt) :
-            Component(id), Heartbeat(id, dt), secondsPerDt_(dSeconds(realTimePerDt))
+        RealTimeClock(const std::string& id, const Time& dt, const double realSecondsPerSimSecond = 1.0) :
+            Component(id), Heartbeat(id, dt), realSecondsPerSimSecond_(realSecondsPerSimSecond)
         {}
 
-        /// @brief Fast forward until specified time, blocking if requested.
-        void fastForward(const Time& until, bool block);
+        /// @brief Fast forward until specified time, blocking the calling thread until done, if requested.
+        void fastForward(const Time& until, bool blockUntilDone);
 
         public:
+        
+        virtual Time validUntil() const override;
 
         private:
 
@@ -47,15 +49,19 @@ namespace Sgt
 
         void restartRealTime();
 
+        bool isFastForwarding() const
+        {
+            return ffwdUntil_ != TimeSpecialValues::not_a_date_time;
+        }
+
         private:
 
         Stopwatch sw_;
-        double nextWallSeconds_;
-        double secondsPerDt_;
-        bool fastForwarding_{false};
-        Time stopUntil_{TimeSpecialValues::not_a_date_time};
+        double realSecondsPerSimSecond_;
+
         mutable std::mutex mut_;
         std::condition_variable cv_;
+        Time ffwdUntil_{TimeSpecialValues::not_a_date_time};
     };
 }
 

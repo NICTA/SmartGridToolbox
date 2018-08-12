@@ -23,6 +23,7 @@
 #include <cmath>
 #include <ostream>
 #include <fstream>
+#include <future>
 #include <set>
 #include <vector>
 
@@ -908,6 +909,74 @@ BOOST_AUTO_TEST_CASE (test_battery_and_inverter)
     BOOST_CHECK_CLOSE(batt.requestedPDc(), -0.002, 1e-4);
     BOOST_CHECK_CLOSE(batt.actualPDc() / inv.efficiencyAcToDc(), -0.001, 1e-4);
     BOOST_CHECK_CLOSE(sum(inv.zip()->STot()).real(), 0.001, 1e-4);
+}
+
+BOOST_AUTO_TEST_CASE (test_rt_clock)
+{
+    Simulation sim;
+    Parser<Simulation> simParser;
+    simParser.parse("test_rt_clock.yaml", sim);
+    auto rtClock = std::make_shared<RealTimeClock>("clock", seconds(2));
+    sim.addSimComponent(rtClock);
+    Stopwatch sw;
+    
+#if 1
+    {
+        // Three steps, with a 2 second dt. 500 ms delay to make sure this doesn't add to the total time.
+        // Real : Sim (@ end of update)
+        // 0    : 0
+        // 2    : 2
+        // 4    : 4
+        // 6    : 6
+        sim.initialize();
+        sw.reset();
+        sw.start();
+        for (int i = 1; i <= 3; ++i)
+        {
+            this_thread::sleep_for(chrono::milliseconds(500));
+            sim.doTimestep();
+            sgtLogMessage() << i << ": " << sw.wallSeconds() << std::endl;
+            BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0 * i, 1);
+        }
+        sgtLogMessage() << sw.wallSeconds() << std::endl;
+    }
+#endif
+
+    sgtLogMessage() << "----------------" << std::endl;
+
+#if 1
+    {
+        // 0    : Initialization update.
+        // 0    : Update -> 2 called, waiting for 2 seconds.
+        // 1    : FF -> 3 interrupts from different thread.
+        // 1    : Update 0 -> 2 finishes early.
+        // 1    : Update 2 -> 3 runs  
+        // 1    : Real time starts again
+        // 1    : Update 3 -> 4 starts
+        // 2    : Update 3 -> 4 ends
+        sim.initialize();
+        sw.reset();
+        sw.start();
+        auto f2 = std::async(std::launch::async, [&]{
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+                rtClock->fastForward(sim.startTime() + seconds(3), true);
+                });
+        BOOST_CHECK_SMALL(sw.wallSeconds(), 1e-2);
+        sim.doTimestep();
+        sgtLogMessage() << sw.wallSeconds() << std::endl;
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 1.0);
+        BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(2));
+        sim.doTimestep();
+        sgtLogMessage() << sw.wallSeconds() << std::endl;
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 1.0);
+        BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(3));
+        sim.doTimestep();
+        sgtLogMessage() << sw.wallSeconds() << std::endl;
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0, 1.0);
+        BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(4));
+    }
+#endif
+    sgtLogMessage() << "RT clock test done." << std::endl;
 }
 
 BOOST_AUTO_TEST_SUITE_END()
