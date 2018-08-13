@@ -207,6 +207,11 @@ namespace Sgt
         if (simIsFinished)
         {
             sgtLogMessage() << "Simulation is finished." << std::endl;
+            for (auto& comp: simComps_)
+            {
+                sgtLogDebug(LogLevel::VERBOSE) << "Calling finalizeSimulation for " << comp->id() << std::endl;
+                comp->finalizeSimulation();
+            }
         }
     }
 

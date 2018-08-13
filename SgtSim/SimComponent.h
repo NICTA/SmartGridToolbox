@@ -95,12 +95,18 @@ namespace Sgt
         protected:
 
         /// @brief Reset state of the object, time will be at negative infinity.
+        ///
+        /// Called by Simulation::initialize(), which should be called before every simulation is started.
         virtual void initializeState()
         {
             // Empty.
         }
 
         /// @brief Bring state up to time current time.
+        ///
+        /// Note that, besides normal updates, this function will also be called as part of the initialization
+        /// step, to update the time from negative infinity to the simulation start time. This can be checked by
+        /// isInitialized().
         virtual void updateState(const Time& t)
         {
             // Empty.
@@ -108,6 +114,12 @@ namespace Sgt
         
         /// @brief Called after all components have finished their final updateState for a timestep.
         virtual void finalizeTimestep()
+        {
+            // Empty.
+        }
+        
+        /// @brief Called after the last timestep in the simulation. 
+        virtual void finalizeSimulation()
         {
             // Empty.
         }
