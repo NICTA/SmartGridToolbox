@@ -935,7 +935,7 @@ BOOST_AUTO_TEST_CASE (test_rt_clock)
             this_thread::sleep_for(chrono::milliseconds(500));
             sim.doTimestep();
             sgtLogMessage() << i << ": " << sw.wallSeconds() << std::endl;
-            BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0 * i, 5.0);
+            BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0 * i, 10.0);
         }
         sgtLogMessage() << sw.wallSeconds() << std::endl;
     }
@@ -958,18 +958,18 @@ BOOST_AUTO_TEST_CASE (test_rt_clock)
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 rtClock->fastForward(sim.startTime() + seconds(3), true);
                 });
-        BOOST_CHECK_SMALL(sw.wallSeconds(), 5e-2);
+        BOOST_CHECK_SMALL(sw.wallSeconds(), 1e-1);
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(2));
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(3));
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 2.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(4));
     }
 
@@ -989,14 +989,14 @@ BOOST_AUTO_TEST_CASE (test_rt_clock)
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 rtClock->fastForward(sim.startTime() + seconds(2), true);
                 });
-        BOOST_CHECK_SMALL(sw.wallSeconds(), 5e-2);
+        BOOST_CHECK_SMALL(sw.wallSeconds(), 1e-1);
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(2));
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(4));
     }
 
@@ -1017,19 +1017,19 @@ BOOST_AUTO_TEST_CASE (test_rt_clock)
                 std::this_thread::sleep_for(std::chrono::seconds(1));
                 rtClock->fastForward(sim.startTime() + seconds(4), true);
                 });
-        BOOST_CHECK_SMALL(sw.wallSeconds(), 5e-2);
+        BOOST_CHECK_SMALL(sw.wallSeconds(), 1e-1);
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.0, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(2));
         this_thread::sleep_for(chrono::milliseconds(500)); // Just an extra complication!
         sim.doTimestep();
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.5, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 1.5, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(4));
         this_thread::sleep_for(chrono::milliseconds(500)); // Just an extra complication!
         sim.doTimestep();
         sgtLogMessage() << sw.wallSeconds() << std::endl;
-        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.5, 5.0);
+        BOOST_CHECK_CLOSE(sw.wallSeconds(), 3.5, 10.0);
         BOOST_CHECK(sim.currentTime() == sim.startTime() + seconds(6));
     }
 
