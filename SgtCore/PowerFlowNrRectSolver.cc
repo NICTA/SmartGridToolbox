@@ -111,7 +111,7 @@ namespace Sgt
         const Col<double> PGenPv = mod_->nPv() > 0 ? real(SGen(mod_->selPv())) : Col<double>();
         Col<double> QGenPv = mod_->nPv() > 0 ? imag(SGen(mod_->selPv())) : Col<double>();
 
-        const Col<Complex> SConstDiag = mod_->SConst().diag();
+        const Col<Complex> SConstDiag(mod_->SConst().diag());
         Col<Complex> Scg = SGen - SConstDiag;
 
         bool wasSuccessful = false;

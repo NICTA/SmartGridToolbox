@@ -81,12 +81,13 @@ Inheritance diagram for Sgt::Heartbeat:</div>
 <div class="dyncontent">
 <div class="center"><img src="class_sgt_1_1_heartbeat__inherit__graph.png" border="0" usemap="#_sgt_1_1_heartbeat_inherit__map" alt="Inheritance graph"/></div>
 <map name="_sgt_1_1_heartbeat_inherit__map" id="_sgt_1_1_heartbeat_inherit__map">
-<area shape="rect" id="node6" href="class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="5,312,217,337"/>
-<area shape="rect" id="node7" href="class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="242,312,376,337"/>
-<area shape="rect" id="node8" href="class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="399,312,498,337"/>
-<area shape="rect" id="node2" href="class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="238,165,379,191"/>
-<area shape="rect" id="node3" href="class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="250,92,368,117"/>
-<area shape="rect" id="node5" href="class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="331,12,465,37"/>
+<area shape="rect" id="node6" href="class_sgt_1_1_real_time_clock.html" title="Sgt::RealTimeClock" alt="" coords="5,312,144,337"/>
+<area shape="rect" id="node7" href="class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="169,312,381,337"/>
+<area shape="rect" id="node8" href="class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="405,312,539,337"/>
+<area shape="rect" id="node9" href="class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="563,312,661,337"/>
+<area shape="rect" id="node2" href="class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="303,165,444,191"/>
+<area shape="rect" id="node3" href="class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="314,92,432,117"/>
+<area shape="rect" id="node5" href="class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="396,12,529,37"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
@@ -244,13 +245,11 @@ SimComponent virtual overridden member functions.</h2></td></tr>
 <tr class="memitem:a3e1dddec0fe104296759e6e64f9591a3"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_heartbeat.html#a3e1dddec0fe104296759e6e64f9591a3">validUntil</a> () const override</td></tr>
 <tr class="memdesc:a3e1dddec0fe104296759e6e64f9591a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">When is the component scheduled to update?  <a href="#a3e1dddec0fe104296759e6e64f9591a3">More...</a><br /></td></tr>
 <tr class="separator:a3e1dddec0fe104296759e6e64f9591a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19278f08ba4e2435c22324fcdc95b8d4"><td class="memItemLeft" align="right" valign="top"><a id="a19278f08ba4e2435c22324fcdc95b8d4"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_heartbeat.html#a19278f08ba4e2435c22324fcdc95b8d4">initializeState</a> () override</td></tr>
-<tr class="memdesc:a19278f08ba4e2435c22324fcdc95b8d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset state of the object, time will be at negative infinity. <br /></td></tr>
+<tr class="memitem:a19278f08ba4e2435c22324fcdc95b8d4"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_heartbeat.html#a19278f08ba4e2435c22324fcdc95b8d4">initializeState</a> () override</td></tr>
+<tr class="memdesc:a19278f08ba4e2435c22324fcdc95b8d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset state of the object, time will be at negative infinity.  <a href="#a19278f08ba4e2435c22324fcdc95b8d4">More...</a><br /></td></tr>
 <tr class="separator:a19278f08ba4e2435c22324fcdc95b8d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab0874edc462cfc3856623895e47e1242"><td class="memItemLeft" align="right" valign="top"><a id="ab0874edc462cfc3856623895e47e1242"></a>
-virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_heartbeat.html#ab0874edc462cfc3856623895e47e1242">updateState</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) override</td></tr>
-<tr class="memdesc:ab0874edc462cfc3856623895e47e1242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bring state up to time current time. <br /></td></tr>
+<tr class="memitem:ab0874edc462cfc3856623895e47e1242"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_heartbeat.html#ab0874edc462cfc3856623895e47e1242">updateState</a> (const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;t) override</td></tr>
+<tr class="memdesc:ab0874edc462cfc3856623895e47e1242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Bring state up to time current time.  <a href="#ab0874edc462cfc3856623895e47e1242">More...</a><br /></td></tr>
 <tr class="separator:ab0874edc462cfc3856623895e47e1242"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
@@ -269,6 +268,10 @@ static const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom
 virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#acfd243e181b554a76eaaeadc9209b096">finalizeTimestep</a> ()</td></tr>
 <tr class="memdesc:acfd243e181b554a76eaaeadc9209b096 inherit pro_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called after all components have finished their final updateState for a timestep. <br /></td></tr>
 <tr class="separator:acfd243e181b554a76eaaeadc9209b096 inherit pro_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7081463b40fce5270b2c0e565095a666 inherit pro_methods_class_sgt_1_1_sim_component"><td class="memItemLeft" align="right" valign="top"><a id="a7081463b40fce5270b2c0e565095a666"></a>
+virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_sgt_1_1_sim_component.html#a7081463b40fce5270b2c0e565095a666">finalizeSimulation</a> ()</td></tr>
+<tr class="memdesc:a7081463b40fce5270b2c0e565095a666 inherit pro_methods_class_sgt_1_1_sim_component"><td class="mdescLeft">&#160;</td><td class="mdescRight">Called after the last timestep in the simulation. <br /></td></tr>
+<tr class="separator:a7081463b40fce5270b2c0e565095a666 inherit pro_methods_class_sgt_1_1_sim_component"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a1df04e8d89b8e83330261f022907736f"></a>
@@ -330,6 +333,71 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hr
 <p>An update may occur before this time if the component undergoes a contingent update. If this occurs, it is possible that <a class="el" href="class_sgt_1_1_heartbeat.html#a3e1dddec0fe104296759e6e64f9591a3" title="When is the component scheduled to update? ">validUntil()</a> could change to a later time. </p>
 
 <p>Reimplemented from <a class="el" href="class_sgt_1_1_sim_component.html#a947331c2e6e48daef0c384cb04fba434">Sgt::SimComponent</a>.</p>
+
+<p>Reimplemented in <a class="el" href="class_sgt_1_1_real_time_clock.html#af3d81938b1585809ec05fd309765f1a1">Sgt::RealTimeClock</a>.</p>
+
+</div>
+</div>
+<a id="a19278f08ba4e2435c22324fcdc95b8d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a19278f08ba4e2435c22324fcdc95b8d4">&#9670;&nbsp;</a></span>initializeState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Sgt::Heartbeat::initializeState </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reset state of the object, time will be at negative infinity. </p>
+<p>Called by <a class="el" href="class_sgt_1_1_simulation.html#a0ed3fa3b0a14686927be877d60833371" title="Initialize to start time. ">Simulation::initialize()</a>, which should be called before every simulation is started. </p>
+
+<p>Reimplemented from <a class="el" href="class_sgt_1_1_sim_component.html#a98299daaacdbe4e2176344e06dd23bec">Sgt::SimComponent</a>.</p>
+
+</div>
+</div>
+<a id="ab0874edc462cfc3856623895e47e1242"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab0874edc462cfc3856623895e47e1242">&#9670;&nbsp;</a></span>updateState()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Sgt::Heartbeat::updateState </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="group___time.html#ga9708691c24e9b5f10ed7e9abd15f27e6">Time</a> &amp;&#160;</td>
+          <td class="paramname"><em>t</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">protected</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Bring state up to time current time. </p>
+<p>Note that, besides normal updates, this function will also be called as part of the initialization step, to update the time from negative infinity to the simulation start time. This can be checked by <a class="el" href="class_sgt_1_1_sim_component.html#af8ab6c58a8d774ebf564938a3da2bd35" title="Have we completed initialization? ">isInitialized()</a>. </p>
+
+<p>Reimplemented from <a class="el" href="class_sgt_1_1_sim_component.html#a664f3ad696dfb5b88f13cd6f750b6442">Sgt::SimComponent</a>.</p>
+
+<p>Reimplemented in <a class="el" href="class_sgt_1_1_time_series_zip.html#aa5b38111165d5568ebd06d2ff4ac01c8">Sgt::TimeSeriesZip</a>.</p>
 
 </div>
 </div>
