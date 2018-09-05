@@ -192,8 +192,7 @@ namespace Sgt
                     comp->didCompleteTimestep().trigger();
                 }
             }
-            sgtLogMessage(LogLevel::VERBOSE) << "Timestep completed at " << localTimeString(currentTime_) 
-                << std::endl;
+            sgtLogMessage() << "Timestep completed at " << localTimeString(currentTime_) << std::endl;
             timestepDidComplete_.trigger();
         }
         sgtLogDebug(LogLevel::VERBOSE) << "After Simulation doNextUpdate():" << std::endl;
