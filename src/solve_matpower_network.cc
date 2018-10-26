@@ -79,7 +79,6 @@ int main(int argc, char** argv)
         inFName + ", default_kV_base : 11}}]";
     YAML::Node n = YAML::Load(yamlStr);
     p.parse(n, nw);
-    std::cout << nw << std::endl;
 
     auto outFBus = std::fopen((outPrefix + ".bus").c_str(), "w+");
     auto outFBranch = std::fopen((outPrefix + ".branch").c_str(), "w+");
