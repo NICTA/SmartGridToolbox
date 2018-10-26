@@ -25,7 +25,6 @@ namespace Sgt
     class Stopwatch
     {
         public:
-        Stopwatch() : isRunning_(false), wallDur_(std::chrono::duration<double>::zero()) {}
 
         void start();
         void stop();
@@ -35,13 +34,12 @@ namespace Sgt
         bool isRunning() const {return isRunning_;}
 
         private:
-        bool isRunning_;
 
+        bool isRunning_{false};
         std::chrono::time_point<std::chrono::system_clock> wallStart_;
-        std::chrono::duration<double> wallDur_;
-
-        std::clock_t cpuStart_;
-        double cpuDur_;
+        std::chrono::duration<double> wallDur_{std::chrono::duration<double>::zero()};
+        std::clock_t cpuStart_{0};
+        double cpuDur_{0.0};
     };
 }
 
