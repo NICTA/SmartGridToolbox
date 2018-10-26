@@ -390,15 +390,17 @@ BOOST_AUTO_TEST_CASE (test_matpower)
             sw.stop();
 
             double& tRef = (solverType == "nr_pol") ? times[c].first : times[c].second;
-            if (!ok)
+            if (ok)
+            {
+                tRef = sw.cpuSeconds();
+            }
+            else
             {
                 tRef = -1;
                 BOOST_ERROR("Case " << c << " could not be solved.\n");
                 continue;
             }
-
-            tRef = sw.cpuSeconds();
-            BOOST_TEST_MESSAGE("Solve time = " << sw.cpuSeconds());
+            BOOST_TEST_MESSAGE("Solve time = " << tRef);
 
             ifstream compareName(string("mp_compare/") + c + ".compare");
 
@@ -621,9 +623,6 @@ BOOST_AUTO_TEST_CASE (test_line_flows)
     Parser<Network> p;
     p.parse("test_line_flows.yaml", netw);
     netw.solvePowerFlow();
-
-    const Complex y{0.1, -0.1};
-    const Complex s{0.1, 0.05};
 
     const auto& bus1 = *netw.buses()["bus_1"];
     const auto& bus2 = *netw.buses()["bus_2"];
