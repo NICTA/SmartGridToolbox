@@ -1,9 +1,9 @@
 <map id="Sgt::Heartbeat" name="Sgt::Heartbeat">
-<area shape="rect" id="node6" href="$class_sgt_1_1_real_time_clock.html" title="Sgt::RealTimeClock" alt="" coords="5,312,144,337"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="169,312,381,337"/>
-<area shape="rect" id="node8" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="405,312,539,337"/>
-<area shape="rect" id="node9" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="563,312,661,337"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="303,165,444,191"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="314,92,432,117"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="396,12,529,37"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_real_time_clock.html" title="Sgt::RealTimeClock" alt="" coords="5,299,144,324"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="169,299,381,324"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="405,299,539,324"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="563,299,661,324"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="303,152,444,177"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="314,79,432,104"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="307,5,440,31"/>
 </map>

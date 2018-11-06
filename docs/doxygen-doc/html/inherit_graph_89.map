@@ -1,41 +1,41 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node2" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="225,649,343,675"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="404,333,518,359"/>
-<area shape="rect" id="node17" href="$class_sgt_1_1_bus.html" title="A Bus is a grouped set of conductors / terminals, one per phase. " alt="" coords="425,600,497,625"/>
-<area shape="rect" id="node18" href="$class_sgt_1_1_gen.html" title="Generation at a bus. " alt="" coords="424,649,498,675"/>
-<area shape="rect" id="node19" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="391,699,531,724"/>
-<area shape="rect" id="node39" href="$class_sgt_1_1_zip.html" title="A Zip is a power consumption at a bus with constant impedance / current / complex power components..." alt="" coords="428,748,495,773"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_common_branch.html" title="A single phase transmission line or transformer. " alt="" coords="591,357,736,383"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_generic_branch.html" title="A concrete, generic branch. " alt="" coords="595,407,732,432"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_overhead_line.html" title="An overhead power line. " alt="" coords="597,129,730,155"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_transformer_abc.html" title="Sgt::TransformerAbc" alt="" coords="592,179,735,204"/>
-<area shape="rect" id="node14" href="$class_sgt_1_1_underground_line.html" title="An underground power line. " alt="" coords="588,308,739,333"/>
-<area shape="rect" id="node8" href="$class_sgt_1_1_dd_transformer.html" title="Delta&#45;Delta transformer. " alt="" coords="836,5,974,31"/>
-<area shape="rect" id="node9" href="$class_sgt_1_1_dgy_transformer.html" title="Single phase transformer with delta connection on one side and grounded wye on the other side..." alt="" coords="833,55,978,80"/>
-<area shape="rect" id="node10" href="$class_sgt_1_1_single_phase_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="796,104,1015,129"/>
-<area shape="rect" id="node11" href="$class_sgt_1_1_single_phase_transformer.html" title="Single phase transformer. " alt="" coords="807,153,1003,179"/>
-<area shape="rect" id="node12" href="$class_sgt_1_1_vv_transformer.html" title="V&#45;V / open Delta &#45; open Delta transformer. " alt="" coords="837,203,973,228"/>
-<area shape="rect" id="node13" href="$class_sgt_1_1_yy_transformer.html" title="Wye&#45;wye transformer. " alt="" coords="837,252,973,277"/>
-<area shape="rect" id="node15" href="$class_sgt_1_1_underground_line_stranded_shield.html" title="Underground line with stranded shielding. " alt="" coords="802,301,1008,340"/>
-<area shape="rect" id="node16" href="$class_sgt_1_1_underground_line_tape_shield.html" title="Underground line with tape shielding. " alt="" coords="815,364,996,403"/>
-<area shape="rect" id="node20" href="$class_sgt_1_1_dc_power_source_abc.html" title="DC power source. " alt="" coords="579,549,748,575"/>
-<area shape="rect" id="node25" href="$class_sgt_1_1_heartbeat.html" title="Utility base class for a component that updates with a regular &quot;tick&quot; dt. " alt="" coords="610,624,717,649"/>
-<area shape="rect" id="node29" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="605,673,722,699"/>
-<area shape="rect" id="node32" href="$class_sgt_1_1_sim_branch.html" title="Utility base class for branches in SimNetwork. " alt="" coords="607,772,720,797"/>
-<area shape="rect" id="node33" href="$class_sgt_1_1_sim_bus.html" title="Utility base class for buses in SimNetwork. " alt="" coords="616,821,711,847"/>
-<area shape="rect" id="node34" href="$class_sgt_1_1_sim_gen.html" title="Utility base class for gens in SimNetwork. " alt="" coords="615,871,712,896"/>
-<area shape="rect" id="node35" href="$class_sgt_1_1_sim_network.html" title="SimNetwork : A SimComponent for an electrical network. " alt="" coords="603,920,724,945"/>
-<area shape="rect" id="node36" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork. " alt="" coords="618,723,709,748"/>
-<area shape="rect" id="node38" href="$class_sgt_1_1_tap_changer.html" title="Sgt::TapChanger" alt="" coords="603,500,724,525"/>
-<area shape="rect" id="node21" href="$class_sgt_1_1_battery.html" title="Basic battery class, deriving from DCPowerSourceBase. " alt="" coords="860,427,951,452"/>
-<area shape="rect" id="node22" href="$class_sgt_1_1_generic_dc_power_source.html" title="Sgt::GenericDcPowerSource" alt="" coords="809,476,1001,501"/>
-<area shape="rect" id="node23" href="$class_sgt_1_1_solar_pv.html" title="Sgt::SolarPv" alt="" coords="858,525,953,551"/>
-<area shape="rect" id="node24" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="799,575,1011,600"/>
-<area shape="rect" id="node26" href="$class_sgt_1_1_real_time_clock.html" title="Sgt::RealTimeClock" alt="" coords="836,624,975,649"/>
-<area shape="rect" id="node27" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="838,723,972,748"/>
-<area shape="rect" id="node28" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="856,673,955,699"/>
-<area shape="rect" id="node30" href="$class_sgt_1_1_simple_inverter_abc.html" title="An inverter with simple constant DC&#45;AC and AC&#45;DC efficiencies. " alt="" coords="826,772,984,797"/>
-<area shape="rect" id="node31" href="$class_sgt_1_1_inverter.html" title="DC power to n&#45;phase AC converter. " alt="" coords="1063,797,1157,823"/>
-<area shape="rect" id="node37" href="$class_sgt_1_1_simple_building.html" title="Sgt::SimpleBuilding" alt="" coords="837,873,974,899"/>
-<area shape="rect" id="node40" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="25,673,158,699"/>
+<area shape="rect" id="node1" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="5,649,139,675"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="187,649,304,675"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="366,333,480,359"/>
+<area shape="rect" id="node17" href="$class_sgt_1_1_bus.html" title="A Bus is a grouped set of conductors / terminals, one per phase. " alt="" coords="387,600,458,625"/>
+<area shape="rect" id="node18" href="$class_sgt_1_1_gen.html" title="Generation at a bus. " alt="" coords="386,649,460,675"/>
+<area shape="rect" id="node19" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="352,699,493,724"/>
+<area shape="rect" id="node39" href="$class_sgt_1_1_zip.html" title="A Zip is a power consumption at a bus with constant impedance / current / complex power components..." alt="" coords="389,748,456,773"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_common_branch.html" title="A single phase transmission line or transformer. " alt="" coords="552,357,697,383"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_generic_branch.html" title="A concrete, generic branch. " alt="" coords="556,407,694,432"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_overhead_line.html" title="An overhead power line. " alt="" coords="559,129,691,155"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_transformer_abc.html" title="Sgt::TransformerAbc" alt="" coords="553,179,697,204"/>
+<area shape="rect" id="node14" href="$class_sgt_1_1_underground_line.html" title="An underground power line. " alt="" coords="549,308,701,333"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_dd_transformer.html" title="Delta&#45;Delta transformer. " alt="" coords="798,5,936,31"/>
+<area shape="rect" id="node9" href="$class_sgt_1_1_dgy_transformer.html" title="Single phase transformer with delta connection on one side and grounded wye on the other side..." alt="" coords="794,55,939,80"/>
+<area shape="rect" id="node10" href="$class_sgt_1_1_single_phase_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="757,104,976,129"/>
+<area shape="rect" id="node11" href="$class_sgt_1_1_single_phase_transformer.html" title="Single phase transformer. " alt="" coords="769,153,965,179"/>
+<area shape="rect" id="node12" href="$class_sgt_1_1_vv_transformer.html" title="V&#45;V / open Delta &#45; open Delta transformer. " alt="" coords="798,203,935,228"/>
+<area shape="rect" id="node13" href="$class_sgt_1_1_yy_transformer.html" title="Wye&#45;wye transformer. " alt="" coords="798,252,935,277"/>
+<area shape="rect" id="node15" href="$class_sgt_1_1_underground_line_stranded_shield.html" title="Underground line with stranded shielding. " alt="" coords="764,301,970,340"/>
+<area shape="rect" id="node16" href="$class_sgt_1_1_underground_line_tape_shield.html" title="Underground line with tape shielding. " alt="" coords="776,364,957,403"/>
+<area shape="rect" id="node20" href="$class_sgt_1_1_dc_power_source_abc.html" title="DC power source. " alt="" coords="541,549,709,575"/>
+<area shape="rect" id="node25" href="$class_sgt_1_1_heartbeat.html" title="Utility base class for a component that updates with a regular &quot;tick&quot; dt. " alt="" coords="571,624,679,649"/>
+<area shape="rect" id="node29" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="566,673,683,699"/>
+<area shape="rect" id="node32" href="$class_sgt_1_1_sim_branch.html" title="Utility base class for branches in SimNetwork. " alt="" coords="568,772,682,797"/>
+<area shape="rect" id="node33" href="$class_sgt_1_1_sim_bus.html" title="Utility base class for buses in SimNetwork. " alt="" coords="578,821,672,847"/>
+<area shape="rect" id="node34" href="$class_sgt_1_1_sim_gen.html" title="Utility base class for gens in SimNetwork. " alt="" coords="576,871,673,896"/>
+<area shape="rect" id="node35" href="$class_sgt_1_1_sim_network.html" title="SimNetwork : A SimComponent for an electrical network. " alt="" coords="565,920,685,945"/>
+<area shape="rect" id="node36" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork. " alt="" coords="580,723,670,748"/>
+<area shape="rect" id="node38" href="$class_sgt_1_1_tap_changer.html" title="Sgt::TapChanger" alt="" coords="564,500,686,525"/>
+<area shape="rect" id="node21" href="$class_sgt_1_1_battery.html" title="Basic battery class, deriving from DCPowerSourceBase. " alt="" coords="821,427,912,452"/>
+<area shape="rect" id="node22" href="$class_sgt_1_1_generic_dc_power_source.html" title="Sgt::GenericDcPowerSource" alt="" coords="771,476,963,501"/>
+<area shape="rect" id="node23" href="$class_sgt_1_1_solar_pv.html" title="Sgt::SolarPv" alt="" coords="819,525,914,551"/>
+<area shape="rect" id="node24" href="$class_sgt_1_1_time_series_dc_power_source.html" title="Sgt::TimeSeriesDcPowerSource" alt="" coords="761,575,973,600"/>
+<area shape="rect" id="node26" href="$class_sgt_1_1_real_time_clock.html" title="Sgt::RealTimeClock" alt="" coords="797,624,936,649"/>
+<area shape="rect" id="node27" href="$class_sgt_1_1_time_series_zip.html" title="Sgt::TimeSeriesZip" alt="" coords="800,723,934,748"/>
+<area shape="rect" id="node28" href="$class_sgt_1_1_weather.html" title="Sgt::Weather" alt="" coords="817,673,916,699"/>
+<area shape="rect" id="node30" href="$class_sgt_1_1_simple_inverter_abc.html" title="An inverter with simple constant DC&#45;AC and AC&#45;DC efficiencies. " alt="" coords="788,772,946,797"/>
+<area shape="rect" id="node31" href="$class_sgt_1_1_inverter.html" title="DC power to n&#45;phase AC converter. " alt="" coords="1024,797,1118,823"/>
+<area shape="rect" id="node37" href="$class_sgt_1_1_simple_building.html" title="Sgt::SimpleBuilding" alt="" coords="798,873,935,899"/>
 </map>

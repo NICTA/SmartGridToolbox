@@ -47,7 +47,7 @@ var searchData=
   ['sgtlogindent',['sgtLogIndent',['../group___logging_and_errors.html#ga1d1f55df8197fce165e3cd58db3f27cc',1,'Common.h']]],
   ['sgtlogmessage',['sgtLogMessage',['../group___logging_and_errors.html#gaa1f6de5cb0f7f907efd261195928b4d8',1,'Common.h']]],
   ['sgtlogwarning',['sgtLogWarning',['../group___logging_and_errors.html#ga2284d43f1289ee3e3e956806d0fa559d',1,'Common.h']]],
-  ['shared',['shared',['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const'],['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const'],['../namespace_sgt.html#aaa463406c60def3a37edba44d8a19d81',1,'Sgt::shared()']]],
+  ['shared',['shared',['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const'],['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const']]],
   ['siconst',['SIConst',['../class_sgt_1_1_bus.html#a886655ee352e709fae8bdfbc6a71e8a5',1,'Sgt::Bus']]],
   ['simbranch',['SimBranch',['../class_sgt_1_1_sim_branch.html',1,'Sgt']]],
   ['simbus',['SimBus',['../class_sgt_1_1_sim_bus.html',1,'Sgt']]],

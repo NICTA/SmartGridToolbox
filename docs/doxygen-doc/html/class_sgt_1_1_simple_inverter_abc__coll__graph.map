@@ -1,7 +1,7 @@
 <map id="Sgt::SimpleInverterAbc" name="Sgt::SimpleInverterAbc">
-<area shape="rect" id="node2" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="225,293,342,319"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="112,200,253,225"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="124,100,241,125"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="205,12,338,37"/>
-<area shape="rect" id="node8" href="$class_sgt_1_1_component_ptr.html" title="Sgt::ComponentPtr\&lt;\l Sgt::DcPowerSourceAbc \&gt;" alt="" coords="295,93,478,132"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="119,280,235,305"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="5,187,146,212"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="17,87,135,112"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="9,5,142,31"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_component_ptr.html" title="Sgt::ComponentPtr\&lt;\l Sgt::DcPowerSourceAbc \&gt;" alt="" coords="188,80,371,119"/>
 </map>

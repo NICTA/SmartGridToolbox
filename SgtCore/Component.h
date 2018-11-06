@@ -27,7 +27,7 @@ namespace Sgt
     /// A `Component` is essentially an object with a unique key.
     /// It is usually a good idea to use virtual inheritance to derive from component.
     /// @ingroup Components
-    class Component : public std::enable_shared_from_this<Component>, public HasProperties
+    class Component : public HasProperties
     {
         public:
 
@@ -143,12 +143,6 @@ namespace Sgt
         std::string id_;
         json userData_;
     };
-
-    /// @brief Get `std::shared_pointer` from a `Component`.
-    template<typename T, typename U = T> std::shared_ptr<U> shared(T& x)
-    {
-        return std::dynamic_pointer_cast<U>(x.shared_from_this());
-    }
 
     /// @brief Stream insertion operator for `Component`s.
     inline std::ostream& operator<<(std::ostream& os, const Component& comp)

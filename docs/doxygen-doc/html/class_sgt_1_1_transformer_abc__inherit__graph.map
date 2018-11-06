@@ -1,11 +1,11 @@
 <map id="Sgt::TransformerAbc" name="Sgt::TransformerAbc">
-<area shape="rect" id="node6" href="$class_sgt_1_1_dd_transformer.html" title="Delta&#45;Delta transformer. " alt="" coords="789,5,927,31"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_dgy_transformer.html" title="Single phase transformer with delta connection on one side and grounded wye on the other side..." alt="" coords="786,55,930,80"/>
-<area shape="rect" id="node8" href="$class_sgt_1_1_single_phase_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="748,104,968,129"/>
-<area shape="rect" id="node9" href="$class_sgt_1_1_single_phase_transformer.html" title="Single phase transformer. " alt="" coords="760,153,956,179"/>
-<area shape="rect" id="node10" href="$class_sgt_1_1_vv_transformer.html" title="V&#45;V / open Delta &#45; open Delta transformer. " alt="" coords="790,203,926,228"/>
-<area shape="rect" id="node11" href="$class_sgt_1_1_yy_transformer.html" title="Wye&#45;wye transformer. " alt="" coords="790,252,926,277"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="395,129,508,155"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="229,129,347,155"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="26,157,160,183"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_dd_transformer.html" title="Delta&#45;Delta transformer. " alt="" coords="747,5,885,31"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_dgy_transformer.html" title="Single phase transformer with delta connection on one side and grounded wye on the other side..." alt="" coords="744,55,888,80"/>
+<area shape="rect" id="node7" href="$class_sgt_1_1_single_phase_dgy_transformer.html" title="Delta&#45;grounded wye transformer. " alt="" coords="706,104,926,129"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_single_phase_transformer.html" title="Single phase transformer. " alt="" coords="718,153,914,179"/>
+<area shape="rect" id="node9" href="$class_sgt_1_1_vv_transformer.html" title="V&#45;V / open Delta &#45; open Delta transformer. " alt="" coords="748,203,884,228"/>
+<area shape="rect" id="node10" href="$class_sgt_1_1_yy_transformer.html" title="Wye&#45;wye transformer. " alt="" coords="748,252,884,277"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="352,129,466,155"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="187,129,304,155"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="5,129,139,155"/>
 </map>
