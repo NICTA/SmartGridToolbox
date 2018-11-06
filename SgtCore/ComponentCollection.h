@@ -55,7 +55,7 @@ namespace Sgt
 
         /// @brief Constructor for existing component, non-const to const conversion.
         template<typename FromIter, std::enable_if_t<std::is_convertible<FromIter, Iter>::value, int> = 0>
-            ComponentPtr(const FromIter& it) : it_(std::make_unique<Iter>(it)) {}
+        ComponentPtr(const FromIter& it) : it_(std::make_unique<Iter>(it)) {}
 
         /// @brief Copy constructor.
         ComponentPtr(const ComponentPtr& from) :
@@ -65,21 +65,19 @@ namespace Sgt
         ///
         /// Implicit up-conversion.
         template<typename FromD, bool fromIsConst, 
-            std::enable_if_t<(isConst || !fromIsConst) &&
-                std::is_base_of<D, FromD>::value, int> = 0>
-                ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) :
-                    it_(from == nullptr ? nullptr : std::make_unique<Iter>(*from.it_))
-                {}
+            std::enable_if_t<(isConst || !fromIsConst) && std::is_base_of<D, FromD>::value, int> = 0>
+        ComponentPtr(const ComponentPtr<B, FromD, fromIsConst>& from) :
+            it_(from == nullptr ? nullptr : std::make_unique<Iter>(*from.it_)) {}
 
         /// @brief Explicit conversion, including down conversion. 
         template<typename ToD, bool toIsConst = isConst,
             std::enable_if_t<(toIsConst || !isConst) && 
                 (std::is_base_of<ToD, D>::value || std::is_base_of<D, ToD>::value), int> = 0>
-                ComponentPtr<B, ToD, toIsConst> as() const
-                {
-                    if (it_ == nullptr) return nullptr; else return *it_;
-                    // Ternary causes possible complications.
-                }
+        ComponentPtr<B, ToD, toIsConst> as() const
+        {
+            if (it_ == nullptr) return nullptr; else return *it_;
+            // Ternary causes possible complications.
+        }
 
         /// @brief Copy assignment.
         void operator=(const ComponentPtr& from)
@@ -89,27 +87,26 @@ namespace Sgt
 
         /// @brief Conversion assignment.
         template<typename FromD, bool fromIsConst, 
-            std::enable_if_t<(isConst || !fromIsConst) && 
-                std::is_base_of<D, FromD>(), int> = 0>
-                void operator=(const ComponentPtr<B, FromD, fromIsConst>& from)
-                {
-                    if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
-                }
+            std::enable_if_t<(isConst || !fromIsConst) && std::is_base_of<D, FromD>(), int> = 0>
+        void operator=(const ComponentPtr<B, FromD, fromIsConst>& from)
+        {
+            if (from == nullptr) it_ = nullptr; else it_ = std::make_unique<Iter>(*from.it_);
+        }
 
         /// @brief Shared pointer access.
         template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, bool> = 0>
-            std::shared_ptr<T> shared() const
-            {
-                if (it_ == nullptr) return  nullptr; else return (**it_).second;
-                // Ternary causes possible complications.
-            }
+        std::shared_ptr<T> shared() const
+        {
+            if (it_ == nullptr) return  nullptr; else return (**it_).second;
+            // Ternary causes possible complications.
+        }
 
         /// @brief Explicit shared pointer access.
         template<typename T = D, std::enable_if_t<!std::is_same<T, B>::value, bool> = 0>
-            std::shared_ptr<T> shared() const
-            {
-                return std::dynamic_pointer_cast<T>(shared<B>());
-            }
+        std::shared_ptr<T> shared() const
+        {
+            return std::dynamic_pointer_cast<T>(shared<B>());
+        }
 
         /// @brief Raw pointer access.
         template<typename T = D> T* raw() const
@@ -144,21 +141,20 @@ namespace Sgt
         /// @brief Compare two `ComponentPtrs`.
         ///
         /// Undefined behaviour if they come from different ComponentCollection containers.
-        template<typename RhsD, bool rhsIsConst>
-            bool operator==(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
-            {
-                // First comparison mainly to get nullptrs.
-                return (it_ == rhs.it_) || shared() == rhs.shared();
-            }
+        template<typename RhsD, bool rhsIsConst> bool operator==(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
+        {
+            // First comparison mainly to get nullptrs.
+            return (it_ == rhs.it_) || shared() == rhs.shared();
+        }
 
         /// @brief Compare two `ComponentPtr`s.
         ///
         /// Undefined behaviour if they come from different ComponentCollection containers.
         template<typename RhsD, bool rhsIsConst>
-            bool operator!=(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
-            {
-                return !operator=(rhs);
-            }
+        bool operator!=(const ComponentPtr<B, RhsD, rhsIsConst>& rhs) const 
+        {
+            return !operator=(rhs);
+        }
     };
 
     /// @brief Pointer type to a constant member of `ComponentCollection`.
@@ -255,11 +251,11 @@ namespace Sgt
         Ptr reserve(const std::string& key) {insert(key, std::shared_ptr<T>(nullptr));}
 
         template<typename U, typename ... Args>
-            std::pair<Ptr, std::shared_ptr<U>> emplace(const std::string& key, Args&&... args)
-            {
-                auto comp = std::make_shared<U>(std::forward<Args>(args)...);
-                return {insert(key, comp), comp};
-            }
+        std::pair<Ptr, std::shared_ptr<U>> emplace(const std::string& key, Args&&... args)
+        {
+            auto comp = std::make_shared<U>(std::forward<Args>(args)...);
+            return {insert(key, comp), comp};
+        }
 
         std::shared_ptr<T> remove(const std::string& key) 
         {
