@@ -18,6 +18,7 @@ if [ ! -f Makefile ]; then
 fi
 make || exit $?
 $SUDO make install || exit $?
+git checkout ../examples/Makefile # Generated file checked into repo, undo mods.
 cd ../..
 
 cd yaml-cpp
