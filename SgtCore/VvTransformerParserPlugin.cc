@@ -57,17 +57,11 @@ namespace Sgt
         Complex ZLW1 = parser.expand<Complex>(nd["leakage_impedance_w1"]);
         Complex ZLW2 = parser.expand<Complex>(nd["leakage_impedance_w2"]);
 
-        auto ndTieAdmittance = nd["tie_admittance"];
-        Complex YTie = ndTieAdmittance ? parser.expand<Complex>(ndTieAdmittance) : Complex{0.0, 0.0};
-        
-        auto ndGndAdmittance = nd["ground_admittance"];
-        Complex YGnd = ndGndAdmittance ? parser.expand<Complex>(ndGndAdmittance) : Complex{0.0, 0.0};
-        
         const Phases phases0 = parser.expand<Phases>(nd["phases_0"]);
         const Phases phases1 = parser.expand<Phases>(nd["phases_1"]);
         
         std::unique_ptr<VvTransformer> trans(
-                new VvTransformer(id, nomRatioW1, nomRatioW2, offNomRatioW1, offNomRatioW2, ZLW1, ZLW2, YTie, YGnd,
+                new VvTransformer(id, nomRatioW1, nomRatioW2, offNomRatioW1, offNomRatioW2, ZLW1, ZLW2,
                     phases0, phases1));
 
         return trans;

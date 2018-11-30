@@ -47,18 +47,6 @@ namespace Sgt
         return IWindings<1>(*this);
     }
             
-    void VvTransformer::setYTie(Complex YTie)
-    {
-        YTie_ = YTie;
-        invalidate();
-    }
-            
-    void VvTransformer::setYGround(Complex YGround)
-    {
-        YGround_ = YGround;
-        invalidate();
-    }
-
     Mat<Complex> VvTransformer::calcY() const
     {
         // 0-1 windings:
@@ -84,10 +72,10 @@ namespace Sgt
         return
         { 
         {a2,                -a2,                0.0,                -ac,                ac,                 0.0},
-        {-a2,               a2+b2+YTie_,        -b2,                ac,                 -ac-bc-YTie_,       bc},
+        {-a2,               a2+b2,              -b2,                ac,                 -ac-bc,             bc},
         {0.0,               -b2,                b2,                 0.0,                bc,                 -bc},
         {-a,                a,                  0.0,                YLW1,               -YLW1,              0.0},
-        {a,                 -a-b-YTie_,         b,                  -YLW1,    YLW1+YLW2+YTie_+YGround_,     -YLW2},
+        {a,                 -a-b,               b,                  -YLW1,              YLW1+YLW2,          -YLW2},
         {0.0,               b,                  -b,                 0.0,                -YLW2,              YLW2}
         };
     }

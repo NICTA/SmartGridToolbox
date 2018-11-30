@@ -45,26 +45,22 @@ namespace Sgt
         /// @{
 
         /// @brief Constructor
-        /// @param nomRatio Nominal complex voltage/turns ratio for windings.
-        /// @param offNomRatioW1 Off-nominal complex voltage/turns ratio for windings between phases 1 and 0.
-        /// @param offNomRatioW2 Off-nominal complex voltage/turns ratio for windings between phases 1 and 2.
+        /// @param nomRatioW1 Nominal complex voltage/turns ratio for winding between phases 1 and 0.
+        /// @param nomRatioW2 Nominal complex voltage/turns ratio for winding between phases 1 and 2.
+        /// @param offNomRatioW1 Off-nominal complex voltage/turns ratio for winding between phases 1 and 0.
+        /// @param offNomRatioW2 Off-nominal complex voltage/turns ratio for winding between phases 1 and 2.
         /// @param ZLW1 The leakage impedance between phases 1 and 0, must be > 0.
         /// @param ZLW2 The leakage impedance between phases 1 and 2, must be > 0.
-        /// @param YTie Tie admittance for center phase.
-        /// @param YGround Ground admittance for center phase.
         /// @param phases0 The phases on the first (primary) side.
         /// @param phases1 The phases on the second (secondary) side.
         VvTransformer(const std::string& id, Complex nomRatioW1, Complex nomRatioW2,
                 Complex offNomRatioW1, Complex offNomRatioW2,
                 Complex ZLW1, Complex ZLW2,
-                Complex YTie, Complex YGround,
                 const Phases& phases0 = {Phase::A, Phase::B, Phase::C},
                 const Phases& phases1 = {Phase::A, Phase::B, Phase::C}) :
             Component(id),
             TransformerAbc(phases0, phases1, {nomRatioW1, nomRatioW2}, {offNomRatioW1, offNomRatioW2},
-                    {ZLW1, ZLW2}, {}),
-            YTie_(YTie),
-            YGround_(YGround)
+                    {ZLW1, ZLW2}, {})
         {
             // Empty.
         }
@@ -94,29 +90,6 @@ namespace Sgt
 
         /// @}
 
-        /// @name Parameters:
-        /// @{
-
-        Complex YTie() const
-        {
-            return YTie_;
-        }
-
-        void setYTie(Complex YTie);
-
-        SGT_PROP_GET_SET(YTie, YTie, Complex, setYTie, Complex);
-
-        Complex YGround() const
-        {
-            return YGround_;
-        }
-
-        void setYGround(Complex YGround);
-
-        SGT_PROP_GET_SET(YGround, YGround, Complex, setYGround, Complex);
-
-        /// @}
-
         /// @name Private member functions
         /// @{
 
@@ -127,9 +100,6 @@ namespace Sgt
         /// @}
 
         private:
-
-        Complex YTie_; ///< Admittance tying terminals 2 between primary and secondary.
-        Complex YGround_; ///< Admittance tying secondary terminal 2 to ground.
     };
 }
 
