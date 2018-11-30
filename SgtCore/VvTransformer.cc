@@ -54,29 +54,29 @@ namespace Sgt
         Complex ac = conj(a);
         Complex a2 = a * ac;
 
-        Complex YLW1 = 1.0 / ZL()(0);
-        a *= YLW1;
-        ac *= YLW1;
-        a2 *= YLW1;
+        Complex ylw1 = 1.0 / ZL()(0);
+        a *= ylw1;
+        ac *= ylw1;
+        a2 *= ylw1;
         
         // 1-2 windings:
         Complex b = 1.0 / turnsRatio()(1);
         Complex bc = conj(b);
         Complex b2 = b * bc;
 
-        Complex YLW2 = 1.0 / ZL()(1);
-        b *= YLW2;
-        bc *= YLW2;
-        b2 *= YLW2;
+        Complex ylw2 = 1.0 / ZL()(1);
+        b *= ylw2;
+        bc *= ylw2;
+        b2 *= ylw2;
 
         return
         { 
         {a2,                -a2,                0.0,                -ac,                ac,                 0.0},
         {-a2,               a2+b2-ac-bc,        -b2,                ac,                 0.0,                bc},
         {0.0,               -b2,                b2,                 0.0,                bc,                 -bc},
-        {-a,                a,                  0.0,                YLW1,               -YLW1,              0.0},
-        {a,                 0.0,                b,                  -YLW1,              YLW1+YLW2-a-b,      -YLW2},
-        {0.0,               b,                  -b,                 0.0,                -YLW2,              YLW2}
+        {-a,                a,                  0.0,                ylw1,               -ylw1,              0.0},
+        {a,                 0.0,                b,                  -ylw1,              ylw1+ylw2-a-b,      -ylw2},
+        {0.0,               b,                  -b,                 0.0,                -ylw2,              ylw2}
         };
     }
 }

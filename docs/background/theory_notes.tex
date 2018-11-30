@@ -916,6 +916,23 @@ Y &=
 	0 & \frac{y_{LC}}{n_C} & -\frac{y_{LC}}{n_C} & 0 & -y_{LC}\ & y_{LC}
 \end{bmatrix}
 \end{align}
+However, there is an issue here, in that the neutral point of the secondary floats, which may cause numerical issues when solving the Newton Raphson equations. We solve this issue by noting that $V_B = V_b$, which may be implemented by making changes to the second and fifth rows of this equation, as follows:
+\begin{align}
+Y &= 
+\begin{bmatrix}
+	\frac{y_{LA}}{|n_A|^2} & -\frac{y_{LA}}{|n_A|^2} & 0 & -\frac{y_{LA}}{n_A^*} & \frac{y_{LA}}{n_A^*} & 0 \\
+	%
+	-\frac{y_{LA}}{|n_A|^2} & \left(\frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2} - \frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & 0 & \frac{y_{LC}}{n_C^*} \\
+	%
+	0 & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LC}}{|n_C|^2} & 0 & \frac{y_{LC}}{n_C^*} &  -\frac{y_{LC}}{n_C^*} \\
+	%
+	-\frac{y_{LA}}{n_A} & \frac{y_{LA}}{n_A} & 0 & y_{LA} & -y_{LA} & 0 \\
+	%
+	\frac{y_{LA}}{n_A} & 0 & \frac{y_{LC}}{n_C} & -y_{LA} & \left(y_{LA} + y_{LC}-\frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) & -y_{LC} \\
+	%
+	0 & \frac{y_{LC}}{n_C} & -\frac{y_{LC}}{n_C} & 0 & -y_{LC}\ & y_{LC}
+\end{bmatrix}
+\end{align}
 
 \section{General single phase branch model}
 \label{SEC_GEN_BRANCH_MODEL}
