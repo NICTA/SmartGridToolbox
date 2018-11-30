@@ -72,10 +72,10 @@ namespace Sgt
         return
         { 
         {a2,                -a2,                0.0,                -ac,                ac,                 0.0},
-        {-a2,               a2+b2,              -b2,                ac,                 -ac-bc,             bc},
+        {-a2,               a2+b2-ac-bc,        -b2,                ac,                 0.0,                bc},
         {0.0,               -b2,                b2,                 0.0,                bc,                 -bc},
         {-a,                a,                  0.0,                YLW1,               -YLW1,              0.0},
-        {a,                 -a-b,               b,                  -YLW1,              YLW1+YLW2,          -YLW2},
+        {a,                 0.0,                b,                  -YLW1,              YLW1+YLW2-a-b,      -YLW2},
         {0.0,               b,                  -b,                 0.0,                -YLW2,              YLW2}
         };
     }
