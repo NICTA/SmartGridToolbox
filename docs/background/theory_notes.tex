@@ -889,41 +889,29 @@ with the nodal admittance matrix being specified by the matrix on the right, inc
 \label{FIG_OPEN_DELTA}
 \end{center}
 \end{figure}
-We use the open delta model shown in \ref{FIG_OPEN_DELTA}. Note that the two middle phases are tied together using an admittance, to prevent a floating neutral. There are other grounding options available, for example, to ground the middle phase, and the model can be easily modified for these. Using Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
+We use the open delta model shown in \ref{FIG_OPEN_DELTA}. Using the equations for an ideal transformer, Eq. (\ref{EQ_REAL_TRANS}) (and neglecting magnetising impedance),  we can derive the following equations:
 \begin{align}
 	I_A &= \frac{y_{LA}}{|n_A|^2}(V_A - V_B) - \frac{y_{LA}}{n_A^*}(V_a - V_b) \notag \\
-	&= V_A\left(\frac{y_{LA}}{|n_A|^2}\right) + V_B\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_a\left(-\frac{y_{LA}}{n_A^*}\right) + V_b\left(\frac{y_{LA}}{n_A^*}\right) \notag \\
-	%
-	I_B &= y_\text{tie}(V_B - V_b) - I_A - I_C \notag \\
-	&= V_A\left(-\frac{y_{LA}}{|n_A|^2}\right) + V_B \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) + V_C\left(-\frac{y_{LC}}{|n_C|^2}\right) \notag \\
-	&+ V_a\left(\frac{y_{LA}}{n_A^*}\right) + V_b\left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) + V_c\left(\frac{y_{LC}}{n_C^*}\right) \notag \\
 	%
 	I_C &= \frac{y_{LC}}{|n_C|^2}(V_C - V_B) - \frac{y_{LC}}{n_C^*}(V_c - V_b) \notag \\
-	&= V_B\left(-\frac{y_{LC}}{|n_C|^2}\right) + V_C\left(\frac{y_{LC}}{|n_C|^2}\right) + V_b\left(\frac{y_{LC}}{n_C^*}\right) +  V_c\left(-\frac{y_{LC}}{n_C^*}\right) \notag \\
 	%
 	I_a &= -\frac{y_{LA}}{n_A}(V_A - V_B) + y_{LA}(V_a - V_b) \notag \\
-	&= V_A\left(-\frac{y_{LA}}{n_A}\right) + V_B\left(\frac{y_{LA}}{n_A}\right) + V_a\left(y_{LA}\right) + V_b\left(-y_{LA}\right)\notag \\
-	%
-	I_b &= -y_\text{tie}(V_B - V_b) - I_a - I_c \notag \\
-	&= V_A\left( \frac{y_{LA}}{n_A}\right) + V_B\left(-y_\text{tie} - \frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) + V_C\left( \frac{y_{LC}}{n_C}\right) \notag \\
-	&+ V_a\left(-y_{LA}\right) + V_b\left(y_\text{tie} + y_{LA} + y_{LC}\right) + V_c\left(-y_{LC}\right) \notag \\
 	%
 	I_c &= -\frac{y_{LC}}{n_C}(V_C - V_B) + y_{LC}(V_c - V_b) \notag \\
-	&= V_B\left(\frac{y_{LC}}{n_C}\right) + V_C\left( -\frac{y_{LC}}{n_C}\right) + V_b\left(-y_{LC}\right)  + V_c\left(y_{LC}\right)
 \end{align}
-Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
+We assume that both sides of of the transformer are ungrounded, and therefore there is no zero sequence current: $I_A + I_B + IC = I_a + I_b + I_c = 0$. Thus, $I_B = -I_A - I_C$, and $I_b = -I_a - I_c$. Since $I = YV$, we can deduce the bus admittance matrix $Y$ as:
 \begin{align}
 Y &= 
 \begin{bmatrix}
 	\frac{y_{LA}}{|n_A|^2} & -\frac{y_{LA}}{|n_A|^2} & 0 & -\frac{y_{LA}}{n_A^*} & \frac{y_{LA}}{n_A^*} & 0 \\
 	%
-	-\frac{y_{LA}}{|n_A|^2} & \left(y_\text{tie} + \frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & \left(-y_\text{tie} -\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & \frac{y_{LC}}{n_C^*} \\
+	-\frac{y_{LA}}{|n_A|^2} & \left(\frac{y_{LA}}{|n_A|^2} + \frac{y_{LC}}{|n_C|^2}\right) & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LA}}{n_A^*} & \left(-\frac{y_{LA}}{n_A^*} - \frac{y_{LC}}{n_C^*}\right) & \frac{y_{LC}}{n_C^*} \\
 	%
 	0 & -\frac{y_{LC}}{|n_C|^2} & \frac{y_{LC}}{|n_C|^2} & 0 & \frac{y_{LC}}{n_C^*} &  -\frac{y_{LC}}{n_C^*} \\
 	%
 	-\frac{y_{LA}}{n_A} & \frac{y_{LA}}{n_A} & 0 & y_{LA} & -y_{LA} & 0 \\
 	%
-	\frac{y_{LA}}{n_A} & \left(-y_\text{tie} - \frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) & \frac{y_{LC}}{n_C} & -y_{LA} & \left(y_\text{tie} + y_{LA} + y_{LC}\right) & -y_{LC} \\
+	\frac{y_{LA}}{n_A} & \left(-\frac{y_{LA}}{n_A} - \frac{y_{LC}}{n_C}\right) & \frac{y_{LC}}{n_C} & -y_{LA} & \left(y_{LA} + y_{LC}\right) & -y_{LC} \\
 	%
 	0 & \frac{y_{LC}}{n_C} & -\frac{y_{LC}}{n_C} & 0 & -y_{LC}\ & y_{LC}
 \end{bmatrix}
