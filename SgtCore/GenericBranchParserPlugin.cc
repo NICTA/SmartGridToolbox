@@ -56,9 +56,9 @@ namespace Sgt
         }
         else if (ndYApproxPhaseImpedance)
         {
-            const YAML::Node ndZPlus = ndYApproxPhaseImpedance["Z+"];
-            const YAML::Node ndZ0 = ndYApproxPhaseImpedance["Z0"];
-            Y = ZLine2YNode(approxPhaseImpedanceMatrix(ndZPlus.as<Complex>(), ndZ0.as<Complex>()));
+            Complex ZPlus = parser.expand<Complex>(ndYApproxPhaseImpedance["Z+"]);
+            Complex Z0 = parser.expand<Complex>(ndYApproxPhaseImpedance["Z0"]);
+            Y = ZLine2YNode(approxPhaseImpedanceMatrix(ZPlus, Z0));
         }
         
         const YAML::Node ndImpedMult = ndY["impedance_multiplier"];
