@@ -22,7 +22,7 @@ namespace Sgt
     template<size_t i> Col<Complex> VWindings(const BranchAbc& b)
     {
         Col<Complex> V = b.VBus()[i];
-        return {{V(0) - V(1), V(2) - V(1)}};
+        return {{V(0) - V(1), V(1) - V(2)}};
     }
     Col<Complex> VvTransformer::VWindings0() const
     {
@@ -36,7 +36,7 @@ namespace Sgt
     template<size_t i> Col<Complex> IWindings(const BranchAbc& b)
     {
         Col<Complex> I = b.IBus()[i];
-        return {{I(0), I(2)}};
+        return {{I(0), -I(2)}};
     }
     Col<Complex> VvTransformer::IWindings0() const
     {
