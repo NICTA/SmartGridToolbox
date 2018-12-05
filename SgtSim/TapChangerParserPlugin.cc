@@ -28,7 +28,9 @@ namespace Sgt
         assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "transformer_id");
 
-        assertFieldPresent(nd, "taps");
+        assertFieldPresent(nd, "min_tap");
+        assertFieldPresent(nd, "max_tap");
+        assertFieldPresent(nd, "n_taps");
         assertFieldPresent(nd, "setpoint");
         assertFieldPresent(nd, "tolerance");
         assertFieldPresent(nd, "ctrl_side_idx");
@@ -39,7 +41,12 @@ namespace Sgt
         std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
         std::string transId = parser.expand<std::string>(nd["transformer_id"]);
 
-        std::vector<double> taps = parser.expand<std::vector<double>>(nd["taps"]);
+        double minTap = parser.expand<double>(nd["min_tap"]);
+        double maxTap = parser.expand<double>(nd["max_tap"]);
+        std::size_t nTaps = parser.expand<std::size_t>(nd["n_taps"]);
+        std::vector<double> taps(nTaps);
+        double dTap = (maxTap - minTap) / (nTaps - 1);
+        for (std::size_t i = 0; i < nTaps; ++i) taps[i] = maxTap - i * dTap; // Reverse order.
         double setpoint = parser.expand<double>(nd["setpoint"]);
         double tolerance = parser.expand<double>(nd["tolerance"]);
         arma::uword ctrlSideIdx = parser.expand<arma::uword>(nd["ctrl_side_idx"]);

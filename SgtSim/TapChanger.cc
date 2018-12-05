@@ -81,7 +81,7 @@ namespace Sgt
                 sgtLogDebug() << sComponentType() << " " << id() << " : Repeated timestep : " << iter_ << std::endl;
             }
 
-            if (iter_ < taps_.size())
+            // if (iter_ < taps_.size())
             {
                 sgtLogDebug() << sComponentType() << " " << id() << " : Try update" << std::endl;
                 val_ = get();
