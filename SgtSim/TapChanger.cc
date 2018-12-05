@@ -22,7 +22,9 @@ namespace Sgt
     TapChanger::TapChanger(
             const std::string& id,
             const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
-            const std::vector<double>& taps,
+            double minTap,
+            double maxTap,
+            size_t nTaps,
             double setpoint,
             double tolerance,
             arma::uword ctrlSideIdx,
@@ -33,7 +35,7 @@ namespace Sgt
             Complex topFactorI) :
         Component(id),
         trans_(trans),
-        taps_(taps),
+        taps_(nTaps),
         setpoint_(setpoint),
         tolerance_(tolerance),
         ctrlSideIdx_(ctrlSideIdx),
@@ -43,6 +45,8 @@ namespace Sgt
         ZLdc_(ZLdc),
         topFactorI_(topFactorI)
     {
+        double dTap = (maxTap - minTap) / (nTaps - 1);
+        for (std::size_t i = 0; i < nTaps; ++i) taps_[i] = maxTap - i * dTap; // Reverse order.
         needsUpdate().addTrigger(trans_->bus1()->voltageUpdated());
         // Slightly KLUDGey: If the bus voltage updates, then so might the winding voltage.
     }

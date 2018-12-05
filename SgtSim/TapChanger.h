@@ -56,7 +56,9 @@ namespace Sgt
         TapChanger(
                 const std::string& id,
                 const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
-                const std::vector<double>& taps,
+                double minTap,
+                double maxTap,
+                size_t nTaps,
                 double setpoint,
                 double tolerance,
                 arma::uword ctrlSideIdx,

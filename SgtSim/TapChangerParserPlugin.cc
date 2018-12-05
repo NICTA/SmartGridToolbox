@@ -44,9 +44,6 @@ namespace Sgt
         double minTap = parser.expand<double>(nd["min_tap"]);
         double maxTap = parser.expand<double>(nd["max_tap"]);
         std::size_t nTaps = parser.expand<std::size_t>(nd["n_taps"]);
-        std::vector<double> taps(nTaps);
-        double dTap = (maxTap - minTap) / (nTaps - 1);
-        for (std::size_t i = 0; i < nTaps; ++i) taps[i] = maxTap - i * dTap; // Reverse order.
         double setpoint = parser.expand<double>(nd["setpoint"]);
         double tolerance = parser.expand<double>(nd["tolerance"]);
         arma::uword ctrlSideIdx = parser.expand<arma::uword>(nd["ctrl_side_idx"]);
@@ -74,7 +71,7 @@ namespace Sgt
         auto trans = simNetwork->network().branches()[transId].as<TransformerAbc, true>();
         sgtAssert(trans != nullptr, std::string(key()) + ": transformer_id = " + transId + " was not found.");
 
-        sim.newSimComponent<TapChanger>(id, trans, taps, setpoint, tolerance, ctrlSideIdx, windingIdx, ratioIdx,
-                hasLdc, ZLdc, topFactorLdc);
+        sim.newSimComponent<TapChanger>(id, trans, minTap, maxTap, nTaps, setpoint, tolerance,
+                ctrlSideIdx, windingIdx, ratioIdx, hasLdc, ZLdc, topFactorLdc);
     }
 }
