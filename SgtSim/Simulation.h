@@ -93,7 +93,7 @@ namespace Sgt
         /// @brief Access a particular SimComponent of a given type.
         template<typename T> ConstSimComponentPtr<T> simComponent(const std::string& id) const
         {
-            return simComps_[id];
+            return simComps_[id].as<T>();
         }
 
         /// @brief Access a particular SimComponent of a given type.
