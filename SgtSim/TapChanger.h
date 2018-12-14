@@ -15,7 +15,9 @@
 #ifndef TAP_CHANGER_DOT_H
 #define TAP_CHANGER_DOT_H
 
+#include <SgtSim/Heartbeat.h>
 #include <SgtSim/SimComponent.h>
+#include <SgtSim/TimeSeries.h>
 
 #include <SgtCore/Bus.h>
 #include <SgtCore/Transformer.h>
@@ -24,27 +26,95 @@
 
 namespace Sgt
 {
+    class TapChangerAbc : virtual public SimComponent
+    {
+        public:
+
+        /// @name Lifecycle:
+        /// @{
+
+        TapChangerAbc(
+                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                arma::uword ratioIdx,
+                double minTapRatio,
+                double maxTapRatio,
+                int minTap,
+                std::size_t nTaps);
+
+        /// @}
+
+        /// @name Component virtual overridden member functions.
+        /// @{
+
+        // virtual json toJson() const override; TODO
+
+        /// @}
+
+        /// @name My functions.
+        /// @{
+
+        int tap() const
+        {
+            return tap_;
+        }
+        
+        double tapRatio() const
+        {
+            return tapRatios_[tapIdx()];
+        }
+        
+        const std::vector<double>& tapRatios() const
+        {
+            return tapRatios_;
+        }
+
+        /// @}
+
+        protected:
+
+        std::size_t tapIdx() const
+        {
+            return static_cast<std::size_t>(tap_ - minTap_);
+        }
+
+        void setTap(int tap)
+        {
+            tap_ = tap;
+            trans_->setOffNomRatio(tapRatio(), ratioIdx_);
+        }
+
+        protected:
+
+        const ConstComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
+        arma::uword ratioIdx_; // Idx into offNomRatio vector to adjust.
+
+        std::vector<double> tapRatios_;
+
+        int tap_{0};
+        int minTap_{0};
+    };
 
     //  Init :   
-    //      set().
+    //      setTap(tap).
     //      Device fires event
     //      network updates etc.
     //  Bus updates :
     //      contingent update of this.
     //  Update:
-    //      get() to assess setpoint; bus is already updated. 
-    //      set() if necessary :
+    //      getCtrlV() to assess setpoint; bus is already updated. 
+    //      setTap(tap) if necessary :
     //          bus setpoint changed which triggers another cycle.
 
-    class TapChanger : public SimComponent
+    class AutoTapChanger : public TapChangerAbc
     {
         public:
+
         /// @name Static member functions:
         /// @{
 
         static const std::string& sComponentType()
         {
-            static std::string result("tap_changer");
+            static std::string result("auto_tap_changer");
             return result;
         }
 
@@ -53,22 +123,21 @@ namespace Sgt
         /// @name Lifecycle:
         /// @{
 
-        TapChanger(
+        AutoTapChanger(
                 const std::string& id,
                 const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
-                double minTap,
-                double maxTap,
-                size_t nTaps,
+                arma::uword ratioIdx,
+                double minTapRatio,
+                double maxTapRatio,
+                int minTap,
+                std::size_t nTaps,
                 double setpoint,
                 double tolerance,
                 arma::uword ctrlSideIdx,
-                arma::uword windingIdx,
-                arma::uword ratioIdx,
+                arma::uword ctrlWindingIdx,
                 bool hasLdc = false,
                 Complex ZLdc = {0.0, 0.0},
-                Complex topFactorI = 1.0);
-
-        virtual ~TapChanger() = default;
+                Complex ldcTopFactorI = 1.0);
 
         /// @}
 
@@ -101,16 +170,6 @@ namespace Sgt
         /// @name My functions.
         /// @{
 
-        const std::vector<double>& taps() const
-        {
-            return taps_;
-        }
-
-        std::size_t tapSetting() const
-        {
-            return setting_;
-        }
-
         double setpoint() const
         {
             return setpoint_;
@@ -121,30 +180,87 @@ namespace Sgt
             return tolerance_;
         }
 
-        double get() const;
+        protected:
 
-        void set(double val);
+        double getCtrlV() const;
 
         /// @}
 
         private:
-        const ConstComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
 
-        std::vector<double> taps_;
         double setpoint_;
         double tolerance_{0.02};
-
-        Time prevTimestep_{TimeSpecialValues::neg_infin};
-        size_t iter_{0};
-        std::size_t setting_{0};
-        double val_{0};
-
         arma::uword ctrlSideIdx_; // Secondary (0) or primary (1)
-        arma::uword windingIdx_; // Which winding does tap changer act on, e.g. 1, 2, or 3?
-        arma::uword ratioIdx_; // Idx into offNomRatio vector to adjust.
+        arma::uword ctrlWindingIdx_; // Which winding does tap changer act on, e.g. 1, 2, or 3?
         bool hasLdc_; // Is there line drop compensation?
         Complex ZLdc_; // Impedance for LDC.
-        Complex topFactorI_; // LDC topological factor that projects I in winding to a line current.
+        Complex ldcTopFactorI_; // LDC topological factor that projects I in winding to a line current.
+        
+        Time prevTimestep_{TimeSpecialValues::neg_infin};
+        size_t iter_{0};
+        double ctrlV_{0};
+    };
+    
+    class TimeSeriesTapChanger : public Heartbeat, public TapChangerAbc
+    {
+        public:
+
+        /// @name Static member functions:
+        /// @{
+
+        static const std::string& sComponentType()
+        {
+            static std::string result("time_series_tap_changer");
+            return result;
+        }
+
+        /// @}
+
+        /// @name Lifecycle:
+        /// @{
+
+        TimeSeriesTapChanger(
+                const std::string& id,
+                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                arma::uword ratioIdx,
+                double minTapRatio,
+                double maxTapRatio,
+                int minTap,
+                std::size_t nTaps,
+                ConstTimeSeriesPtr<StepwiseTimeSeries<Time, double>> series,
+                const Time& dt
+                ) :
+            Heartbeat(dt),
+            TapChangerAbc(trans, ratioIdx, minTapRatio, maxTapRatio, minTap, nTaps),
+            series_(series)
+        {
+            // Empty.
+        }
+
+        /// @}
+
+        /// @name Component virtual overridden member functions.
+        /// @{
+
+        virtual const std::string& componentType() const override
+        {
+            return sComponentType();
+        }
+
+        // virtual json toJson() const override; TODO
+
+        /// @}
+
+        /// @name SimComponent virtual overridden member functions.
+        /// @{
+
+        virtual void updateState(const Time& t) override;
+
+        /// @}
+
+        private:
+
+        ConstTimeSeriesPtr<StepwiseTimeSeries<Time, double>> series_;
     };
 }
 

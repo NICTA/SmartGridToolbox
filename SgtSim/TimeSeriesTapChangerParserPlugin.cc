@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TapChangerParserPlugin.h"
+#include "TimeSeriesTapChangerParserPlugin.h"
 
 #include "Inverter.h"
 #include "SimNetwork.h"
@@ -22,48 +22,31 @@
 
 namespace Sgt
 {
-    void TapChangerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
+    void TimeSeriesTapChangerParserPlugin::parse(const YAML::Node& nd, Simulation& sim, const ParserBase& parser) const
     {
         assertFieldPresent(nd, "id");
         assertFieldPresent(nd, "sim_network_id");
         assertFieldPresent(nd, "transformer_id");
-
-        assertFieldPresent(nd, "min_tap");
-        assertFieldPresent(nd, "max_tap");
-        assertFieldPresent(nd, "n_taps");
-        assertFieldPresent(nd, "setpoint");
-        assertFieldPresent(nd, "tolerance");
-        assertFieldPresent(nd, "ctrl_side_idx");
-        assertFieldPresent(nd, "winding_idx");
         assertFieldPresent(nd, "ratio_idx");
+        assertFieldPresent(nd, "min_tap_ratio");
+        assertFieldPresent(nd, "max_tap_ratio");
+        assertFieldPresent(nd, "min_tap");
+        assertFieldPresent(nd, "n_taps");
+        assertFieldPresent(nd, "time_series_id");
+        assertFieldPresent(nd, "dt");
 
         std::string id = parser.expand<std::string>(nd["id"]);
         std::string simNetworkId = parser.expand<std::string>(nd["sim_network_id"]);
         std::string transId = parser.expand<std::string>(nd["transformer_id"]);
-
-        double minTap = parser.expand<double>(nd["min_tap"]);
-        double maxTap = parser.expand<double>(nd["max_tap"]);
-        std::size_t nTaps = parser.expand<std::size_t>(nd["n_taps"]);
-        double setpoint = parser.expand<double>(nd["setpoint"]);
-        double tolerance = parser.expand<double>(nd["tolerance"]);
-        arma::uword ctrlSideIdx = parser.expand<arma::uword>(nd["ctrl_side_idx"]);
-        arma::uword windingIdx = parser.expand<arma::uword>(nd["winding_idx"]);
         arma::uword ratioIdx = parser.expand<arma::uword>(nd["ratio_idx"]);
 
-        bool hasLdc = false;
-        Complex ZLdc = 0;
-        Complex topFactorLdc = 1.0;
-        auto ndZLdc = nd["ldc_impedance"];
-        if (ndZLdc)
-        {
-            hasLdc = true;
-            ZLdc = parser.expand<Complex>(ndZLdc);
-            auto ndTopFactorLdc = nd["ldc_top_factor"];
-            if (ndTopFactorLdc)
-            {
-                topFactorLdc = parser.expand<Complex>(ndTopFactorLdc);
-            }
-        }
+        double minTapRatio = parser.expand<double>(nd["min_tap_ratio"]);
+        double maxTapRatio = parser.expand<double>(nd["max_tap_ratio"]);
+        int minTap = parser.expand<int>(nd["min_tap"]);
+        std::size_t nTaps = parser.expand<std::size_t>(nd["n_taps"]);
+        
+        std::string timeSeriesId = parser.expand<std::string>(nd["time_series_id"]);
+        Time dt = parser.expand<Time>(nd["dt"]);
 
         ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
         sgtAssert(simNetwork != nullptr, std::string(key()) + ": sim_network_id = " + simNetworkId + " was not found.");
@@ -71,7 +54,10 @@ namespace Sgt
         auto trans = simNetwork->network().branches()[transId].as<TransformerAbc, true>();
         sgtAssert(trans != nullptr, std::string(key()) + ": transformer_id = " + transId + " was not found.");
 
-        sim.newSimComponent<TapChanger>(id, trans, minTap, maxTap, nTaps, setpoint, tolerance,
-                ctrlSideIdx, windingIdx, ratioIdx, hasLdc, ZLdc, topFactorLdc);
+        ConstTimeSeriesPtr<StepwiseTimeSeries<Time, double>> series = 
+            sim.timeSeries()[timeSeriesId].as<StepwiseTimeSeries<Time, double>, true>();
+        
+        sim.newSimComponent<TimeSeriesTapChanger>(id, trans, ratioIdx, minTapRatio, maxTapRatio, minTap, nTaps,
+                series, dt);
     }
 }

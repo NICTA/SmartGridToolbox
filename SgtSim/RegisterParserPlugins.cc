@@ -21,8 +21,9 @@
 #include "SimMatpowerParserPlugin.h"
 #include "SimNetworkParserPlugin.h"
 #include "SimpleBuildingParserPlugin.h"
-#include "TapChangerParserPlugin.h"
+#include "AutoTapChangerParserPlugin.h"
 #include "TimeSeriesParserPlugin.h"
+#include "TimeSeriesTapChangerParserPlugin.h"
 #include "TimeSeriesZipParserPlugin.h"
 #include "Simulation.h"
 #include "SolarPvParserPlugin.h"
@@ -40,8 +41,9 @@ namespace Sgt
         p.registerParserPlugin<SimMatpowerParserPlugin>();
         p.registerParserPlugin<SimNetworkParserPlugin>();
         p.registerParserPlugin<SimpleBuildingParserPlugin>();
-        p.registerParserPlugin<TapChangerParserPlugin>();
+        p.registerParserPlugin<AutoTapChangerParserPlugin>();
         p.registerParserPlugin<TimeSeriesParserPlugin>();
+        p.registerParserPlugin<TimeSeriesTapChangerParserPlugin>();
         p.registerParserPlugin<TimeSeriesZipParserPlugin>();
         p.registerParserPlugin<SolarPvParserPlugin>();
         p.registerParserPlugin<WeatherParserPlugin>();

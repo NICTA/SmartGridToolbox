@@ -19,45 +19,57 @@ using namespace arma;
 
 namespace Sgt
 {
-    TapChanger::TapChanger(
-            const std::string& id,
+    TapChangerAbc::TapChangerAbc(
             const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
-            double minTap,
-            double maxTap,
-            size_t nTaps,
-            double setpoint,
-            double tolerance,
-            arma::uword ctrlSideIdx,
-            arma::uword windingIdx,
             arma::uword ratioIdx,
-            bool hasLdc,
-            Complex ZLdc,
-            Complex topFactorI) :
-        Component(id),
+            double minTapRatio,
+            double maxTapRatio,
+            int minTap,
+            std::size_t nTaps) :
         trans_(trans),
-        taps_(nTaps),
-        setpoint_(setpoint),
-        tolerance_(tolerance),
-        ctrlSideIdx_(ctrlSideIdx),
-        windingIdx_(windingIdx),
         ratioIdx_(ratioIdx),
-        hasLdc_(hasLdc),
-        ZLdc_(ZLdc),
-        topFactorI_(topFactorI)
+        tapRatios_(nTaps)
     {
-        double dTap = (maxTap - minTap) / (nTaps - 1);
-        for (std::size_t i = 0; i < nTaps; ++i) taps_[i] = maxTap - i * dTap; // Reverse order.
-        needsUpdate().addTrigger(trans_->bus1()->voltageUpdated());
+        double dTap = (maxTapRatio - minTapRatio) / (nTaps - 1);
+        for (std::size_t i = 0; i < nTaps; ++i) tapRatios_[i] = maxTapRatio - i * dTap; // Reverse order.
         // Slightly KLUDGey: If the bus voltage updates, then so might the winding voltage.
     }
 
-    void TapChanger::initializeState()
+    AutoTapChanger::AutoTapChanger(
+            const std::string& id,
+            const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+            arma::uword ratioIdx,
+            double minTapRatio,
+            double maxTapRatio,
+            int minTap,
+            std::size_t nTaps,
+            double setpoint,
+            double tolerance,
+            arma::uword ctrlSideIdx,
+            arma::uword ctrlWindingIdx,
+            bool hasLdc,
+            Complex ZLdc,
+            Complex ldcTopFactorI) :
+        Component(id),
+        TapChangerAbc(trans, ratioIdx, minTapRatio, maxTapRatio, minTap, nTaps),
+        setpoint_(setpoint),
+        tolerance_(tolerance),
+        ctrlSideIdx_(ctrlSideIdx),
+        ctrlWindingIdx_(ctrlWindingIdx),
+        hasLdc_(hasLdc),
+        ZLdc_(ZLdc),
+        ldcTopFactorI_(ldcTopFactorI)
+    {
+        needsUpdate().addTrigger(trans_->bus1()->voltageUpdated());
+    }
+
+    void AutoTapChanger::initializeState()
     {
         prevTimestep_ = TimeSpecialValues::neg_infin;
     }
 
-    // TODO: what if the deadband is too small and we're alternating settings?
-    void TapChanger::updateState(const Time& t)
+    // TODO: what if the deadband is too small and we're alternating taps?
+    void AutoTapChanger::updateState(const Time& t)
     {
         sgtLogDebug() << sComponentType() << " " << id() << " : Update : " << prevTimestep_ << " -> " << t << std::endl;
         sgtLogIndent();
@@ -68,7 +80,7 @@ namespace Sgt
         {
             sgtLogDebug() << sComponentType() << " " << id() << " : First iteration" << std::endl;
             // Must be my first update in the simulation. Do a special iteration.
-            setting_ = (taps_.size() - 1) / 2;
+            tap_ = minTap_ + static_cast<int>((tapRatios_.size() - 1) / 2);
             tryAgain = true;
         }
         else
@@ -85,33 +97,33 @@ namespace Sgt
                 sgtLogDebug() << sComponentType() << " " << id() << " : Repeated timestep : " << iter_ << std::endl;
             }
 
-            // if (iter_ < taps_.size())
+            // if (iter_ < tapRatios_.size())
             {
                 sgtLogDebug() << sComponentType() << " " << id() << " : Try update" << std::endl;
-                val_ = get();
-                sgtLogDebug() << sComponentType() << " " << id() << " : Val = " << val_ << std::endl;
-                double delta = val_ - setpoint_;
+                ctrlV_ = getCtrlV();
+                sgtLogDebug() << sComponentType() << " " << id() << " : CtrlV = " << ctrlV_ << std::endl;
+                double delta = ctrlV_ - setpoint_;
                 sgtLogDebug() << sComponentType() << " " << id() << " : Delta = " << delta << std::endl;
                 if (abs(delta) >= tolerance_)
                 {
                     sgtLogDebug() << sComponentType() << " " << id() << " : Out of tolerance" << std::endl;
-                    if (delta > 0 && setting_ != 0)
+                    if (delta > 0 && tapIdx() != 0)
                     {
-                        sgtLogDebug() << sComponentType() << " " << id() << " : Reduce setting" << std::endl;
-                        // Above the setpoint and can reduce setting.
-                        --setting_;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : Reduce tap" << std::endl;
+                        // Above the setpoint and can reduce tap.
+                        setTap(tap_ - 1);
                         tryAgain = true;
                     }
-                    else if (delta < 0 && setting_ != taps_.size() - 1)
+                    else if (delta < 0 && tapIdx() != tapRatios_.size() - 1)
                     {
-                        sgtLogDebug() << sComponentType() << " " << id() << " : Increase setting" << std::endl;
-                        // Below the setpoint and can increase setting.
-                        ++setting_;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : Increase tap" << std::endl;
+                        // Below the setpoint and can increase tap.
+                        setTap(tap_ + 1);
                         tryAgain = true;
                     }
                     else
                     {
-                        sgtLogDebug() << sComponentType() << " " << id() << " : No more settings" << std::endl;
+                        sgtLogDebug() << sComponentType() << " " << id() << " : No more taps" << std::endl;
                     }
                 }
                 else
@@ -120,29 +132,30 @@ namespace Sgt
                 }
             }
         }
-        sgtLogDebug() << sComponentType() << " " << id() << " : Setting = " << setting_ << std::endl;
+        sgtLogDebug() << sComponentType() << " " << id() << " : Tap = " << tap_ << std::endl;
         if (tryAgain)
         {
-            sgtLogDebug() << sComponentType() << " " << id() << " : Setting was updated; try again" << std::endl;
-            set(taps_[setting_]);
+            sgtLogDebug() << sComponentType() << " " << id() << " : Tap was updated; try again" << std::endl;
         }
         prevTimestep_ = t;
         ++iter_;
     }
 
-    double TapChanger::get() const
+    double AutoTapChanger::getCtrlV() const
     {
-        Complex V = (ctrlSideIdx_ == 0 ? trans_->VWindings0() : trans_->VWindings1())[windingIdx_];
+        Complex V = (ctrlSideIdx_ == 0 ? trans_->VWindings0() : trans_->VWindings1())[ctrlWindingIdx_];
         if (hasLdc_)
         {
-            Complex I = (ctrlSideIdx_ == 0 ? trans_->IWindings0() : trans_->IWindings1())[windingIdx_] * topFactorI_;
+            Complex I = (ctrlSideIdx_ == 0 ? trans_->IWindings0() : trans_->IWindings1())[ctrlWindingIdx_] * ldcTopFactorI_;
             V = V - I * ZLdc_;
         }
         return abs(V);
     }
-    
-    void TapChanger::set(double val)
+
+
+    void TimeSeriesTapChanger::updateState(const Time& t)
     {
-        trans_->setOffNomRatio(val, ratioIdx_);
+        Heartbeat::updateState(t);
+        setTap(static_cast<int>(std::lround(series_->value(t))));
     }
 }

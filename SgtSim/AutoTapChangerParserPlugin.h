@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef TAP_CHANGER_PARSER_PLUGIN_DOT_H
-#define TAP_CHANGER_PARSER_PLUGIN_DOT_H
+#ifndef AUTO_TAP_CHANGER_PARSER_PLUGIN_DOT_H
+#define AUTO_TAP_CHANGER_PARSER_PLUGIN_DOT_H
 
 #include <SgtSim/SimParser.h>
 
@@ -25,33 +25,35 @@ namespace Sgt
     /// @{
     /// <b>YAML schema for `tap_changer` keyword.</b>
     ///
-    /// The `tap_changer` keyword adds a TapChanger to the Simulation.
+    /// The `auto_tap_changer` keyword adds a AutoTapChanger to the Simulation.
     ///
     /// ~~~{.yaml}
-    /// - tap_changer:
+    /// - auto_tap_changer:
     ///     id:                     <string>        # Component ID.
     ///     sim_network_id:         <string>        # SimNetwork ID.
     ///     transformer_id:         <string>        # ID of transformer to which I'm attached.
-    ///     taps:                   <real_array>    # Array of off nominal tap ratios. 
+    ///     min_tap_ratio:          <real>          # Minimum tap ratio.
+    ///     max_tap_ratio:          <real>          # Maximum tap ratio.
+    ///     min_tap:                <int>           # Minimum tap setting.
+    ///     n_taps:                 <int>           # Number of taps.
     ///     setpoint:               <real>          # Tap changer target/setpoint.
     ///     tolerance:              <real>          # Deadband is setpoint +- tolerance.
     ///     ctrl_side_idx:          <int>           # Monitor bus 0 or 1 of transformer?
     ///     winding_idx:            <int>           # Monitor which winding of transformer?
-    ///     ratio_idx:              <int>           # Control ratio of which terminal of transformer?
     ///     # The following LDC (Line Drop Compensation) parameters are optional:
     ///     ldc_impedance:          <int>           # Fictitious impedance for applying LDC.
     ///     ldc_top_factor:         <int>           # Topological factor for LDC, multiplies winding I to give line I. 
     /// ~~~
     /// @}
 
-    /// @brief Parses the `tap_changer` keyword, adding a TapChanger to the simulation.
+    /// @brief Parses the `auto_tap_changer` keyword, adding a AutoTapChanger to the simulation.
     /// @ingroup SimParserPlugins
-    class TapChangerParserPlugin : public SimParserPlugin
+    class AutoTapChangerParserPlugin : public SimParserPlugin
     {
         public:
         virtual const char* key() const override
         {
-            return "tap_changer";
+            return "auto_tap_changer";
         }
 
         public:
@@ -59,4 +61,4 @@ namespace Sgt
     };
 }
 
-#endif // TAP_CHANGER_PARSER_PLUGIN_DOT_H
+#endif // AUTO_TAP_CHANGER_PARSER_PLUGIN_DOT_H

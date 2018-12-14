@@ -27,6 +27,7 @@ libinclude_HEADERS = \
 	Weather.h
 
 libSgtSim_la_SOURCES = \
+	AutoTapChangerParserPlugin.h AutoTapChangerParserPlugin.cc \
 	Battery.h Battery.cc \
 	BatteryParserPlugin.h BatteryParserPlugin.cc \
 	DcPowerSource.h DcPowerSource.cc \
@@ -52,11 +53,11 @@ libSgtSim_la_SOURCES = \
 	SolarPvParserPlugin.h SolarPvParserPlugin.cc \
 	Sun.h Sun.cc \
 	TapChanger.h TapChanger.cc \
-	TapChangerParserPlugin.h TapChangerParserPlugin.cc \
 	TimeSeries.h \
 	TimeSeriesDcPowerSource.h \
 	TimeSeriesDcPowerSourceParserPlugin.h TimeSeriesDcPowerSourceParserPlugin.cc \
 	TimeSeriesParserPlugin.h TimeSeriesParserPlugin.cc \
+	TimeSeriesTapChangerParserPlugin.h TimeSeriesTapChangerParserPlugin.cc \
 	TimeSeriesZip.h TimeSeriesZip.cc \
 	TimeSeriesZipParserPlugin.h TimeSeriesZipParserPlugin.cc \
 	WeakOrder.h WeakOrder.cc \
