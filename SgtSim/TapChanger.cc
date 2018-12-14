@@ -28,11 +28,11 @@ namespace Sgt
             std::size_t nTaps) :
         trans_(trans),
         ratioIdx_(ratioIdx),
-        tapRatios_(nTaps)
+        tapRatios_(nTaps),
+        minTap_(minTap)
     {
         double dTap = (maxTapRatio - minTapRatio) / (nTaps - 1);
         for (std::size_t i = 0; i < nTaps; ++i) tapRatios_[i] = maxTapRatio - i * dTap; // Reverse order.
-        // Slightly KLUDGey: If the bus voltage updates, then so might the winding voltage.
     }
 
     AutoTapChanger::AutoTapChanger(
@@ -80,7 +80,7 @@ namespace Sgt
         {
             sgtLogDebug() << sComponentType() << " " << id() << " : First iteration" << std::endl;
             // Must be my first update in the simulation. Do a special iteration.
-            tap_ = minTap_ + static_cast<int>((tapRatios_.size() - 1) / 2);
+            tap_ = minTap_ + static_cast<int>((tapRatios_.size() - 1) / 2); // Start in the middle.
             tryAgain = true;
         }
         else
@@ -107,14 +107,14 @@ namespace Sgt
                 if (abs(delta) >= tolerance_)
                 {
                     sgtLogDebug() << sComponentType() << " " << id() << " : Out of tolerance" << std::endl;
-                    if (delta > 0 && tapIdx() != 0)
+                    if (delta > 0 && tapIdx() > 0)
                     {
                         sgtLogDebug() << sComponentType() << " " << id() << " : Reduce tap" << std::endl;
                         // Above the setpoint and can reduce tap.
                         setTap(tap_ - 1);
                         tryAgain = true;
                     }
-                    else if (delta < 0 && tapIdx() != tapRatios_.size() - 1)
+                    else if (delta < 0 && tapIdx() < tapRatios_.size() - 1)
                     {
                         sgtLogDebug() << sComponentType() << " " << id() << " : Increase tap" << std::endl;
                         // Below the setpoint and can increase tap.

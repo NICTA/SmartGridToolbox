@@ -230,6 +230,7 @@ namespace Sgt
                 ConstTimeSeriesPtr<StepwiseTimeSeries<Time, double>> series,
                 const Time& dt
                 ) :
+            Component(id),
             Heartbeat(dt),
             TapChangerAbc(trans, ratioIdx, minTapRatio, maxTapRatio, minTap, nTaps),
             series_(series)
