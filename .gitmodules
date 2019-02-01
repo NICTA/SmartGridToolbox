@@ -8,6 +8,6 @@
 	ignore = untracked
 [submodule "third_party/armadillo-code"]
 	path = third_party/armadillo-code
-    url = git@gitlab.com:conradsnicta/armadillo-code.git
+    url = https://gitlab.com/conradsnicta/armadillo-code.git
 	branch = 7.960.x
 	ignore = untracked
