@@ -22,10 +22,10 @@
 					The tutorial can be found in the <code>tutorials/network</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the two executables, <code>network</code> and <code>network_yaml</code>.
 				</p>
 				<p>
-					The code is self documenting. Briefly, <code>network</code> manually creates and solves a network power flow problem. Normally, one wouldn't explicitly code all the network components, as is done in this first example. Instead, objects would be loaded in from a YAML configuration file.
+					The code (<a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/network/network.cc">network.cc</a>) is self documenting. Briefly, <code>network</code> manually creates and solves a network power flow problem. Normally, one wouldn't explicitly code all the network components, as is done in this first example. Instead, objects would be loaded in from a YAML configuration file.
 				</p>
 				<p>
-					<code>network_yaml</code> loads the same problem as <code>network</code> in from the configuration file <code>network_yaml.yaml</code>, and again solves the network, achieving the same solution.
+					<a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/network/network_yaml.cc">network_yaml.cc</a> loads the same problem as <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/network/network.cc">network.cc</a> in from the configuration file <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/network/network.yaml">network.yaml</a>, and again solves the network, achieving the same solution.
 				</p>
 			</section>
 		</div>
