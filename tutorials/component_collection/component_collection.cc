@@ -55,12 +55,23 @@ int main(int argc, char** argv)
     // We can retrieve components like this:
     auto p1 = cc["f"];
     auto p2 = cc["b"];
-
+    
     // Both of these are ComponentPtr<Foo>:
     sgtLogMessage() << "Calling whoAmI on p1:" << endl;
     p1->whoAmI();
     sgtLogMessage() << "Calling whoAmI on p2:" << endl;
     p2->whoAmI();
+    
+    // We can also retrieve elements by index and iterate over them in order of insertion:
+    sgtLogMessage() << "Calling whoAmI on cc[0]:" << endl;
+    cc[0]->whoAmI();
+    sgtLogMessage() << "Calling whoAmI on cc[1]:" << endl;
+    cc[1]->whoAmI();
+    sgtLogMessage() << "Iterating:" << endl;
+    for (const auto x : cc)
+    {
+        x->whoAmI();
+    }
 
     // We can replace elements, and ComponentPtrs will remain valid and will point to the new element.
     cc.insert("f", make_shared<Foo>("foo replaced"));

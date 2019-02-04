@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
+		<meta name="description" content="NICTA SmartGridToolbox : Network tutorial" />
+		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+		<title>NICTA SmartGridToolbox <code>ComponentCollection</code> Tutorial</title>
+	</head>
+	<body>
+	<!-- MAIN CONTENT -->
+		<div id="main_content_wrap" class="outer">
+			<section id="main_content" class="inner">
+				<p>
+					<img src="images/logo.png?raw=true" alt="SmartGridToolbox Logo">
+				</p>
+				<h3><a name="component-collection-tutorial" class="anchor" href="#component-collection-tutorial"></a>ComponentCollection Tutorial</h3>
+				<p>
+					In this tutorial, we will explore the <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_component_collection.html">ComponentCollection</a></code> class, that is frequently used to store collections of objects. <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_component_collection.html">ComponentCollection&ltT&gt</a></code>s hold <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_component_ptr.html">ComponentPointer&ltT&gt</a></code>s: smart pointers to objects of type <code>T</code>. They have two special properties.
+				</p>
+				<p>
+					Firstly, they act as order preserving maps - like a cross between a <code>map</code> and a <code>vector</code>. Elements may be accessed either by their key, or by an integer index, and the elements may be iterated over in order of insertion.
+				</p>
+				<p>
+					Secondly, a <code>ComponentPointer</code> will remain pointing to the object in the <code>ComponentCollection</code> with the given key, even when that object is replaced in the <code>ComponentCollection</code>. Thus, we can safely replace elements in the collection, and be confident that any pointers that may be held will reflect these changes. This can be useful when dealing with complicated discrete event simulations involving many mutually interacting components.
+				</p>
+				<p>
+					The tutorial can be found in the <code>tutorials/component_collection</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>component_collection</code>.
+				</p>
+				<p>
+					Open an editor for <code>component_collection.cc</code>. The code is heavily documented. Run <code>./component_collection</code>, and examine the output with reference to the code and the documentation. Below, we consider sections of code in more detail. We assume that the <a href="basics_tutorial.html">basics tutorial</a> has already been completed.
+<!--
+<pre class="prettyprint"><code class="lang-cpp">
+</code></pre>
+-->
+				</p>
+					[TBD]
+				<p>
+			</section>
+		</div>
+	</body>
+</html>
