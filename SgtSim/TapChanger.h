@@ -34,7 +34,7 @@ namespace Sgt
         /// @{
 
         TapChangerAbc(
-                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                const ComponentPtr<BranchAbc, TransformerAbc>& trans,
                 arma::uword ratioIdx,
                 double minTapRatio,
                 double maxTapRatio,
@@ -85,7 +85,7 @@ namespace Sgt
 
         protected:
 
-        const ConstComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
+        const ComponentPtr<BranchAbc, TransformerAbc> trans_; // Target transformer.
         arma::uword ratioIdx_; // Idx into offNomRatio vector to adjust.
 
         std::vector<double> tapRatios_;
@@ -125,7 +125,7 @@ namespace Sgt
 
         AutoTapChanger(
                 const std::string& id,
-                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                const ComponentPtr<BranchAbc, TransformerAbc>& trans,
                 arma::uword ratioIdx,
                 double minTapRatio,
                 double maxTapRatio,
@@ -221,7 +221,7 @@ namespace Sgt
 
         TimeSeriesTapChanger(
                 const std::string& id,
-                const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+                const ComponentPtr<BranchAbc, TransformerAbc>& trans,
                 arma::uword ratioIdx,
                 double minTapRatio,
                 double maxTapRatio,

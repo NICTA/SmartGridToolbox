@@ -67,10 +67,10 @@ namespace Sgt
             }
         }
 
-        ConstSimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
+        SimComponentPtr<SimNetwork> simNetwork = sim.simComponent<SimNetwork>(simNetworkId);
         sgtAssert(simNetwork != nullptr, std::string(key()) + ": sim_network_id = " + simNetworkId + " was not found.");
 
-        auto trans = simNetwork->network().branches()[transId].as<TransformerAbc, true>();
+        auto trans = simNetwork->network().branches()[transId].as<TransformerAbc>();
         sgtAssert(trans != nullptr, std::string(key()) + ": transformer_id = " + transId + " was not found.");
 
         sim.newSimComponent<AutoTapChanger>(id, trans, ratioIdx, minTapRatio, maxTapRatio, minTap, nTaps,

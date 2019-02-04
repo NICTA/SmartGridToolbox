@@ -20,7 +20,7 @@ using namespace arma;
 namespace Sgt
 {
     TapChangerAbc::TapChangerAbc(
-            const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+            const ComponentPtr<BranchAbc, TransformerAbc>& trans,
             arma::uword ratioIdx,
             double minTapRatio,
             double maxTapRatio,
@@ -37,7 +37,7 @@ namespace Sgt
 
     AutoTapChanger::AutoTapChanger(
             const std::string& id,
-            const ConstComponentPtr<BranchAbc, TransformerAbc>& trans,
+            const ComponentPtr<BranchAbc, TransformerAbc>& trans,
             arma::uword ratioIdx,
             double minTapRatio,
             double maxTapRatio,

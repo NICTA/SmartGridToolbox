@@ -39,14 +39,17 @@ namespace Sgt
         template<typename B1, typename D1, bool isConst1> friend class ComponentPtr;
 
         private:
+
         using CIter = typename std::map<std::string, std::shared_ptr<B>>::const_iterator;
         using NCIter = typename std::map<std::string, std::shared_ptr<B>>::iterator;
 
         using Iter = std::conditional_t<isConst, CIter, NCIter>;
+        template<typename T> using CType = std::conditional_t<isConst, const T, T>;
 
         std::unique_ptr<Iter> it_{nullptr};
 
         public:
+
         /// @brief Default constructor.
         ComponentPtr() = default;
 
@@ -94,37 +97,37 @@ namespace Sgt
         }
 
         /// @brief Shared pointer access.
-        template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, bool> = 0>
-        std::shared_ptr<T> shared() const
+        template<typename T = D, std::enable_if_t<std::is_same<T, B>::value, int> = 0>
+        std::shared_ptr<CType<T>> shared() const
         {
             if (it_ == nullptr) return  nullptr; else return (**it_).second;
             // Ternary causes possible complications.
         }
 
         /// @brief Explicit shared pointer access.
-        template<typename T = D, std::enable_if_t<!std::is_same<T, B>::value, bool> = 0>
-        std::shared_ptr<T> shared() const
+        template<typename T = D, std::enable_if_t<!std::is_same<T, B>::value, int> = 0>
+        std::shared_ptr<CType<T>> shared() const
         {
-            return std::dynamic_pointer_cast<T>(shared<B>());
+            return std::dynamic_pointer_cast<CType<T>>(shared<B>());
         }
 
         /// @brief Raw pointer access.
-        template<typename T = D> T* raw() const
+        template<typename T = D> CType<T>* raw() const
         {
-            return shared<T>().get();
+            return shared<CType<T>>().get();
         }
 
         /// @brief Dereference.
-        D& operator*() const {return *(shared());}
+        CType<D>& operator*() const {return *(shared());}
 
         /// @brief Dereference. 
-        D* operator->() const {return raw();}
+        CType<D>* operator->() const {return raw();}
 
         /// @brief Converts to raw pointer. 
-        operator D*() const {return raw();}
+        operator CType<D>*() const {return raw();}
 
         /// @brief Converts to shared_ptr. 
-        operator std::shared_ptr<D>() const {return shared();}
+        operator std::shared_ptr<CType<D>>() const {return shared();}
 
         /// @brief Obtain the key in my container.
         const std::string& key() const {return (**it_).first;}
@@ -173,10 +176,12 @@ namespace Sgt
     template<typename T> class ComponentCollection
     {
         public:
+
         using ConstPtr = ConstComponentPtr<T>;
         using Ptr = ComponentPtr<T>;
 
         public:
+
         size_t size() const {return vec_.size();}
 
         ConstPtr operator[](const std::string& key) const 
@@ -220,6 +225,7 @@ namespace Sgt
         auto rcend() const {return vec_.rcend();}
 
         protected:
+
         std::map<std::string, std::shared_ptr<T>> map_;
         std::vector<Ptr> vec_;
     };
@@ -228,6 +234,7 @@ namespace Sgt
     template<typename T> class MutableComponentCollection : public ComponentCollection<T>
     {
         public:
+
         using Ptr = typename ComponentCollection<T>::Ptr;
         using ConstPtr = typename ComponentCollection<T>::ConstPtr;
 

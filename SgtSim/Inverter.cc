@@ -21,7 +21,7 @@ using namespace arma;
 
 namespace Sgt
 {
-    void InverterAbc::addDcPowerSource(const ConstSimComponentPtr<DcPowerSourceAbc>& source)
+    void InverterAbc::addDcPowerSource(const SimComponentPtr<DcPowerSourceAbc>& source)
     {
         sources_.push_back(source);
         dependsOn(source, true);
