@@ -5,6 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
 		<meta name="description" content="NICTA SmartGridToolbox : Network tutorial" />
 		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 		<title>NICTA SmartGridToolbox Basics Tutorial</title>
 	</head>
 	<body>
@@ -22,7 +23,203 @@
 					The tutorial can be found in the <code>tutorials/basics</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>basics</code>.
 				</p>
 				<p>
-					The code is self documenting. You should open a window containing <code>basics.cc</code>, run <code>./basics</code>, and examine the output with reference to the code.
+					Open an editor for <code>basics.cc</code>. The code is heavily documented. Run <code>./basics</code>, and examine the output with reference to the code and documentation. Below, we consider sections of code in more detail.
+<!--
+<pre class="prettyprint"><code class="lang-cpp">
+</code></pre>
+-->
+<pre class="prettyprint"><code class="lang-cpp">#include &ltSgtCore.h&gt // Include SgtCore headers.
+
+// Please note the following namespaces:
+using namespace Sgt;
+using namespace std;
+using namespace arma;
+</code></pre>
+					SmartGridToolbox is packaged as two libraries: SgtCore, and SgtSim. SgtCore contains utility code for handling dates, time, logging, parsing, vectors and matrices, complex numbers and so on, as well as basic code for solving power flow problems. SgtSim adds a layer for performing discrete event simulations, as well as a component library of simulation objects such as batteries, PV panels, inverters and so on.
+				</p>
+				<p>
+					Most SmartGridToolbox classes and functions are defined in the <code>Sgt</code> namespace. The <code>arma</code> namespace is used for the <a href="http://arma.sourceforge.net">Armadillo</a> library, which is used in SmartGridToolbox for vectors, matrices and linear algebra.
+				</p>
+				<p>
+					The following code shows how logging and errors are used. 
+<pre class="prettyprint"><code class="lang-cpp">   {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "Logging and Errors:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "This is how we log a message in SmartGridToolbox" << endl;
+        sgtLogWarning() << "This is how we log a warning in SmartGridToolbox" << endl;
+        {
+            sgtLogIndent();
+            sgtLogMessage() << "This scope will be indented." << endl;
+        }
+        sgtLogMessage() << "This message will not not be indented." << endl;
+        sgtLogMessage(LogLevel::VERBOSE) << "This will not be logged" << endl;
+        messageLogLevel() = LogLevel::VERBOSE;
+        sgtLogMessage(LogLevel::VERBOSE) << "This will be logged" << endl;
+        messageLogLevel() = LogLevel::NONE;
+        sgtLogMessage(LogLevel::VERBOSE) << "This will not be logged" << endl;
+        messageLogLevel() = LogLevel::NORMAL;
+        sgtLogMessage(LogLevel::VERBOSE) << "This will be logged" << endl;
+        sgtAssert(true == true, "Assertion error message");
+        if (false) sgtError("There was an error! I will throw an exception.");
+    }
+</code></pre>
+					It produces this output:
+<pre><code>MESSAGE: ----------------
+MESSAGE: Logging and Errors:
+MESSAGE: ----------------
+MESSAGE: This is how we log a message in SmartGridToolbox
+WARNING: This is how we log a warning in SmartGridToolbox
+MESSAGE:     This scope will be indented.
+MESSAGE: This message will not not be indented.
+MESSAGE: This will be logged
+</code></pre>
+				</p>
+				<p>
+					Complex numbers are handled using the Sgt::Complex class, which is actually an alias for std::complex<double>.
+<pre class="prettyprint"><code class="lang-cpp">   {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "Complex Numbers:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        Complex c{4.0, 5.0};
+        sgtLogMessage() << "Complex c = " << c << endl;
+        sgtLogIndent();
+        sgtLogMessage() << "real part = " << c.real() << endl;
+        sgtLogMessage() << "imag part = " << c.imag() << endl;
+        sgtLogMessage() << "abs = " << abs(c) << endl;
+        sgtLogMessage() << "conj = " << conj(c) << endl;
+    }
+</code></pre>
+					The code above code produces the following output:
+<pre><code>MESSAGE: ----------------
+MESSAGE: Complex Numbers:
+MESSAGE: ----------------
+MESSAGE: Complex c = 4+5j
+MESSAGE:     real part = 4
+MESSAGE:     imag part = 5
+MESSAGE:     abs = 6.40312
+MESSAGE:     conj = 4-5j
+</code></pre>
+				</p>
+				<p>
+					Linear algebra (mainly only used for processing vector and matrix classes plus some sparse matrix code that is used internally) is handled with the help of the <a href="http://arma.sourceforge.net">Armadillo</a> library. The <code>arma::Col&ltdouble&gt</code> and <code>arma::Col&ltComplex&gt</code> classes are particularly widely used, for example, to represent vectors of voltages or powers. The code below:
+<pre class="prettyprint"><code class="lang-cpp">    {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "Linear Algebra:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "SmartGridToolbox uses Armadillo for linear algebra." << endl;
+        sgtLogMessage() << "Please see the Armadillo documentation." << endl;
+        Col<double> v{1.0, 2.0, 3.0, 3.0};
+        sgtLogMessage() << "Real vector:" << endl << v << endl;
+        Mat<Complex> m{{{1.0, 0.0}, {2.0, 1.0}}, {{3.0, 10.0}, {4.0, 20.0}}};
+        sgtLogMessage() << "Complex matrix:" << endl << m << endl;
+    }
+</code></pre>
+					produces the following output:
+<pre><code>MESSAGE: ----------------
+MESSAGE: Linear Algebra:
+MESSAGE: ----------------
+MESSAGE: SmartGridToolbox uses Armadillo for linear algebra.
+MESSAGE: Please see the Armadillo documentation.
+MESSAGE: Real vector:
+         [1, 2, 3, 3]
+MESSAGE: Complex matrix:
+
+         [
+             [1, 2+1j],
+             [3+10j, 4+20j]
+         ]
+</code></pre>
+				</p>
+				<p>
+					Time is handled using the <code>Sgt::Time</code> class, which is actually an alias for the <code>boost::posix_time::time_duration</code> class. Using boost time durations, rather than absolute times, to represent points in time was a deliberate design decision that emphasises simplicity, efficiency and ease of conversion. The code below:
+<pre class="prettyprint"><code class="lang-cpp">    {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "Time:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        
+        sgtLogMessage() << 
+            "SmartGridToolbox uses boost::posix_time::time_duration to represent both durations and absolute times."
+            << endl;
+
+        sgtLogMessage() << "Setting the global timezone using a timezone/DST rule." << endl;
+        Sgt::timezone() = Timezone("AEST10AEDT,M10.5.0/02,M3.5.0/03");
+
+        Time t1 = seconds(6); 
+        sgtLogMessage() << "t1 = " << t1 << endl;
+
+        Time t2 = minutes(6); 
+        sgtLogMessage() << "t2 = " << t2 << " " << dSeconds(t2) << endl;
+        
+        Time t3 = timeFromDSeconds(124.8); 
+        sgtLogMessage() << "t3 = " << t3 << " " << dSeconds(t3) << endl;
+
+        Time t4 = timeFromUtcTimeString("2018-04-07 20:00:00");
+        sgtLogMessage() << "t4 = " << localTimeString(t4) << endl;
+        sgtLogMessage() << "Note formatting as a duration. For time formatting, do this:" << endl;
+        sgtLogMessage() << "t4 = " << localTimeString(t4) << endl;
+
+        Time t5 = timeFromLocalTimeString("2018-04-07 20:00:00");
+        sgtLogMessage() << "t5 = " << localTimeString(t5) << endl;
+
+        Time t6 = TimeSpecialValues::pos_infin;
+        Time t7 = TimeSpecialValues::neg_infin;
+        Time t8 = TimeSpecialValues::not_a_date_time;
+        sgtLogMessage() << "t6 = " << t6 << endl;
+        sgtLogMessage() << "t7 = " << t7 << endl;
+        sgtLogMessage() << "t8 = " << t8 << endl;
+    }
+</code></pre>
+produces this output:
+<pre><code>MESSAGE: ----------------
+MESSAGE: Time:
+MESSAGE: ----------------
+MESSAGE: Setting the global timezone.
+MESSAGE: t1 = 00:00:06
+MESSAGE: t2 = 00:06:00 360
+MESSAGE: t3 = 00:02:04.799999 124.8
+MESSAGE: t4 = 2018-Apr-08 06:00:00
+MESSAGE: Note formatting as a duration. For time formatting, do this:
+MESSAGE: t4 = 2018-Apr-08 06:00:00
+MESSAGE: t5 = 2018-Apr-07 20:00:00
+MESSAGE: t6 = +infinity
+MESSAGE: t7 = -infinity
+MESSAGE: t8 = not-a-date-time
+</pre></code>
+				</p>
+				<p>
+					SmartGridToolbox provides a facility for handling the JSON format, using the <a href="https://github.com/nlohmann/json">nlohmann/json</a> library. SmartGridToolbox provides a <code>Sgt::json</code> class, that is simply an alias for <code>nlohmann::json</code>. The following code shows how this may be used:
+<pre class="prettyprint"><code class="lang-cpp">   {
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "JSON:" << endl;
+        sgtLogMessage() << "----------------" << endl;
+        sgtLogMessage() << "JSON in SmartGridToolbox is handled using the nlohmann::json library." << endl;
+        sgtLogMessage() << "Please see the documentation for this library." << endl;
+        sgtLogMessage() << "We use the alias Sgt::json = nlohmann::json." << endl;
+        json obj = {{"key_1", 1}, {"key_2", {2, 3, 4, nullptr}}};
+        sgtLogMessage() << "obj = " << obj.dump(2) << endl;
+    }
+</code></pre>
+					It gives the following output:
+<pre><code>MESSAGE: ----------------
+MESSAGE: JSON:
+MESSAGE: ----------------
+MESSAGE: JSON in SmartGridToolbox is handled using the nlohmann::json library.
+MESSAGE: Please see the documentation for this library.
+MESSAGE: We use the alias Sgt::json = nlohmann::json.
+MESSAGE: obj = {
+           "key_1": 1,
+           "key_2": [
+             2,
+             3,
+             4,
+             null
+           ]
+         }
+</code></pre>.
+				</p>
+				<p>
+					One important part of SmartGridToolbox that hasn't been explored in this tutorial is the special <a href="https://yaml.org">YAML</a> data format, that is used for SmartGridToolbox configuration files. This topic is explored separately in the <a href="http://nicta.github.io/SmartGridToolbox/parsing_tutorial.html">parsing tutorial</a>.
 				</p>
 			</section>
 		</div>
