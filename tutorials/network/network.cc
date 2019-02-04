@@ -22,7 +22,7 @@ int main(int argc, char** argv)
     using namespace Sgt;
     
     Network nw;
-        // Create a network named "network".
+        // Create a network.
         
     auto bus1 = std::make_shared<Bus>("bus_1", Phase::BAL, arma::Col<Complex>{11}, 11);
         // Create a bus named "bus_1", with a single balanced (BAL) phase, a nominal voltage vector of [11 kV]
