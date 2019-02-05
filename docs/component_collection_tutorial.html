@@ -26,6 +26,12 @@
 					Secondly, a <code>ComponentPointer</code> will remain pointing to the object in the <code>ComponentCollection</code> with the given key, even when that object is replaced in the <code>ComponentCollection</code>. Thus, we can safely replace elements in the collection, and be confident that any pointers that may be held will reflect these changes. This can be useful when dealing with complicated discrete event simulations involving many mutually interacting components.
 				</p>
 				<p>
+					<code>ComponentCollection</code>s are often used to store members of the <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_component.html">Component</a></code> class, that is used in SmartGridToolbox to provide a handy base class for network components and components of discrete event simulations. However, <code>ComponentCollection</code>s may be used to store any data type.
+				</p>
+				<p>
+					Under the hood, elements of a <code>ComponentCollection</code> are stored as <code>shared_ptr</code>s, and therefore are automatically deallocated when there are no more references. Normally, <code>ComponentPtr</code>s should be treated as lightweight objects, and should be passed by value to maintain the correct reference count.
+				</p>
+				<p>
 					The tutorial can be found in the <code>tutorials/component_collection</code> subdirectory of the SmartGridToolbox directory. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>component_collection</code>.
 				</p>
 				<p>
@@ -35,8 +41,90 @@
 </code></pre>
 -->
 				</p>
-					[TBD]
 				<p>
+<pre class="prettyprint"><code class="lang-cpp">    MutableComponentCollection<Foo> cc;
+    // To insert elements, we need a MutableComponentCollection.
+    cc.insert("f", make_shared<Foo>("foo"));
+    // Members of a ComponentCollection are a special ComponentPtr<T> type, passed in using a shared_ptr
+    // as shown above.
+    cc.insert("b", make_shared<Bar>("bar"));
+    // Members of a ComponentCollection are a special ComponentPtr<T> type, passed in using a shared_ptr
+    // as shown above.
+</code></pre>
+					The <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_mutable_component_collection.html">MutableComponentCollection</a></code> class derives from <code>ComponentCollection</code>, and allows objects to be inserted. (This is distinct from a <code>const ComponentCollection</code>, which provides <code>const</code>-only access to components but doesn't allow insertion, or a non-<code>const ComponentCollection</code>, which provides non-<code>const</code> access and doesn't allow insertion.
+				</p>
+				<p>
+					For example, in SmartGridToolbox, a discrete event simulation holds a private <code>MutableComponentCollection</code>, which is publicly exposed only as its <code>ComponentCollection</code> base class through a <code>components()</code> member function.
+				</p>
+				<p>
+<pre class="prettyprint"><code class="lang-cpp">    // We can retrieve components like this:
+    auto p1 = cc["f"];
+    auto p2 = cc["b"];
+    
+    // Both of these are ComponentPtr<Foo>:
+    sgtLogMessage() << "Calling whoAmI on p1:" << endl;
+    p1->whoAmI();
+    sgtLogMessage() << "Calling whoAmI on p2:" << endl;
+    p2->whoAmI();
+    
+    // We can also retrieve elements by index and iterate over them in order of insertion:
+    sgtLogMessage() << "Calling whoAmI on cc[0]:" << endl;
+    cc[0]->whoAmI();
+    sgtLogMessage() << "Calling whoAmI on cc[1]:" << endl;
+    cc[1]->whoAmI();
+    sgtLogMessage() << "Iterating:" << endl;
+    for (const auto x : cc)
+    {
+        x->whoAmI();
+    }
+</code></pre>
+					The code above shows various ways of accessing members of a <code>ComponentCollection&ltT&gt</code> as a <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_component_ptr.html">ComponentPointer&ltT&gt</a></code>.
+				</p>
+				<p>
+<pre class="prettyprint"><code class="lang-cpp">    // We can replace elements, and ComponentPtrs will remain valid and will point to the new element.
+    cc.insert("f", make_shared<Foo>("foo replaced"));
+    sgtLogMessage() << "Calling whoAmI on p1 after replace:" << endl;
+    p1->whoAmI(); // Note: p1 now points to the new component.
+</code></pre>
+					This code shows how <code>ComponentCollection</code>s have the special property that upon replacement of an element, existing  <code>ComponentPtr</code>s will point to the new element.
+				</p>
+				<p>
+<pre class="prettyprint"><code class="lang-cpp">    // We can downcast p2 to point to derived type Bar:
+    auto p2a = p2.as<Bar>();
+    sgtLogMessage() << "Calling whoAmI on p2 after downcast:" << endl;
+    p2a->whoAmI();
+
+    // What if we try to downcast p1?
+    auto p1a = p1.as<Bar>();
+    sgtLogMessage() << "p1 is null after invalid downcast:" << endl;
+    sgtLogMessage() << "p1a == null? " << (p1a == nullptr ? "T" : "F") << endl;
+</code></pre>
+					Here, we see how elements may be downcast, and what happens if we try to make an invalid downcast.
+				</p>
+				<p>
+<pre class="prettyprint"><code class="lang-cpp">    // What if we try to retrieve a component that isn't there?
+    auto z = cc["z"];
+    sgtLogMessage() << "Attempting to retrieve a component that is not there gives null:" << endl;
+    sgtLogMessage() << "z == null? " << (p1a == nullptr ? "T" : "F") << endl;
+</code></pre>
+					Non-existent keys also return null.
+				</p>
+				<p>
+					Finally, const-correctness is demonstrated in the following code. You could try to uncomment the two commented out lines, and see what happens.
+<pre class="prettyprint"><code class="lang-cpp">    // There is a const version of ComponentPtr:
+    const ComponentCollection<Foo>& constCc = cc;
+    // Get a const reference to cc so we can try some stuff.
+
+    // The following code would be a compile error (uncomment and see!):
+    // ComponentPtr<Foo> ccp = constCc["a"];
+
+    ConstComponentPtr<Foo> ccp = constCc["f"];
+    sgtLogMessage() << "Const method on ConstComponentPtr:" << endl;
+    ccp->whoAmI();
+    // The following code would be a compile error (uncomment and see!):
+    // ccp->nonConstMethod();
+</pre></code>
+				</p>
 			</section>
 		</div>
 	</body>
