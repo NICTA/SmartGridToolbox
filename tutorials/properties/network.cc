@@ -60,9 +60,9 @@ int main(int argc, char** argv)
     
     // Below, we show how to retrieve some information:
     auto bus = nw.bus("bus_2");
-    Log().message() << "Bus " << bus->id() << ": " << " voltage is "
+    sgtLogMessage() << "Bus " << bus->id() << ": " << " voltage is "
                     << bus->V() << std::endl; // Note logging...
 
     // Print the network:
-    Log().message() << "Network: " << nw << std::endl;
+    sgtLogMessage() << "Network: " << nw << std::endl;
 }

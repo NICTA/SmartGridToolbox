@@ -42,7 +42,7 @@ int main(int argc, char** argv)
         // to time sim.startTime().
     sim.initialize();
 
-    Log().message() << *sim.simComponent<SimNetwork>("network") << std::endl;
+    sgtLogMessage() << *sim.simComponent<SimNetwork>("network") << std::endl;
         // Print the network, at the start of the simulation.
 
     auto bus2 = simNetw->network().buses()["bus_2"];
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
     while (!sim.isFinished())
     {
-        Log().message() << "Timestep " << sim.currentTime() << std::endl;
+        sgtLogMessage() << "Timestep " << sim.currentTime() << std::endl;
         sim.doTimestep();
             // Perform a single timestep: keep updating components until (1) the time has increased and all components
             // are up to date at that time, or (2) the simulation finishes. Finer grained control is also possible,
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         {
             sgtLogIndent();
                 // Indent within scope.
-            Log().message() << "bus_2 V = " << bus2->V() << std::endl;
+            sgtLogMessage() << "bus_2 V = " << bus2->V() << std::endl;
                 // Log the voltage at the current time.
         }
     }

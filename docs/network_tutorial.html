@@ -78,10 +78,10 @@
 After doing so, we print out some information about the state of the network:
 <pre class="prettyprint"><code class="lang-cpp">    // We show below how to retrieve some information:
     auto bus = nw.buses()["bus_2"];
-    Log().message() << "Bus " << bus->id() << ": " << " voltage is " << bus->V() << std::endl;
+    sgtLogMessage() << "Bus " << bus->id() << ": " << " voltage is " << bus->V() << std::endl;
         // Note logging...
 
-    Log().message() << "Network: " << nw << std::endl;
+    sgtLogMessage() << "Network: " << nw << std::endl;
         // Print the network.
 
 </code></pre>	
