@@ -109,9 +109,9 @@ MESSAGE:     conj = 4-5j
         sgtLogMessage() << "----------------" << endl;
         sgtLogMessage() << "SmartGridToolbox uses Armadillo for linear algebra." << endl;
         sgtLogMessage() << "Please see the Armadillo documentation." << endl;
-        Col<double> v{1.0, 2.0, 3.0, 3.0};
+        Col&ltdouble&gt v{1.0, 2.0, 3.0, 3.0};
         sgtLogMessage() << "Real vector:" << endl << v << endl;
-        Mat<Complex> m{{{1.0, 0.0}, {2.0, 1.0}}, {{3.0, 10.0}, {4.0, 20.0}}};
+        Mat&ltComplex&gt m{{{1.0, 0.0}, {2.0, 1.0}}, {{3.0, 10.0}, {4.0, 20.0}}};
         sgtLogMessage() << "Complex matrix:" << endl << m << endl;
     }
 </code></pre>
