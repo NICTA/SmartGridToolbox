@@ -32,7 +32,6 @@ AC_PROG_CXX([clang++ g++])
 
 AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_14([noext])
-AX_CHECK_COMPILE_FLAG([-ftemplate-depth=160], [AM_CXXFLAGS="$AM_CXXFLAGS -ftemplate-depth=160"])
 AC_SUBST([AM_CXXFLAGS], ["$AM_CXXFLAGS -Wall"])
 
 AX_BOOST_BASE(,, [AC_MSG_ERROR([SmartGridToolbox needs Boost, but it was not found in your system])])
