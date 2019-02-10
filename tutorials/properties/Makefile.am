@@ -4,4 +4,4 @@ ACLOCAL_AMFLAGS = -I m4
 bin_PROGRAMS = properties
 
 properties_SOURCES = properties.cc
-properties_LDADD = -lSgtCore
+properties_LDADD = -lSgtCore -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
