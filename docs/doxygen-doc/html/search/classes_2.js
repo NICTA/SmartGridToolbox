@@ -23,6 +23,7 @@ var searchData=
   ['componentptr_3c_20sgt_3a_3adcpowersourceabc_20_3e',['ComponentPtr&lt; Sgt::DcPowerSourceAbc &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
   ['componentptr_3c_20sgt_3a_3agen_20_3e',['ComponentPtr&lt; Sgt::Gen &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
   ['componentptr_3c_20sgt_3a_3asimcomponent_20_3e',['ComponentPtr&lt; Sgt::SimComponent &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
+  ['componentptr_3c_20sgt_3a_3astepwisetimeseries_3c_20time_2c_20double_20_3e_20_3e',['ComponentPtr&lt; Sgt::StepwiseTimeSeries&lt; Time, double &gt; &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
   ['componentptr_3c_20sgt_3a_3atimeseries_3c_20time_2c_20arma_3a_3acol_3c_20complex_20_3e_20_3e_20_3e',['ComponentPtr&lt; Sgt::TimeSeries&lt; Time, arma::Col&lt; Complex &gt; &gt; &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
   ['componentptr_3c_20sgt_3a_3atimeseries_3c_20time_2c_20double_20_3e_20_3e',['ComponentPtr&lt; Sgt::TimeSeries&lt; Time, double &gt; &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],
   ['componentptr_3c_20sgt_3a_3aweather_20_3e',['ComponentPtr&lt; Sgt::Weather &gt;',['../class_sgt_1_1_component_ptr.html',1,'Sgt']]],

@@ -1,3 +1,4 @@
 <map id="Sgt::WeatherParserPlugin" name="Sgt::WeatherParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="33,5,153,31"/>
+<area shape="rect" id="node1" title="Parses the weather keyword, adding a Weather component to the simulation." alt="" coords="5,79,181,104"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="33,5,153,31"/>
 </map>

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['tapchanger',['TapChanger',['../class_sgt_1_1_tap_changer.html',1,'Sgt']]],
-  ['tapchangerparserplugin',['TapChangerParserPlugin',['../class_sgt_1_1_tap_changer_parser_plugin.html',1,'Sgt']]],
+  ['tapchangerabc',['TapChangerAbc',['../class_sgt_1_1_tap_changer_abc.html',1,'Sgt']]],
   ['tapratio',['tapRatio',['../class_sgt_1_1_common_branch.html#a45c2e21eda7bade6be45d97b427221b7',1,'Sgt::CommonBranch']]],
   ['tb',['Tb',['../class_sgt_1_1_simple_building.html#a3f1a71c7c24030bda53ff6321b6e3c69',1,'Sgt::SimpleBuilding']]],
   ['tbinit',['TbInit',['../class_sgt_1_1_simple_building.html#ae8b594ce92a152e3755ff8e21b958b82',1,'Sgt::SimpleBuilding']]],
@@ -13,6 +12,8 @@ var searchData=
   ['timeseriesdcpowersource',['TimeSeriesDcPowerSource',['../class_sgt_1_1_time_series_dc_power_source.html',1,'Sgt']]],
   ['timeseriesdcpowersourceparserplugin',['TimeSeriesDcPowerSourceParserPlugin',['../class_sgt_1_1_time_series_dc_power_source_parser_plugin.html',1,'Sgt']]],
   ['timeseriesparserplugin',['TimeSeriesParserPlugin',['../class_sgt_1_1_time_series_parser_plugin.html',1,'Sgt']]],
+  ['timeseriestapchanger',['TimeSeriesTapChanger',['../class_sgt_1_1_time_series_tap_changer.html',1,'Sgt']]],
+  ['timeseriestapchangerparserplugin',['TimeSeriesTapChangerParserPlugin',['../class_sgt_1_1_time_series_tap_changer_parser_plugin.html',1,'Sgt']]],
   ['timeserieszip',['TimeSeriesZip',['../class_sgt_1_1_time_series_zip.html',1,'Sgt::TimeSeriesZip'],['../class_sgt_1_1_time_series_zip.html#a1bb2e30c9e1db219bce6381cf8d0fdaa',1,'Sgt::TimeSeriesZip::TimeSeriesZip()']]],
   ['timeserieszipparserplugin',['TimeSeriesZipParserPlugin',['../class_sgt_1_1_time_series_zip_parser_plugin.html',1,'Sgt']]],
   ['timestepdidcomplete',['timestepDidComplete',['../class_sgt_1_1_simulation.html#a84d8ab37b753c197fe26009433421334',1,'Sgt::Simulation']]],

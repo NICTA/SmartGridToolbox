@@ -32,7 +32,7 @@ var searchData=
   ['sgen',['SGen',['../class_sgt_1_1_bus.html#aba04d5e28dd24a60375f803337e68e06',1,'Sgt::Bus']]],
   ['sgenrequested',['SGenRequested',['../class_sgt_1_1_bus.html#a649fb11794bbbf09f25300d995cc02ce',1,'Sgt::Bus']]],
   ['sgentot',['SGenTot',['../class_sgt_1_1_bus.html#a415bfdca15b84bf5e6c73de51b25ba32',1,'Sgt::Bus']]],
-  ['shared',['shared',['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const'],['../class_sgt_1_1_component_ptr.html#a7ac38b2bc5a214ccd84b6aca0e3e9879',1,'Sgt::ComponentPtr::shared() const']]],
+  ['shared',['shared',['../class_sgt_1_1_component_ptr.html#a9c9db570401981355d053a7451ff96a0',1,'Sgt::ComponentPtr::shared() const'],['../class_sgt_1_1_component_ptr.html#a9c9db570401981355d053a7451ff96a0',1,'Sgt::ComponentPtr::shared() const']]],
   ['siconst',['SIConst',['../class_sgt_1_1_bus.html#a886655ee352e709fae8bdfbc6a71e8a5',1,'Sgt::Bus']]],
   ['simcomponent',['simComponent',['../class_sgt_1_1_simulation.html#af2c7f0caeab3e78e6d840ade1e34806b',1,'Sgt::Simulation::simComponent(const std::string &amp;id) const'],['../class_sgt_1_1_simulation.html#a0ec3f6d575c7bd42a79db788f9bcb519',1,'Sgt::Simulation::simComponent(const std::string &amp;id)']]],
   ['simcomponents',['simComponents',['../class_sgt_1_1_simulation.html#a54416ebac39d62b760a7017ddef0a042',1,'Sgt::Simulation::simComponents() const'],['../class_sgt_1_1_simulation.html#a1fd04464c61e2fd1b3a1bd86e804387f',1,'Sgt::Simulation::simComponents()']]],

@@ -1,12 +1,13 @@
 var searchData=
 [
-  ['tapchanger',['TapChanger',['../class_sgt_1_1_tap_changer.html',1,'Sgt']]],
-  ['tapchangerparserplugin',['TapChangerParserPlugin',['../class_sgt_1_1_tap_changer_parser_plugin.html',1,'Sgt']]],
+  ['tapchangerabc',['TapChangerAbc',['../class_sgt_1_1_tap_changer_abc.html',1,'Sgt']]],
   ['timeseries',['TimeSeries',['../class_sgt_1_1_time_series.html',1,'Sgt']]],
   ['timeseriesbase',['TimeSeriesBase',['../class_sgt_1_1_time_series_base.html',1,'Sgt']]],
   ['timeseriesdcpowersource',['TimeSeriesDcPowerSource',['../class_sgt_1_1_time_series_dc_power_source.html',1,'Sgt']]],
   ['timeseriesdcpowersourceparserplugin',['TimeSeriesDcPowerSourceParserPlugin',['../class_sgt_1_1_time_series_dc_power_source_parser_plugin.html',1,'Sgt']]],
   ['timeseriesparserplugin',['TimeSeriesParserPlugin',['../class_sgt_1_1_time_series_parser_plugin.html',1,'Sgt']]],
+  ['timeseriestapchanger',['TimeSeriesTapChanger',['../class_sgt_1_1_time_series_tap_changer.html',1,'Sgt']]],
+  ['timeseriestapchangerparserplugin',['TimeSeriesTapChangerParserPlugin',['../class_sgt_1_1_time_series_tap_changer_parser_plugin.html',1,'Sgt']]],
   ['timeserieszip',['TimeSeriesZip',['../class_sgt_1_1_time_series_zip.html',1,'Sgt']]],
   ['timeserieszipparserplugin',['TimeSeriesZipParserPlugin',['../class_sgt_1_1_time_series_zip_parser_plugin.html',1,'Sgt']]],
   ['timezone',['Timezone',['../class_sgt_1_1_timezone.html',1,'Sgt']]],

@@ -1,3 +1,4 @@
 <map id="Sgt::DdTransformerParserPlugin" name="Sgt::DdTransformerParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="21,5,167,31"/>
+<area shape="rect" id="node1" title="Parses the dd_transformer keyword, adding a DdTransformer to the network." alt="" coords="5,79,183,117"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="21,5,167,31"/>
 </map>

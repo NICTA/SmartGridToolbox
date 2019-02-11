@@ -1,3 +1,4 @@
 <map id="Sgt::OverheadLineParserPlugin" name="Sgt::OverheadLineParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="36,5,183,31"/>
+<area shape="rect" id="node1" title="Parses the overhead_line keyword, adding an OverheadLine to the network." alt="" coords="5,79,214,104"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="36,5,183,31"/>
 </map>

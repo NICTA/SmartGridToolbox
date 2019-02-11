@@ -1,3 +1,4 @@
 <map id="Sgt::InverterParserPlugin" name="Sgt::InverterParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="30,5,151,31"/>
+<area shape="rect" id="node1" title="Parses the inverter keyword, adding an Inverter to the simulation." alt="" coords="5,79,176,104"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="30,5,151,31"/>
 </map>

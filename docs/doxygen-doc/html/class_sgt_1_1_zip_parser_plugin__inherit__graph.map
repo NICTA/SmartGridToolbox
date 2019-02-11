@@ -1,3 +1,4 @@
 <map id="Sgt::ZipParserPlugin" name="Sgt::ZipParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="5,5,152,31"/>
+<area shape="rect" id="node1" title="Parses the zip keyword, adding a Zip to the network." alt="" coords="7,79,150,104"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="5,5,152,31"/>
 </map>

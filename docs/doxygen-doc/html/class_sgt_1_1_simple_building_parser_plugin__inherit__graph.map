@@ -1,3 +1,4 @@
 <map id="Sgt::SimpleBuildingParserPlugin" name="Sgt::SimpleBuildingParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="33,5,154,31"/>
+<area shape="rect" id="node1" title="Parses the simple_building keyword, adding a SimpleBuilding to the simulation." alt="" coords="5,79,182,117"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="33,5,154,31"/>
 </map>

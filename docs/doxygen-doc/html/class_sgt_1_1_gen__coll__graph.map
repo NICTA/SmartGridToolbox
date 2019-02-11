@@ -1,4 +1,5 @@
 <map id="Sgt::Gen" name="Sgt::Gen">
-<area shape="rect" id="node2" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="13,79,131,104"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="5,5,139,31"/>
+<area shape="rect" id="node1" title="Generation at a bus." alt="" coords="35,152,109,177"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="13,79,131,104"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="5,5,139,31"/>
 </map>

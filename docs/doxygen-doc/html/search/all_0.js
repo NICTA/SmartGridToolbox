@@ -4,7 +4,7 @@ var searchData=
   ['action',['Action',['../class_sgt_1_1_action.html',1,'Sgt']]],
   ['action_20event_20mechanism',['Action Event Mechanism',['../group___action_event.html',1,'']]],
   ['actualpdc',['actualPDc',['../class_sgt_1_1_dc_power_source_abc.html#af48c5cb1d7f84353790f4e59cc5e998d',1,'Sgt::DcPowerSourceAbc']]],
-  ['adddcpowersource',['addDcPowerSource',['../class_sgt_1_1_inverter_abc.html#a7adec21ba5ab7c7de068a2111a72cc23',1,'Sgt::InverterAbc']]],
+  ['adddcpowersource',['addDcPowerSource',['../class_sgt_1_1_inverter_abc.html#ac44cc1d208857c5ea49886af32492054',1,'Sgt::InverterAbc']]],
   ['addsimbranch',['addSimBranch',['../class_sgt_1_1_sim_network.html#a397da11e6ecac7e914a5f0921e2ecf8c',1,'Sgt::SimNetwork']]],
   ['addsimbus',['addSimBus',['../class_sgt_1_1_sim_network.html#aebcc2867a27f27aad5004e161d4ba4d1',1,'Sgt::SimNetwork']]],
   ['addsimcomponent',['addSimComponent',['../class_sgt_1_1_simulation.html#a892cd2e880a9af81d89252ec767b3384',1,'Sgt::Simulation']]],
@@ -29,5 +29,7 @@ var searchData=
   ['as',['as',['../class_sgt_1_1_component_ptr.html#a87a82cc1b209756fbf0959845b97859b',1,'Sgt::ComponentPtr']]],
   ['assertfieldpresent',['assertFieldPresent',['../group___parsing.html#ga4787bd31665e19a0284e8413a404c699',1,'Sgt']]],
   ['at',['at',['../classnlohmann_1_1basic__json.html#a73ae333487310e3302135189ce8ff5d8',1,'nlohmann::basic_json::at(size_type idx)'],['../classnlohmann_1_1basic__json.html#ab157adb4de8475b452da9ebf04f2de15',1,'nlohmann::basic_json::at(size_type idx) const'],['../classnlohmann_1_1basic__json.html#a93403e803947b86f4da2d1fb3345cf2c',1,'nlohmann::basic_json::at(const typename object_t::key_type &amp;key)'],['../classnlohmann_1_1basic__json.html#acac9d438c9bb12740dcdb01069293a34',1,'nlohmann::basic_json::at(const typename object_t::key_type &amp;key) const'],['../classnlohmann_1_1basic__json.html#a8ab61397c10f18b305520da7073b2b45',1,'nlohmann::basic_json::at(const json_pointer &amp;ptr)'],['../classnlohmann_1_1basic__json.html#a7479d686148c26e252781bb32aa5d5c9',1,'nlohmann::basic_json::at(const json_pointer &amp;ptr) const']]],
+  ['autotapchanger',['AutoTapChanger',['../class_sgt_1_1_auto_tap_changer.html',1,'Sgt']]],
+  ['autotapchangerparserplugin',['AutoTapChangerParserPlugin',['../class_sgt_1_1_auto_tap_changer_parser_plugin.html',1,'Sgt']]],
   ['azimuth',['azimuth',['../struct_sgt_1_1_spherical_angles.html#ab34340e366982abb8b1c778d8d07abc8',1,'Sgt::SphericalAngles']]]
 ];

@@ -1,3 +1,4 @@
 <map id="Sgt::BatteryParserPlugin" name="Sgt::BatteryParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="29,5,149,31"/>
+<area shape="rect" id="node1" title="Parses the battery keyword, adding a Battery to the simulation." alt="" coords="5,79,173,104"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="29,5,149,31"/>
 </map>

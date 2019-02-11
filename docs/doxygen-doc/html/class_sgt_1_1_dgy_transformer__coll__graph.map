@@ -1,6 +1,7 @@
 <map id="Sgt::DgyTransformer" name="Sgt::DgyTransformer">
-<area shape="rect" id="node2" href="$class_sgt_1_1_transformer_abc.html" title="Sgt::TransformerAbc" alt="" coords="6,225,150,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="21,152,135,177"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="19,79,136,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="11,5,144,31"/>
+<area shape="rect" id="node1" title="Single phase transformer with delta connection on one side and grounded wye on the other side." alt="" coords="5,299,150,324"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_transformer_abc.html" title=" " alt="" coords="6,225,150,251"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch." alt="" coords="21,152,135,177"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="19,79,136,104"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="11,5,144,31"/>
 </map>

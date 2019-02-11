@@ -1,9 +1,11 @@
 <map id="Sgt::Inverter" name="Sgt::Inverter">
-<area shape="rect" id="node2" href="$class_sgt_1_1_simple_inverter_abc.html" title="An inverter with simple constant DC&#45;AC and AC&#45;DC efficiencies. " alt="" coords="113,379,271,404"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter. " alt="" coords="133,280,250,305"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation. " alt="" coords="5,187,146,212"/>
-<area shape="rect" id="node9" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork. " alt="" coords="31,329,121,355"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="17,87,135,112"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="9,5,142,31"/>
-<area shape="rect" id="node8" href="$class_sgt_1_1_component_ptr.html" title="Sgt::ComponentPtr\&lt;\l Sgt::DcPowerSourceAbc \&gt;" alt="" coords="188,80,371,119"/>
+<area shape="rect" id="node1" title="DC power to n&#45;phase AC converter." alt="" coords="45,453,139,479"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_simple_inverter_abc.html" title="An inverter with simple constant DC&#45;AC and AC&#45;DC efficiencies." alt="" coords="113,379,271,404"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_inverter_abc.html" title="DC power to n&#45;phase AC converter." alt="" coords="133,280,250,305"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="5,187,146,212"/>
+<area shape="rect" id="node9" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork." alt="" coords="31,329,121,355"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="17,87,135,112"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="9,5,142,31"/>
+<area shape="rect" id="node7" title=" " alt="" coords="170,180,389,219"/>
+<area shape="rect" id="node8" href="$class_sgt_1_1_component_ptr.html" title=" " alt="" coords="188,80,371,119"/>
 </map>

@@ -1,3 +1,4 @@
 <map id="Sgt::UndergroundLineParserPlugin" name="Sgt::UndergroundLineParserPlugin">
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object. " alt="" coords="28,5,174,31"/>
+<area shape="rect" id="node1" title="Parses the underground_line keyword, adding an UndergroundLine to the network." alt="" coords="5,79,196,117"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="28,5,174,31"/>
 </map>

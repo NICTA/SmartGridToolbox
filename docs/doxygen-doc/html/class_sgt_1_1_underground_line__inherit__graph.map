@@ -1,7 +1,8 @@
 <map id="Sgt::UndergroundLine" name="Sgt::UndergroundLine">
-<area shape="rect" id="node5" href="$class_sgt_1_1_underground_line_stranded_shield.html" title="Underground line with stranded shielding. " alt="" coords="5,299,211,337"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_underground_line_tape_shield.html" title="Underground line with tape shielding. " alt="" coords="235,299,416,337"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch. " alt="" coords="159,152,273,177"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components. " alt="" coords="157,79,275,104"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties. " alt="" coords="150,5,283,31"/>
+<area shape="rect" id="node1" title="An underground power line." alt="" coords="140,225,292,251"/>
+<area shape="rect" id="node5" href="$class_sgt_1_1_underground_line_stranded_shield.html" title="Underground line with stranded shielding." alt="" coords="5,299,211,337"/>
+<area shape="rect" id="node6" href="$class_sgt_1_1_underground_line_tape_shield.html" title="Underground line with tape shielding." alt="" coords="235,299,416,337"/>
+<area shape="rect" id="node2" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch." alt="" coords="159,152,273,177"/>
+<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="157,79,275,104"/>
+<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="150,5,283,31"/>
 </map>
