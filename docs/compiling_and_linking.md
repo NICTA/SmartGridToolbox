@@ -21,5 +21,3 @@ Otherwise, the following compile/link command would apply, if using clang++, for
 ```
 clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
 ```
-
-(Note: on some systems, e.g. MacOS, libtool will allow you to omit the `-larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf` options from your link command. However, just to make sure, there is no harm in including them.)
