@@ -15,9 +15,11 @@ If you wish to include individual headers, you can do the following, e.g.:
 
 Most SmartGridToolbox objects are in the `Sgt` namespace.
 
-You will also need to set link to the correct libraries. If you wish to build using GNU autotools, have a look at `examples/PvDemo/Makefile.am`. You could copy `examples/PvDemo` to use as a template for your project.
+You will also need to set link to the correct libraries. If you wish to build using GNU autotools, have a look at any of the `tutorials/*/Makefile.am` files. Depending on whether you are interested in simple network solving or discrete event simulation, you could copy and modify e.g. `tutorials/network` or `tutorials/simulation` to use as a template for your project.
 
 Otherwise, the following compile/link command would apply, if using clang++, for example:
 ```
 clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
 ```
+
+(Note: on some systems, e.g. MacOS, libtool will allow you to omit the `-larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf` options from your link command. However, just to make sure, there is no harm in including them.)
