@@ -13,8 +13,6 @@ If you wish to include individual headers, you can do the following, e.g.:
 #include <SgtSim/Simulation.h>
 ```
 
-Most SmartGridToolbox objects are in the `Sgt` namespace.
-
 You will also need to set link to the correct libraries. If you wish to build using GNU autotools, have a look at any of the `tutorials/*/Makefile.am` files. Depending on whether you are interested in simple network solving or discrete event simulation, you could copy and modify e.g. `tutorials/network` or `tutorials/simulation` to use as a template for your project.
 
 Otherwise, the following compile/link command would apply, if using clang++, for example:

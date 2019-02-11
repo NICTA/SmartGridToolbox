@@ -82,7 +82,6 @@
 <pre><code>#include &lt;SgtCore/Common.h&gt;
 #include &lt;SgtSim/Simulation.h&gt;
 </code></pre>
-<p>Most SmartGridToolbox objects are in the <code>Sgt</code> namespace.</p>
 <p>You will also need to set link to the correct libraries. If you wish to build using GNU autotools, have a look at any of the <code>tutorials/*/Makefile.am</code> files. Depending on whether you are interested in simple network solving or discrete event simulation, you could copy and modify e.g. <code>tutorials/network</code> or <code>tutorials/simulation</code> to use as a template for your project.</p>
 <p>Otherwise, the following compile/link command would apply, if using clang++, for example:</p>
 <pre><code>clang++ {options} -o myprogram myprogram.cc -lSgtSim -lSgtCore -larmadillo -lboost_date_time -lyaml-cpp -lklu -lamd -lcolamd -lbtf
