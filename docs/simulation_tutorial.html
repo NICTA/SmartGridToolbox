@@ -5,6 +5,7 @@
 		<meta http-equiv="X-UA-Compatible" content="chrome=1" />
 		<meta name="description" content="NICTA SmartGridToolbox : Simulation tutorial" />
 		<link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+		<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 		<title>NICTA SmartGridToolbox Simulation Tutorial</title>
 	</head>
 	<body>
@@ -16,17 +17,91 @@
 				</p>
 				<h3><a name="simulation-tutorial" class="anchor" href="#simulation-tutorial"></a>Simulation Tutorial</h3>
 				<p>
-					In this tutorial, we will explore the basics of how to set up and run a simulation.
+					In this tutorial, we will explore how to set up and run a discrete event simulation.
 				</p>
 				<p>
 					The tutorial can be found in the <code>tutorials/simulation</code> subdirectory of the SmartGridToolbox directory; please see the files <code>simulation.cc</code>, <code>simulation.yaml</code> and <code>simuation.m</code>. Copy this directory into a convenient work directory. <code>cd</code> into the directory, run <code>./autogen.sh</code> (if needed) and <code>./configure</code>. Now <code>make</code> to build the executable, <code>simulation</code>.
 				</p>
 				<p>
-					The code is self documenting. Briefly, <code>simulation.cc</code> first	parses the file <code>simulation.yaml</code> into a <code>Simulation</code> object. The YAML file contains instructions to parse in a network from a Matpower file, and then to add certain objects such as solar PV collectors and inverters.
-					
-					After parsing the input file into the <code>Simulation</code>, <code>simulation.cc</code> demonstrates how the simulation can be manually modified in-code.
-					
-					Before running the simulation, <code>Simulation::init()</code> is called to make sure the simulation and all its component objects are in a valid starting point. A loop is then set up to advance the simulation step by step, extracting and printing information at each step.
+					In what follows, we shall list sections of the code, along with explanations.
+<pre class="prettyprint"><code class="lang-cpp">#include &ltSgtCore.h&gt
+#include &ltSgtSim.h&gt
+</code></pre>
+					For discrete event simulation, we use the <code>SgtCore</code> and <code>SgtSim</code> header files.
+<pre class="prettyprint"><code class="lang-cpp">int main(int argc, char** argv)
+{
+    using namespace Sgt;
+    
+    Simulation sim;
+        // The top level simulation object.
+    Parser&ltSimulation&gt p;
+        // Parse information into sim from config file "simulation.yaml".
+    p.parse("simulation.yaml", sim);
+</code></pre>
+					We first create a simulation, and populate it by parsing in data from an input file named simulation.yaml. At this point, you should take a look at the <a href="https://github.com/NICTA/SmartGridToolbox/blob/master/tutorials/simulation/simulation.yaml">contents of this file</a>. What do you think the simulation does? Try printing the contents of the simulation: add the following line: <pre class="prettyprint"><code>for (const auto& comp : sim.simComponents()) sgtLogMessage() << sim << std::endl;</code></pre> What is the output?
+				</p>
+				<p>
+					The code below shows that, as well as setting up simulations by parsing YAML input files, we can also create simulation objects programmatically.
+<pre class="prettyprint"><code class="lang-cpp">        // We just parsed in a simulation. The user is also free to modify this programmatically, e.g. below we add
+        // an extra zip load to the network.
+    auto simNetw = sim.simComponent&ltSimNetwork&gt("network");
+        // Get network by name.
+    auto extraZip = std::make_shared&ltZip&gt("extra_zip", Phase::BAL);
+        // Make a Zip.
+    extraZip->setYConst({1e-3});
+        // Modify it: constant impedance load.
+    auto extraZipCompPtr = simNetw->network().addZip(extraZip, "bus_2");
+        // Add it to the network, returning a ComponentPtr to the component.
+    auto simExtraZip = sim.newSimComponent&ltSimZip&gt(extraZipCompPtr); 
+        // Give it to a new SimZip for the Simulation.
+</code></pre>
+					We first obtain a pointer to the <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_sim_network.html">SimNetwork</a></code> component named "network". We then construct a <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_zip.html">Zip</a></code> load, and add it to the <code>SimNetwork</code>'s underlying <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_network.html">Network</a></code>. Next, we construct a new <a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_sim_component.html">SimComponent</a>, of subtype <a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_sim_zip.html">SimZip</a>, and add it to the simulation.
+				</p>
+				<p>
+					There is a fair bit going on here - let's unpack it a bit more. Don't worry at this stage if you don't fully follow the explanation below.
+				</p>
+				<p>
+					Simulations consist of a collection of <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_sim_component.html">SimComponent</a></code>s. These are objects that undergo updates, at discrete times, that are determined both by their own internal workings as well as by their interactions with other <code>SimComponent</code>s.
+				</p>
+				<p>
+					A <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_sim_network.html">SimNetwork</a></code> is a particular type of <code>SimComponent</code> that wraps a <code><a href="http://nicta.github.io/SmartGridToolbox/doxygen-doc/html/class_sgt_1_1_network.html">Network</a></code>, and ensures that (a) the <code>Network</code> solver is called whenever the <code>SimNetwork</code> undergoes an update and (b) the <code>SimNetwork</code> fires a "networkChanged" event whenever the <code>Network</code> changes. (Note that <code>Network</code>s are not <code>SimComponent</code>s - they are part of the SgtCore library).
+				</p>
+				<p>
+					In the same way that <code>SimNetwork</code>s wrap <code>Network</code>s, <code>SimZip</code>s wrap <code>Zip</code>s. Not every <code>Zip</code> in a <code>Network</code> needs a corresponding <code>SimZip</code>. Indeed, in the example above, the <code>SimZip</code> is useless: no code is executed when it updates. The <code>SimZip</code> class (and, by analogy, <code>SimBus</code>, <code>SimBranch</code> and <code>SimGen</code>), is really just a convenience base class. It keeps a reference to the underlying <code>Zip</code>, and it can be added to a <code>SimNetwork</code>, thereby ensuring that if both it and the <code>SimNetwork</code> are due to update at a given time, then it will go first.
+				</p>
+				<p>
+					OK - let's move on! After parsing in and/or creating the components in the simulation, <code>Simulation::initialize()</code> must be called:  
+<pre class="prettyprint"><code class="lang-cpp">        // After parsing or making other modifications, we need to call initialize. All components will be initialized
+        // to time sim.startTime().
+    sim.initialize();
+
+    sgtLogMessage() << *sim.simComponent&ltSimNetwork&gt("network") << std::endl;
+        // Print the network, at the start of the simulation.
+</code></pre>
+We are then ready to begin timestepping. First, however, we grab a reference to a particular <code>SimComponent</code> for output purposes, and we also print out the network.
+<pre class="prettyprint"><code class="lang-cpp">        auto bus2 = simNetw->network().buses()["bus_2"];
+        sgtLogMessage() << *sim.simComponent&ltSimNetwork&gt("network") << std::endl;
+        // Get bus by name.
+</code></pre>
+The actual time stepping loop is then started.
+<pre class="prettyprint"><code class="lang-cpp">    while (!sim.isFinished())
+    {
+        sgtLogMessage() << "Timestep " << sim.currentTime() << std::endl;
+        sim.doTimestep();
+            // Perform a single timestep: keep updating components until (1) the time has increased and all components
+            // are up to date at that time, or (2) the simulation finishes. Finer grained control is also possible,
+            // e.g. sim.doNextUpdate() will update one component at a time.
+        {
+            sgtLogIndent();
+                // Indent within scope.
+            sgtLogMessage() << "bus_2 V = " << bus2->V() << std::endl;
+                // Log the voltage at the current time.
+        }
+</code></pre>
+					At each iteration, information about one of the buses is printed. By looking at the output, you may notice that the voltage changes by a small amount at each timestep.
+				</p>
+				<p>
+					There is a lot more to learn about discrete event simulations in SmartGridToolbox. Next, you may wish to check out the <a href="http://nicta.github.io/SmartGridToolbox/time_varying_loads_tutorial.html">Time Varying Loads Tutorial</a>.
 				</p>
 			</section>
 		</div>
