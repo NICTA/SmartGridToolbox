@@ -80,7 +80,6 @@
 </code></pre>
 We are then ready to begin timestepping. First, however, we grab a reference to a particular <code>SimComponent</code> for output purposes, and we also print out the network.
 <pre class="prettyprint"><code class="lang-cpp">        auto bus2 = simNetw->network().buses()["bus_2"];
-        sgtLogMessage() << *sim.simComponent&ltSimNetwork&gt("network") << std::endl;
         // Get bus by name.
 </code></pre>
 The actual time stepping loop is then started.
