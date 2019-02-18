@@ -111,35 +111,35 @@ namespace Sgt
         /// @name Battery specific member functions.
         /// @{
 
-        Time dt() {return dt_;}
+        Time dt() const {return dt_;}
         void setDt(Time val) {dt_ = val;}
         // Doesn't affect state this timestep, no update needed.
 
-        double initSoc() {return initSoc_;}
+        double initSoc() const {return initSoc_;}
         void setInitSoc(double val) {initSoc_ = val;}
         // Doesn't affect state this timestep, no update needed.
 
-        double maxSoc() {return maxSoc_;}
+        double maxSoc() const {return maxSoc_;}
         void setMaxSoc(double val);
 
-        double maxChargePower() {return maxChargePower_;}
+        double maxChargePower() const {return maxChargePower_;}
         void setMaxChargePower(double val);
 
-        double maxDischargePower() {return maxDischargePower_;}
+        double maxDischargePower() const {return maxDischargePower_;}
         void setMaxDischargePower(double val);
 
-        double chargeEfficiency() {return chargeEfficiency_;}
+        double chargeEfficiency() const {return chargeEfficiency_;}
         void setChargeEfficiency(double val);
 
-        double dischargeEfficiency() {return dischargeEfficiency_;}
+        double dischargeEfficiency() const {return dischargeEfficiency_;}
         void setDischargeEfficiency(double val);
 
-        double soc() {return soc_;}
+        double soc() const {return soc_;}
 
-        double requestedPower() {return requestedPower_;} // +ve = injection into grid.
+        double requestedPower() const {return requestedPower_;} // +ve = injection into grid.
         void setRequestedPower(double val);
 
-        double internalPower();
+        double internalPower() const;
 
         /// @}
 

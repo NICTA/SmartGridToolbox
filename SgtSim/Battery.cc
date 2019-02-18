@@ -81,7 +81,7 @@ namespace Sgt
         needsUpdate().trigger();
     } 
 
-    double Battery::internalPower()
+    double Battery::internalPower() const
     {
         double P = actualPDc();
         return (P > 0 ? P / dischargeEfficiency_ : P * chargeEfficiency_);
