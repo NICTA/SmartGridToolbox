@@ -46,11 +46,7 @@ RUN ./autogen.sh
 RUN ./configure
 RUN make -j2
 
-USER root
-
-RUN make install
-
-USER sgt
+RUN sudo make install
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
