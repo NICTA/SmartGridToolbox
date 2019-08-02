@@ -1,5 +1,0 @@
-<map id="Sgt::FunctionTimeSeries&lt; T, V &gt;" name="Sgt::FunctionTimeSeries&lt; T, V &gt;">
-<area shape="rect" id="node1" title="TimeSeries that uses a std::function to calculate values." alt="" coords="5,152,172,191"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_time_series.html" title="Base class for time series objects: functions of time." alt="" coords="8,79,169,104"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_time_series_base.html" title=" " alt="" coords="16,5,162,31"/>
-</map>

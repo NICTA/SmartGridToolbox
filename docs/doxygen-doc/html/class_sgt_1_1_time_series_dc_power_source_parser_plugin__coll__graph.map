@@ -1,4 +1,0 @@
-<map id="Sgt::TimeSeriesDcPowerSourceParserPlugin" name="Sgt::TimeSeriesDcPowerSourceParserPlugin">
-<area shape="rect" id="node1" title="Parses the time_series_dc_power_source keyword, adding a TimeSeriesDcPowerSource to the simulation." alt="" coords="5,79,217,117"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="51,5,172,31"/>
-</map>

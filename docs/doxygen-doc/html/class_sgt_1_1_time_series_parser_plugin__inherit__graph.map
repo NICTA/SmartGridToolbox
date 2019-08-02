@@ -1,4 +1,0 @@
-<map id="Sgt::TimeSeriesParserPlugin" name="Sgt::TimeSeriesParserPlugin">
-<area shape="rect" id="node1" title="Parses the time_series keyword, adding a TimeSeries to the simulation." alt="" coords="5,79,197,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="41,5,162,31"/>
-</map>

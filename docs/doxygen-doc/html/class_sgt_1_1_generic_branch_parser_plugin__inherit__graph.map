@@ -1,4 +1,0 @@
-<map id="Sgt::GenericBranchParserPlugin" name="Sgt::GenericBranchParserPlugin">
-<area shape="rect" id="node1" title="Parses the generic_branch keyword, adding a GenericBranch to the network." alt="" coords="5,79,182,117"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="21,5,167,31"/>
-</map>

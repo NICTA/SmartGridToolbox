@@ -1,7 +1,0 @@
-<map id="Sgt::UndergroundLineTapeShield" name="Sgt::UndergroundLineTapeShield">
-<area shape="rect" id="node1" title="Underground line with tape shielding." alt="" coords="5,299,186,337"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_underground_line.html" title="An underground power line." alt="" coords="20,225,172,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch." alt="" coords="39,152,153,177"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="37,79,155,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="29,5,162,31"/>
-</map>

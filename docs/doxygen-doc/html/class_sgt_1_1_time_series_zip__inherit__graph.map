@@ -1,8 +1,0 @@
-<map id="Sgt::TimeSeriesZip" name="Sgt::TimeSeriesZip">
-<area shape="rect" id="node1" title=" " alt="" coords="53,299,187,324"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_heartbeat.html" title="Utility base class for a component that updates with a regular &quot;tick&quot; dt." alt="" coords="5,225,113,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="50,152,191,177"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork." alt="" coords="137,225,227,251"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="61,79,179,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="54,5,187,31"/>
-</map>

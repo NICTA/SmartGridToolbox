@@ -1,9 +1,0 @@
-<map id="Sgt::TimeSeries&lt; T, V &gt;" name="Sgt::TimeSeries&lt; T, V &gt;">
-<area shape="rect" id="node1" title="Base class for time series objects: functions of time." alt="" coords="199,75,361,100"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_const_time_series.html" title="Time series for a constant function of time." alt="" coords="417,5,567,44"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_data_time_series.html" title="Base class for TimeSeries object that stores a time/value table." alt="" coords="420,68,564,107"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_function_time_series.html" title="TimeSeries that uses a std::function to calculate values." alt="" coords="409,131,576,169"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_time_series_base.html" title=" " alt="" coords="5,75,151,100"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_lerp_time_series.html" title="TimeSeries that uses linear interpolation between tabulated times." alt="" coords="637,37,780,76"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_stepwise_time_series.html" title="TimeSeries that changes in a stepwise manner between tabulated times." alt="" coords="624,100,793,139"/>
-</map>

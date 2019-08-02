@@ -1,7 +1,0 @@
-<map id="Sgt::YyTransformer" name="Sgt::YyTransformer">
-<area shape="rect" id="node1" title="Wye&#45;wye transformer." alt="" coords="9,299,145,324"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_transformer_abc.html" title=" " alt="" coords="5,225,149,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_branch_abc.html" title="Common abstract base class for a branch." alt="" coords="20,152,134,177"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="18,79,136,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="11,5,144,31"/>
-</map>

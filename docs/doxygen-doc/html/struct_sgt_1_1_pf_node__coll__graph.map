@@ -1,9 +1,0 @@
-<map id="Sgt::PfNode" name="Sgt::PfNode">
-<area shape="rect" id="node1" title=" " alt="" coords="110,5,203,31"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,99,182,124"/>
-<area shape="rect" id="node2" href="$struct_sgt_1_1_pf_bus.html" title=" " alt="" coords="208,292,292,317"/>
-<area shape="rect" id="node3" title=" " alt="" coords="21,192,180,231"/>
-<area shape="rect" id="node5" title="STL class." alt="" coords="257,199,336,224"/>
-<area shape="rect" id="node6" title="STL class." alt="" coords="256,92,382,131"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_phases.html" title="A set of network phases, each specified by a Phase value." alt="" coords="361,199,454,224"/>
-</map>

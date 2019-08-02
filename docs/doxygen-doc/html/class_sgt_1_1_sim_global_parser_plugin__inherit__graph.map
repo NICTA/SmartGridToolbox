@@ -1,4 +1,0 @@
-<map id="Sgt::SimGlobalParserPlugin" name="Sgt::SimGlobalParserPlugin">
-<area shape="rect" id="node1" title="Parses the simulation keyword, setting global information for the simulation." alt="" coords="5,79,192,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="38,5,159,31"/>
-</map>

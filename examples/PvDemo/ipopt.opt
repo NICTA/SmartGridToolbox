@@ -1,9 +1,0 @@
-print_level 1
-
-tol 1e-2
-#dual_inf_tol 1
-#constr_viol_tol 1e-2
-#compl_inf_tol 1e-2
-
-#ma27_liw_init_factor 171560
-#ma27_la_init_factor 177394

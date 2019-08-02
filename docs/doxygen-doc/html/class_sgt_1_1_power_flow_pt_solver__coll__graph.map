@@ -1,6 +1,0 @@
-<map id="Sgt::PowerFlowPtSolver" name="Sgt::PowerFlowPtSolver">
-<area shape="rect" id="node1" title="Optimal power flow (OPF) solver." alt="" coords="200,92,365,117"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_power_flow_solver_interface.html" title="Interface for power flow solvers operating on Network objects." alt="" coords="5,5,210,31"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_network.html" title="Network component, describing an electricity network." alt="" coords="233,5,331,31"/>
-<area shape="rect" id="node4" title=" " alt="" coords="355,5,508,31"/>
-</map>

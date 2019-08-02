@@ -1,7 +1,0 @@
-<map id="Sgt::SimpleBuilding" name="Sgt::SimpleBuilding">
-<area shape="rect" id="node1" title=" " alt="" coords="7,299,144,324"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_sim_zip.html" title="Utility base class for zips in SimNetwork." alt="" coords="31,225,121,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="5,152,146,177"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="17,79,135,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="9,5,142,31"/>
-</map>

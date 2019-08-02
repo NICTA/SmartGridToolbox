@@ -1,6 +1,0 @@
-<map id="Sgt::SimNetwork" name="Sgt::SimNetwork">
-<area shape="rect" id="node1" title="SimNetwork : A SimComponent for an electrical network." alt="" coords="15,225,136,251"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="5,152,146,177"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="17,79,135,104"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="9,5,142,31"/>
-</map>

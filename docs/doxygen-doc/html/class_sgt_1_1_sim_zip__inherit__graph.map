@@ -1,9 +1,0 @@
-<map id="Sgt::SimZip" name="Sgt::SimZip">
-<area shape="rect" id="node1" title="Utility base class for zips in SimNetwork." alt="" coords="147,225,237,251"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_inverter.html" title="DC power to n&#45;phase AC converter." alt="" coords="5,299,99,324"/>
-<area shape="rect" id="node6" href="$class_sgt_1_1_simple_building.html" title=" " alt="" coords="124,299,261,324"/>
-<area shape="rect" id="node7" href="$class_sgt_1_1_time_series_zip.html" title=" " alt="" coords="285,299,419,324"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="122,152,263,177"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="133,79,251,104"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="126,5,259,31"/>
-</map>

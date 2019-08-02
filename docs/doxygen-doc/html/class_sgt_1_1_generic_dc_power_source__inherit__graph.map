@@ -1,7 +1,0 @@
-<map id="Sgt::GenericDcPowerSource" name="Sgt::GenericDcPowerSource">
-<area shape="rect" id="node1" title=" " alt="" coords="5,299,197,324"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_dc_power_source_abc.html" title="DC power source." alt="" coords="17,225,185,251"/>
-<area shape="rect" id="node3" href="$class_sgt_1_1_sim_component.html" title="A base class for components of a Simulation." alt="" coords="31,152,172,177"/>
-<area shape="rect" id="node4" href="$class_sgt_1_1_component.html" title="Base class for all Components." alt="" coords="42,79,160,104"/>
-<area shape="rect" id="node5" href="$class_sgt_1_1_has_properties.html" title="Abstract base class for an object with properties." alt="" coords="35,5,168,31"/>
-</map>

@@ -1,7 +1,0 @@
-- simulation:
-    start_time: 2018-08-01 00:00:00
-    end_time: 2018-08-02 00:00:00
-- logging:
-    debug:
-        log_level: verbose
-        log_filter: RealTimeClock.h RealTimeClock.cc

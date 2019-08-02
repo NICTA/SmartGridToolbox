@@ -1,4 +1,0 @@
-<map id="Sgt::PowerFlowNrRectSolver" name="Sgt::PowerFlowNrRectSolver">
-<area shape="rect" id="node1" title="Newton&#45;Raphson AC power flow solver." alt="" coords="11,79,205,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_power_flow_solver_interface.html" title="Interface for power flow solvers operating on Network objects." alt="" coords="5,5,210,31"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="Sgt::HeartbeatParserPlugin" name="Sgt::HeartbeatParserPlugin">
-<area shape="rect" id="node1" title="Parses the heartbeat keyword, adding a Heartbeat to the simulation." alt="" coords="5,79,189,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="37,5,157,31"/>
-</map>

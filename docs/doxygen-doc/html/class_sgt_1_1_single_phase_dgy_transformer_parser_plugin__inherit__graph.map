@@ -1,4 +1,0 @@
-<map id="Sgt::SinglePhaseDgyTransformerParserPlugin" name="Sgt::SinglePhaseDgyTransformerParserPlugin">
-<area shape="rect" id="node1" title="Parses the single_phase_dgy_transformer keyword, adding a SinglePhaseDgyTransformer to the network." alt="" coords="5,79,225,117"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="42,5,188,31"/>
-</map>

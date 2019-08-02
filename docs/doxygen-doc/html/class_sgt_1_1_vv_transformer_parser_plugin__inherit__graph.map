@@ -1,4 +1,0 @@
-<map id="Sgt::VvTransformerParserPlugin" name="Sgt::VvTransformerParserPlugin">
-<area shape="rect" id="node1" title="Parses the vv_transformer keyword, adding a VvTransformer to the network." alt="" coords="5,79,181,117"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="20,5,166,31"/>
-</map>

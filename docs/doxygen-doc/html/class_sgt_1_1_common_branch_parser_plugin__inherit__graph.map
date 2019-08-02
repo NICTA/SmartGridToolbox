@@ -1,4 +1,0 @@
-<map id="Sgt::CommonBranchParserPlugin" name="Sgt::CommonBranchParserPlugin">
-<area shape="rect" id="node1" title="Parses the common_branch keyword, adding a CommonBranch to the network." alt="" coords="5,79,227,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="43,5,189,31"/>
-</map>

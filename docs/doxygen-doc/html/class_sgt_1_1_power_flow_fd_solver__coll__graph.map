@@ -1,4 +1,0 @@
-<map id="Sgt::PowerFlowFdSolver" name="Sgt::PowerFlowFdSolver">
-<area shape="rect" id="node1" title="Fast&#45;decoupled NR power flow solver." alt="" coords="23,79,192,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_power_flow_solver_interface.html" title="Interface for power flow solvers operating on Network objects." alt="" coords="5,5,210,31"/>
-</map>

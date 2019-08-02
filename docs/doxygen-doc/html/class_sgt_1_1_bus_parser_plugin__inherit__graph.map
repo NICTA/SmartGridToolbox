@@ -1,4 +1,0 @@
-<map id="Sgt::BusParserPlugin" name="Sgt::BusParserPlugin">
-<area shape="rect" id="node1" title="Parses the bus keyword, adding a Bus to the network." alt="" coords="5,79,153,104"/>
-<area shape="rect" id="node2" href="$class_sgt_1_1_parser_plugin.html" title="A plugin to parse YAML into an object." alt="" coords="6,5,153,31"/>
-</map>
